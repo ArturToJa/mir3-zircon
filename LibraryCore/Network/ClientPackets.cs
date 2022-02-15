@@ -343,6 +343,14 @@ namespace Library.Network.ClientPackets
         public Stat Stat { get; set; }
     }
 
+    public sealed class ServerRates : Packet 
+    {
+        public int ExperienceRate { get; set; }
+        public int DropRate { get; set; }
+        public int GoldRate { get; set; }
+        public int SkillRate { get; set; }
+        public int CompanionRate { get; set; }
+    }
 
     public sealed class MarketPlaceHistory : Packet
     {

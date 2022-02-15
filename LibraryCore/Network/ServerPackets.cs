@@ -441,6 +441,9 @@ namespace Library.Network.ServerPackets
         public Stats HermitStats { get; set; }
         public int HermitPoints { get; set; }
     }
+
+    public sealed class AdminPanel : Packet { }
+
     public sealed class HealthChanged : Packet
     {
         public uint ObjectID { get; set; }

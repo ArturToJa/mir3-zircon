@@ -2048,7 +2048,11 @@ namespace Server.Models
 
                         SendGuildInfo();
                         break;
-
+                    case "ADMINPANEL":
+                        if (!Character.Account.TempAdmin)
+                            return;
+                        Enqueue(new S.AdminPanel());
+                        break;
                 }
 
             }
@@ -16163,31 +16167,31 @@ namespace Server.Models
                     power -= power * ob.Stats[Stat.PhysicalResistance] / 10;
                     break;
                 case Element.Fire:
-                    power += GetElementPower(ob.Race, Stat.FireAttack) * 2;
+                    power += GetStatPower(ob.Race, Stat.FireAttack) * 2;
                     power -= power * ob.Stats[Stat.FireResistance] / 10;
                     break;
                 case Element.Ice:
-                    power += GetElementPower(ob.Race, Stat.IceAttack) * 2;
+                    power += GetStatPower(ob.Race, Stat.IceAttack) * 2;
                     power -= power * ob.Stats[Stat.IceResistance] / 10;
                     break;
                 case Element.Lightning:
-                    power += GetElementPower(ob.Race, Stat.LightningAttack) * 2;
+                    power += GetStatPower(ob.Race, Stat.LightningAttack) * 2;
                     power -= power * ob.Stats[Stat.LightningResistance] / 10;
                     break;
                 case Element.Wind:
-                    power += GetElementPower(ob.Race, Stat.WindAttack) * 2;
+                    power += GetStatPower(ob.Race, Stat.WindAttack) * 2;
                     power -= power * ob.Stats[Stat.WindResistance] / 10;
                     break;
                 case Element.Holy:
-                    power += GetElementPower(ob.Race, Stat.HolyAttack) * 2;
+                    power += GetStatPower(ob.Race, Stat.HolyAttack) * 2;
                     power -= power * ob.Stats[Stat.HolyResistance] / 10;
                     break;
                 case Element.Dark:
-                    power += GetElementPower(ob.Race, Stat.DarkAttack) * 2;
+                    power += GetStatPower(ob.Race, Stat.DarkAttack) * 2;
                     power -= power * ob.Stats[Stat.DarkResistance] / 10;
                     break;
                 case Element.Phantom:
-                    power += GetElementPower(ob.Race, Stat.PhantomAttack) * 2;
+                    power += GetStatPower(ob.Race, Stat.PhantomAttack) * 2;
                     power -= power * ob.Stats[Stat.PhantomResistance] / 10;
                     break;
             }
@@ -16517,8 +16521,8 @@ namespace Server.Models
 
             if (canReflect && CanAttackTarget(attacker) && SEnvir.Random.Next(100) < Stats[Stat.JudgementOfHeaven] && !(attacker is CastleLord))
             {
-                int damagePvE = GetMC() / 5 + GetElementPower(ObjectType.Monster, Stat.LightningAttack) * 2;
-                int damagePvP = Math.Min(50, GetMC() / 5 + GetElementPower(ObjectType.Monster, Stat.LightningAttack) / 2);
+                int damagePvE = GetMC() / 5 + GetStatPower(ObjectType.Monster, Stat.LightningAttack) * 2;
+                int damagePvP = Math.Min(50, GetMC() / 5 + GetStatPower(ObjectType.Monster, Stat.LightningAttack) / 2);
 
                 Broadcast(new S.ObjectEffect { ObjectID = attacker.ObjectID, Effect = Effect.ThunderBolt });
                 ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(300), ActionType.DelayedAttackDamage, attacker, attacker.Race == ObjectType.Player ? damagePvP : damagePvE, Element.Lightning, false, false, true, true));
@@ -17497,30 +17501,9 @@ namespace Server.Models
 
         public int GetLotusMana(ObjectType race)
         {
-            if (race != ObjectType.Player) return Stats[Stat.Mana];
-
-            int min = 0;
-            int max = Stats[Stat.Mana];
-
-            int luck = Stats[Stat.Luck];
-
-            if (min < 0) min = 0;
-            if (min >= max) return max;
-
-            if (luck > 0)
-            {
-                if (luck >= 10) return max;
-
-                if (SEnvir.Random.Next(10) < luck) return max;
-            }
-            else if (luck < 0)
-            {
-                if (luck < -SEnvir.Random.Next(10)) return min;
-            }
-
-            return SEnvir.Random.Next(min, max + 1);
+            return GetStatPower(race, Stat.Mana);
         }
-        public int GetElementPower(ObjectType race, Stat element)
+        public int GetStatPower(ObjectType race, Stat element)
         {
             if (race != ObjectType.Player) return Stats[element];
 
@@ -18647,8 +18630,8 @@ namespace Server.Models
 
             if (stats != null && stats.GetAffinityValue(Element.Phantom) > 0)
             {
-                damagePvE += GetElementPower(ObjectType.Monster, Stat.PhantomAttack) * 8;
-                damagePvP += GetElementPower(ObjectType.Player, Stat.PhantomAttack) * 8;
+                damagePvE += GetStatPower(ObjectType.Monster, Stat.PhantomAttack) * 8;
+                damagePvP += GetStatPower(ObjectType.Player, Stat.PhantomAttack) * 8;
             }
 
 

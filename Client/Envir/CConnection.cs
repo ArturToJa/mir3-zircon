@@ -2089,6 +2089,20 @@ namespace Client.Envir
             MapObject.User.Stats = p.Stats;
             MapObject.User.HermitStats = p.HermitStats;
         }
+
+        public void Process(S.AdminPanel p)
+        {
+            if(GameScene.Game.AdminManagementBox == null)
+            {
+                GameScene.Game.AdminManagementBox = new AdminManagementDialog
+                {
+                    Parent = GameScene.Game,
+                    Visible = false,
+                };
+            }
+            GameScene.Game.AdminManagementBox.Visible = true;
+        }
+
         public void Process(S.ItemUseDelay p)
         {
             GameScene.Game.UseItemTime = CEnvir.Now + p.Delay;

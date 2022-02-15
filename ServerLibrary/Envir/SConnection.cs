@@ -695,6 +695,22 @@ namespace Server.Envir
             Player.AssignHermit(p.Stat);
         }
 
+        public void Process(C.ServerRates p)
+        {
+            if(Stage != GameStage.Game) return;
+            if (!Account.TempAdmin) return;
+            Config.ExperienceRate = p.ExperienceRate;
+            Config.DropRate = p.DropRate;
+            Config.GoldRate = p.GoldRate;
+            Config.SkillRate = p.SkillRate;
+            Config.CompanionRate = p.CompanionRate;
+
+            if (SEnvir.Started)
+            {
+                SEnvir.ServerBuffChanged = true;
+            }
+        }
+
         public void Process(C.MarketPlaceHistory p)
         {
             if (Stage != GameStage.Game && Stage != GameStage.Observer) return;

@@ -148,6 +148,7 @@ namespace Client.Scenes
 
         public DXConfigWindow ConfigBox;
         public InventoryDialog InventoryBox;
+        public AdminManagementDialog AdminManagementBox;
         public CharacterDialog CharacterBox;
         public ExitDialog ExitBox;
         public ChatTextBox ChatTextBox;
