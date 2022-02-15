@@ -143,6 +143,7 @@ namespace Server.Models
         public List<AutoPotionLink> AutoPotions = new List<AutoPotionLink>();
         public CellLinkInfo DelayItemUse;
         public decimal MaxExperience;
+        public int ExperienceIndex;
 
         public bool CanFlamingSword, CanDragonRise, CanBladeStorm;
 
@@ -203,6 +204,8 @@ namespace Server.Models
             FiltersClass = Character.FiltersClass;
             FiltersItemType = Character.FiltersItemType;
             FiltersRarity = Character.FiltersRarity;
+
+            ExperienceIndex = -1;
         }
 
         public override void Process()
@@ -2713,24 +2716,32 @@ namespace Server.Models
             }
         }
 
-        private decimal GetMaxExperience()
+        private void SetMaxExperience()
         {
-            decimal _MaxExperience = 0;
-            int LevelCap = 0;
-            foreach (Globals.ExperienceData ExpData in Globals.ExperienceList)
+            int StartIndex = 0;
+            if(ExperienceIndex != -1)
             {
-                if (Level >= ExpData.Level && Level > LevelCap)
+                StartIndex = ExperienceIndex + 1;
+            }
+
+            for (int i = StartIndex; i < Globals.ExperienceList.Count; i++)
+            {
+                Globals.ExperienceData ExpData = Globals.ExperienceList[i];
+                if (Level >= ExpData.Level)
                 {
-                    LevelCap = ExpData.Level;
-                    _MaxExperience = ExpData.Experience;
+                    MaxExperience = ExpData.Experience;
+                    ExperienceIndex = i;
+                }
+                else
+                {
+                    break;
                 }
             }
-            return _MaxExperience;
         }
 
         public void AddBaseStats()
         {
-            MaxExperience = GetMaxExperience();
+            SetMaxExperience();
 
             BaseStat stat = null;
 
@@ -11207,6 +11218,7 @@ namespace Server.Models
         {
             Level -= Globals.RebirthDataList[rebirth].LevelLoss;
             Experience = 0;
+            ExperienceIndex = -1;
             Character.Rebirth = rebirth;
             Character.SpentPoints = 0;
             Character.HermitStats.Clear();
