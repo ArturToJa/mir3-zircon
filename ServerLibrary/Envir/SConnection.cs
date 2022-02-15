@@ -711,6 +711,26 @@ namespace Server.Envir
             }
         }
 
+        public void Process(C.MonsterSpawn p)
+        {
+            if (Stage != GameStage.Game) return;
+            if (!Account.TempAdmin) return;
+
+            var monsterInfo = SEnvir.GetMonsterInfo(p.Name);
+
+            if (monsterInfo == null) return;
+
+            
+            var point = Functions.Move(Player.CurrentLocation, Player.Direction);
+            var value = p.Amount;
+            while (value > 0)
+            {
+                var monster = MonsterObject.GetMonster(monsterInfo);
+                monster.Spawn(Player.CurrentMap, point);
+                value -= 1;
+            }
+        }
+
         public void Process(C.MarketPlaceHistory p)
         {
             if (Stage != GameStage.Game && Stage != GameStage.Observer) return;

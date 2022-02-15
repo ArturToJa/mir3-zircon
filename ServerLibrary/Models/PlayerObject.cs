@@ -1666,11 +1666,12 @@ namespace Server.Models
                         if (parts.Length < 3 || !int.TryParse(parts[2], out value) || value == 0)
                             value = 1;
 
+                        
+                        var point = Functions.Move(CurrentLocation, Direction);
                         while (value > 0)
                         {
                             var monster = MonsterObject.GetMonster(monsterInfo);
-
-                            monster.Spawn(CurrentMap, Functions.Move(CurrentLocation, Direction));
+                            monster.Spawn(CurrentMap, point);
                             value -= 1;
                         }
                         break;

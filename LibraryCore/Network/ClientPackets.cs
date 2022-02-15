@@ -352,6 +352,13 @@ namespace Library.Network.ClientPackets
         public int CompanionRate { get; set; }
     }
 
+    public sealed class MonsterSpawn : Packet
+    {
+        public string Name { get; set; }
+        public int Amount { get; set; }
+        public bool IsPet { get; set; }
+    }
+
     public sealed class MarketPlaceHistory : Packet
     {
         public int Index { get; set; }

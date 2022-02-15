@@ -354,6 +354,7 @@ namespace Server.Envir
             }
             else
             {
+                Globals.ExperienceList.Clear();
                 var lines = File.ReadAllLines(path);
                 for (int i = 0; i < lines.Length; i++)
                 {
