@@ -348,7 +348,7 @@ namespace Server.Envir
                 {
                     for (int i = 0; i < Globals.ExperienceList.Count; i++)
                     {
-                        file.WriteLine(i == 0 ? "//needed for lvl0" : (Globals.ExperienceList[i].ToString(CultureInfo.InvariantCulture) + " // level " + i));
+                        file.WriteLine(Globals.ExperienceList[i].ToString());
                     }
                 }
             }
@@ -361,11 +361,12 @@ namespace Server.Envir
                     if (lines[i].TrimStart().StartsWith("//")) continue; //ignore comment
                     try
                     {
-                        decimal exp = decimal.Parse(lines[i].Split('/')[0].Trim()); //remove comment
+                        int level = int.Parse(lines[i].Split(' ')[0].Trim());
+                        decimal exp = decimal.Parse(lines[i].Split(' ')[1].Trim());
                         if (Globals.ExperienceList.Count > i)
-                            Globals.ExperienceList.Add(exp);
+                            Globals.ExperienceList.Add(new Globals.ExperienceData(level, exp));
                         else
-                            Globals.ExperienceList[i] = exp;
+                            Globals.ExperienceList[i] = new Globals.ExperienceData(level, exp);
                     }
                     catch (Exception e)
                     {
@@ -3405,8 +3406,8 @@ namespace Server.Envir
                     Rank = rank,
                     Index = info.Index,
                     Class = info.Class,
-                    Experience = info.Experience,
-                    MaxExperience = info.Level >= Globals.ExperienceList.Count ? 0 : Globals.ExperienceList[info.Level],
+                    Experience = 0, //info.Experience,
+                    MaxExperience = 0, //info.Level >= Globals.ExperienceList.Count ? 0 : Globals.ExperienceList[info.Level],
                     Level = info.Level,
                     Name = info.CharacterName,
                     Online = info.Player != null,

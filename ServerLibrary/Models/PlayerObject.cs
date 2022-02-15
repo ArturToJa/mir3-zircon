@@ -2712,9 +2712,25 @@ namespace Server.Models
                 AddAllObjects();
             }
         }
+
+        private decimal GetMaxExperience()
+        {
+            decimal _MaxExperience = 0;
+            int LevelCap = 0;
+            foreach (Globals.ExperienceData ExpData in Globals.ExperienceList)
+            {
+                if (Level >= ExpData.Level && Level > LevelCap)
+                {
+                    LevelCap = ExpData.Level;
+                    _MaxExperience = ExpData.Experience;
+                }
+            }
+            return _MaxExperience;
+        }
+
         public void AddBaseStats()
         {
-            MaxExperience = Level < Globals.ExperienceList.Count ? Globals.ExperienceList[Level] : 0;
+            MaxExperience = GetMaxExperience();
 
             BaseStat stat = null;
 
@@ -11191,15 +11207,14 @@ namespace Server.Models
         {
             Level -= Globals.RebirthDataList[rebirth].LevelLoss;
             Experience = 0;
-
-            Enqueue(new S.LevelChanged { Level = Level, Experience = Experience, MaxExperience = MaxExperience });
-            Broadcast(new S.ObjectLeveled { ObjectID = ObjectID });
-
             Character.Rebirth = rebirth;
             Character.SpentPoints = 0;
             Character.HermitStats.Clear();
 
             RefreshStats();
+
+            Enqueue(new S.LevelChanged { Level = Level, Experience = Experience, MaxExperience = MaxExperience });
+            Broadcast(new S.ObjectLeveled { ObjectID = ObjectID });
         }
 
         public void NPCMasterRefine(C.NPCMasterRefine p)
