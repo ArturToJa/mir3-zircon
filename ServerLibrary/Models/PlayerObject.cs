@@ -2744,53 +2744,87 @@ namespace Server.Models
             }
         }
 
+        private void AddStatsRange(int FromLevel, int ToLevel, BaseStat stat)
+        {
+            Stats[Stat.Health] += (FromLevel - ToLevel) * stat.Health;
+            Stats[Stat.Mana] += (FromLevel - ToLevel) * stat.Mana;
+
+            Stats[Stat.BagWeight] += (FromLevel - ToLevel) * stat.BagWeight;
+            Stats[Stat.WearWeight] += (FromLevel - ToLevel) * stat.WearWeight;
+            Stats[Stat.HandWeight] += (FromLevel - ToLevel) * stat.HandWeight;
+
+            Stats[Stat.Accuracy] += (FromLevel - ToLevel) * stat.Accuracy;
+
+            Stats[Stat.Agility] += (FromLevel - ToLevel) * stat.Agility;
+
+            Stats[Stat.MinAC] += (int)(((float)FromLevel - (float)ToLevel) * stat.MinAC);
+            Stats[Stat.MaxAC] += (int)(((float)FromLevel - (float)ToLevel) * stat.MaxAC);
+
+            Stats[Stat.MinMR] += (int)(((float)FromLevel - (float)ToLevel) * stat.MinMR);
+            Stats[Stat.MaxMR] += (int)(((float)FromLevel - (float)ToLevel) * stat.MaxMR);
+
+            Stats[Stat.MinDC] += (int)(((float)FromLevel - (float)ToLevel) * stat.MinDC);
+            Stats[Stat.MaxDC] += (int)(((float)FromLevel - (float)ToLevel) * stat.MaxDC);
+
+            Stats[Stat.MinMC] += (int)(((float)FromLevel - (float)ToLevel) * stat.MinMC);
+            Stats[Stat.MaxMC] += (int)(((float)FromLevel - (float)ToLevel) * stat.MaxMC);
+
+            Stats[Stat.MinSC] += (int)(((float)FromLevel - (float)ToLevel) * stat.MinSC);
+            Stats[Stat.MaxSC] += (int)(((float)FromLevel - (float)ToLevel) * stat.MaxSC);
+        }
+
         public void AddBaseStats()
         {
             SetMaxExperience();
 
+            Stats[Stat.Health] = 0;
+            Stats[Stat.Mana] = 0;
+
+            Stats[Stat.BagWeight] = 0;
+            Stats[Stat.WearWeight] = 0;
+            Stats[Stat.HandWeight] = 0;
+
+            Stats[Stat.Accuracy] = 0;
+
+            Stats[Stat.Agility] = 0;
+
+            Stats[Stat.MinAC] = 0;
+            Stats[Stat.MaxAC] = 0;
+
+            Stats[Stat.MinMR] = 0;
+            Stats[Stat.MaxMR] = 0;
+
+            Stats[Stat.MinDC] = 0;
+            Stats[Stat.MaxDC] = 0;
+
+            Stats[Stat.MinMC] = 0;
+            Stats[Stat.MaxMC] = 0;
+
+            Stats[Stat.MinSC] = 0;
+            Stats[Stat.MaxSC] = 0;
+
+
             BaseStat stat = null;
 
             //Get best possible match.
-            foreach (BaseStat bStat in SEnvir.BaseStatList.Binding)
+            for(int i = 0; i < SEnvir.BaseStatList.Binding.Count; i++)
             {
+                BaseStat bStat = SEnvir.BaseStatList.Binding[i];
                 if (bStat.Class != Class) continue;
-                if (bStat.Level > Level) continue;
-                if (stat != null && bStat.Level < stat.Level) continue;
-
-                stat = bStat;
-
-                if (bStat.Level == Level) break;
+                if (bStat.Level <= Level)
+                {
+                    if(stat != null)
+                    {
+                        AddStatsRange(bStat.Level, stat.Level, stat);
+                    }
+                    stat = bStat;
+                }
+                else
+                {
+                    AddStatsRange(Level, stat.Level - 1, stat);
+                    break;
+                }            
             }
-
-            if (stat == null) return;
-
-            Stats[Stat.Health] = stat.Health;
-            Stats[Stat.Mana] = stat.Mana;
-
-            Stats[Stat.BagWeight] = stat.BagWeight;
-            Stats[Stat.WearWeight] = stat.WearWeight;
-            Stats[Stat.HandWeight] = stat.HandWeight;
-
-            Stats[Stat.Accuracy] = stat.Accuracy;
-
-            Stats[Stat.Agility] = stat.Agility;
-
-            Stats[Stat.MinAC] = stat.MinAC;
-            Stats[Stat.MaxAC] = stat.MaxAC;
-
-            Stats[Stat.MinMR] = stat.MinMR;
-            Stats[Stat.MaxMR] = stat.MaxMR;
-
-            Stats[Stat.MinDC] = stat.MinDC;
-            Stats[Stat.MaxDC] = stat.MaxDC;
-
-            Stats[Stat.MinMC] = stat.MinMC;
-            Stats[Stat.MaxMC] = stat.MaxMC;
-
-            Stats[Stat.MinSC] = stat.MinSC;
-            Stats[Stat.MaxSC] = stat.MaxSC;
-
-
             Stats[Stat.PickUpRadius] = 1;
             Stats[Stat.SkillRate] = 1;
             Stats[Stat.CriticalChance] = 1;
