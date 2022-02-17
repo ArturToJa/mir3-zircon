@@ -364,10 +364,7 @@ namespace Server.Envir
                     {
                         int level = int.Parse(lines[i].Split(' ')[0].Trim());
                         decimal exp = decimal.Parse(lines[i].Split(' ')[1].Trim());
-                        if (Globals.ExperienceList.Count > i)
-                            Globals.ExperienceList.Add(new Globals.ExperienceData(level, exp));
-                        else
-                            Globals.ExperienceList[i] = new Globals.ExperienceData(level, exp);
+                        Globals.ExperienceList.Add(new Globals.ExperienceData(level, exp));
                     }
                     catch (Exception e)
                     {
