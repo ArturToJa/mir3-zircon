@@ -2821,10 +2821,10 @@ namespace Server.Models
                 }
                 else
                 {
-                    AddStatsRange(Level, stat.Level - 1, stat);
                     break;
                 }            
             }
+            AddStatsRange(Level, stat.Level - 1, stat);
             Stats[Stat.PickUpRadius] = 1;
             Stats[Stat.SkillRate] = 1;
             Stats[Stat.CriticalChance] = 1;
