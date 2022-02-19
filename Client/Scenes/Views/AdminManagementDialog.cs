@@ -29,6 +29,10 @@ namespace Client.Scenes.Views
         public DXTextBox MonsterNameBox;
         public DXNumberTextBox MonsterNumberBox;
         public DXCheckBox MonsterIsPetBox;
+        public DXNumberTextBox SelfLevelNumberBox;
+        public DXNumberTextBox SelfGoldNumberBox;
+        public DXTextBox ItemNameBox;
+        public DXNumberTextBox ItemAmountNumberBox;
 
         public override WindowType Type => WindowType.CharacterBox;
         public override bool CustomSize => false;
@@ -80,6 +84,14 @@ namespace Client.Scenes.Views
 
             };
 
+            DXCheckBox MonsterIsPetBox = new DXCheckBox
+            {
+                Parent = AdminTab,
+                Label = { Text = "Is Pet" },
+                Checked = false,
+            };
+            MonsterIsPetBox.Location = new Point(MonsterNameBox.Location.X + MonsterNameBox.Size.Width + 10, MonsterNameBox.Location.Y);
+
             label = new DXLabel
             {
                 Parent = AdminTab,
@@ -100,23 +112,15 @@ namespace Client.Scenes.Views
 
             MonsterNumberBox.Value = 1;
 
-            DXCheckBox MonsterIsPetBox = new DXCheckBox
-            {
-                Parent = AdminTab,
-                Label = { Text = "Is Pet" },
-                Checked = false,
-            };
-            MonsterIsPetBox.Location = new Point(10, 10 + (10 + label.Size.Height) * 2);
-
-            DXButton filterButton = new DXButton
+            DXButton spawnMonsterButton = new DXButton
             {
                 Parent = AdminTab,
                 Label = { Text = "Spawn", },
                 ButtonType = ButtonType.SmallButton,
                 Size = new Size(50, SmallButtonHeight)
             };
-            filterButton.Location = new Point(100, 10 + (10 + label.Size.Height) * 3);
-            filterButton.MouseClick += (o, e) =>
+            spawnMonsterButton.Location = new Point(MonsterNumberBox.Location.X + MonsterNumberBox.Size.Width + 30, MonsterNumberBox.Location.Y);
+            spawnMonsterButton.MouseClick += (o, e) =>
             {
                 GameScene.Game.ReceiveChat("Spawning Monster/s", MessageType.System);
                 CEnvir.Enqueue(new C.MonsterSpawn
@@ -127,6 +131,108 @@ namespace Client.Scenes.Views
                 });
 
             };
+
+            DXButton levelButton = new DXButton
+            {
+                Parent = AdminTab,
+                Label = { Text = "Level", },
+                ButtonType = ButtonType.SmallButton,
+                Size = new Size(50, SmallButtonHeight)
+            };
+            levelButton.Location = new Point(10, 10 + (10 + label.Size.Height) * 3);
+            levelButton.MouseClick += (o, e) =>
+            {
+                CEnvir.Enqueue(new C.LevelUp
+                {
+                    Name = "",
+                    Level = (int)SelfLevelNumberBox.Value,
+                    Self = true
+                });
+
+            };
+
+            SelfLevelNumberBox = new DXNumberTextBox
+            {
+                Parent = AdminTab,
+                Border = true,
+                BorderColour = Color.FromArgb(198, 166, 99),
+                Location = new Point(70, levelButton.Location.Y),
+                Size = new Size(50, 18),
+                MaxValue = 100000000,
+                MinValue = 1
+            };
+            SelfLevelNumberBox.Value = 1;
+
+            DXButton goldButton = new DXButton
+            {
+                Parent = AdminTab,
+                Label = { Text = "Gold", },
+                ButtonType = ButtonType.SmallButton,
+                Size = new Size(50, SmallButtonHeight)
+            };
+            goldButton.Location = new Point(10, 10 + (10 + label.Size.Height) * 4);
+            goldButton.MouseClick += (o, e) =>
+            {
+                CEnvir.Enqueue(new C.GiveGold
+                {
+                    Name = "",
+                    Gold = (int)SelfGoldNumberBox.Value,
+                    Self = true
+                });
+
+            };
+
+            SelfGoldNumberBox = new DXNumberTextBox
+            {
+                Parent = AdminTab,
+                Border = true,
+                BorderColour = Color.FromArgb(198, 166, 99),
+                Location = new Point(70, goldButton.Location.Y),
+                Size = new Size(50, 18),
+                MaxValue = 100000000,
+                MinValue = -100000000
+            };
+            SelfGoldNumberBox.Value = 1;
+
+            DXButton itemButton = new DXButton
+            {
+                Parent = AdminTab,
+                Label = { Text = "Item", },
+                ButtonType = ButtonType.SmallButton,
+                Size = new Size(50, SmallButtonHeight)
+            };
+            itemButton.Location = new Point(10, 10 + (10 + label.Size.Height) * 5);
+            itemButton.MouseClick += (o, e) =>
+            {
+                CEnvir.Enqueue(new C.MakeItem
+                {
+                    Name = ItemNameBox.TextBox.Text,
+                    Amount = (int)ItemAmountNumberBox.Value
+                });
+
+            };
+
+            ItemNameBox = new DXTextBox
+            {
+                Parent = AdminTab,
+                Border = true,
+                BorderColour = Color.FromArgb(198, 166, 99),
+                Location = new Point(70, itemButton.Location.Y),
+                Size = new Size(100, 18),
+
+            };
+
+            ItemAmountNumberBox = new DXNumberTextBox
+            {
+                Parent = AdminTab,
+                Border = true,
+                BorderColour = Color.FromArgb(198, 166, 99),
+                Location = new Point(180, itemButton.Location.Y),
+                Size = new Size(50, 18),
+                MaxValue = 100000000,
+                MinValue = 1
+            };
+            ItemAmountNumberBox.Value = 1;
         }
 
         void PrepareGameTab()
@@ -159,7 +265,7 @@ namespace Client.Scenes.Views
                     MinValue = 0
 
                 };
-                GameRatesMap[i].Value = 1;
+                GameRatesMap[i].Value = 0;
             }
 
             DXButton filterButton = new DXButton

@@ -359,6 +359,26 @@ namespace Library.Network.ClientPackets
         public bool IsPet { get; set; }
     }
 
+    public sealed class LevelUp : Packet 
+    {
+        public int Level { get; set; }
+        public string Name { get; set; }
+        public bool Self { get; set; }
+    }
+
+    public sealed class GiveGold : Packet
+    {
+        public int Gold { get; set; }
+        public string Name { get; set; }
+        public bool Self { get; set; }
+    }
+
+    public sealed class MakeItem : Packet
+    {
+        public int Amount { get; set; }
+        public string Name { get; set; }
+    }
+
     public sealed class MarketPlaceHistory : Packet
     {
         public int Index { get; set; }

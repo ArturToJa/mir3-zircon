@@ -731,6 +731,76 @@ namespace Server.Envir
             }
         }
 
+        public void Process(C.LevelUp p)
+        {
+            if (Stage != GameStage.Game) return;
+            if (!Account.TempAdmin) return;
+            if(p.Level <= 0) return;
+
+            PlayerObject player = null;
+
+            if(p.Self)
+            {
+                player = Player;
+            }
+            else
+            {
+                player = SEnvir.GetPlayerByCharacter(p.Name);
+            }
+            if (player == null) return;
+
+            player.Level = p.Level;
+            player.LevelUp();
+        }
+
+        public void Process(C.GiveGold p)
+        {
+            if (Stage != GameStage.Game) return;
+            if (!Account.TempAdmin) return;
+
+            PlayerObject player = null;
+
+            if (p.Self)
+            {
+                player = Player;
+            }
+            else
+            {
+                player = SEnvir.GetPlayerByCharacter(p.Name);
+            }
+            if (player == null) return;
+
+            player.Gold += p.Gold;
+            player.GoldChanged();
+        }
+
+        public void Process(C.MakeItem p)
+        {
+            if (Stage != GameStage.Game) return;
+            if (!Account.TempAdmin) return;
+
+            ItemInfo item = SEnvir.GetItemInfo(p.Name);
+
+            if (item == null) return;
+
+            int value = p.Amount;
+
+            while (value > 0)
+            {
+                int count = Math.Min(value, item.StackSize);
+
+                if (!Player.CanGainItems(false, new ItemCheck(item, count, UserItemFlags.None, TimeSpan.Zero))) break;
+
+                UserItem userItem = SEnvir.CreateDropItem(item, 0);
+
+                userItem.Count = count;
+                userItem.Flags = UserItemFlags.None;
+
+                value -= count;
+                Player.GainItem(userItem);
+            }
+        }
+
         public void Process(C.MarketPlaceHistory p)
         {
             if (Stage != GameStage.Game && Stage != GameStage.Observer) return;
