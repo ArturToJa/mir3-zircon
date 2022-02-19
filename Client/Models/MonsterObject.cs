@@ -2226,29 +2226,27 @@ namespace Client.Models
 
 
             MirLibrary library;
-            switch (Image)
+            if (CurrentAction != MirAction.Dead)
             {
-                case MonsterImage.NewMob1:
-                    if (CurrentAction == MirAction.Dead) break;
-                    if (!CEnvir.LibraryList.TryGetValue(LibraryFile.MonMagicEx20, out library)) break;
-                    library.DrawBlend(DrawFrame + 2000, x, y, Color.White, true, 1f, ImageType.Image);
-                    break;
-                case MonsterImage.NumaHighMage:
-                    if (CurrentAction == MirAction.Dead) break;
-                    if (!CEnvir.LibraryList.TryGetValue(LibraryFile.MonMagicEx4, out library)) break;
-                    library.DrawBlend(DrawFrame + 500, x, y, Color.White, true, 1f, ImageType.Image);
-                    break;
-                case MonsterImage.InfernalSoldier:
-                    if (CurrentAction == MirAction.Dead) break;
-                    if (!CEnvir.LibraryList.TryGetValue(LibraryFile.MonMagicEx8, out library)) break;
-                    library.DrawBlend(DrawFrame, x, y, Color.White, true, 1f, ImageType.Image);
-                    break;
-                case MonsterImage.JinamStoneGate:
-                    if (CurrentAction == MirAction.Dead) break;
-                    if (!CEnvir.LibraryList.TryGetValue(LibraryFile.MonMagicEx6, out library)) break;
-                    library.DrawBlend((GameScene.Game.MapControl.Animation % 30) + 1400, x, y, Color.White, true, 1f, ImageType.Image);
-                    break;
-
+                switch (Image)
+                {
+                    case MonsterImage.NewMob1:
+                        if (!CEnvir.LibraryList.TryGetValue(LibraryFile.MonMagicEx20, out library)) break;
+                        library.DrawBlend(DrawFrame + 2000, x, y, Color.White, true, 1f, ImageType.Image);
+                        break;
+                    case MonsterImage.NumaHighMage:
+                        if (!CEnvir.LibraryList.TryGetValue(LibraryFile.MonMagicEx4, out library)) break;
+                        library.DrawBlend(DrawFrame + 500, x, y, Color.White, true, 1f, ImageType.Image);
+                        break;
+                    case MonsterImage.InfernalSoldier:
+                        if (!CEnvir.LibraryList.TryGetValue(LibraryFile.MonMagicEx8, out library)) break;
+                        library.DrawBlend(DrawFrame, x, y, Color.White, true, 1f, ImageType.Image);
+                        break;
+                    case MonsterImage.JinamStoneGate:
+                        if (!CEnvir.LibraryList.TryGetValue(LibraryFile.MonMagicEx6, out library)) break;
+                        library.DrawBlend((GameScene.Game.MapControl.Animation % 30) + 1400, x, y, Color.White, true, 1f, ImageType.Image);
+                        break;
+                }
             }
 
             if (CompanionObject != null && CompanionObject.HeadShape > 0)

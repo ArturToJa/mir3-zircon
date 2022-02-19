@@ -3944,7 +3944,7 @@ namespace Client.Models
             CurrentCell.RemoveObject(this);
 
             if (CurrentLocation.X < GameScene.Game.MapControl.Width && CurrentLocation.Y < GameScene.Game.MapControl.Height)
-                GameScene.Game.MapControl.Cells[CurrentLocation.X, CurrentLocation.Y].AddObject(this);
+                GameScene.Game.MapControl.Cells[CurrentLocation.Y][CurrentLocation.X].AddObject(this);
 
         }
         public virtual void DeadChanged()

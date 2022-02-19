@@ -155,7 +155,7 @@ namespace Client.Scenes.Views
         public Floor FLayer;
         public Light LLayer;
 
-        public Cell[,] Cells;
+        public Cell[][] Cells;
         public int Width, Height;
 
         public List<DXControl> MapInfoObjects = new List<DXControl>();
@@ -262,7 +262,7 @@ namespace Client.Scenes.Views
 
             if (MapLocation.X >= 0 && MapLocation.X < Width && MapLocation.Y >= 0 && MapLocation.Y < Height)
             {
-                Cell cell = Cells[MapLocation.X, MapLocation.Y];
+                Cell cell = Cells[MapLocation.Y][MapLocation.X];
                 int layer = 0;
                 if (cell.Objects != null)
                     for (int i = cell.Objects.Count - 1; i >= 0; i--)
@@ -307,12 +307,11 @@ namespace Client.Scenes.Views
             for (int y = minY; y <= maxY; y++)
             {
                 int drawY = (y - User.CurrentLocation.Y + OffSetY + 1)*CellHeight - User.MovingOffSet.Y;
-
                 for (int x = minX; x <= maxX; x++)
                 {
                     int drawX = (x - User.CurrentLocation.X + OffSetX)*CellWidth - User.MovingOffSet.X;
 
-                    Cell cell = Cells[x, y];
+                    Cell cell = Cells[y][x];
 
                     MirLibrary library;
                     LibraryFile file;
@@ -365,11 +364,27 @@ namespace Client.Scenes.Views
                     }
                 }
 
-                foreach (MapObject ob in Objects)
+                DateTime startMapObjects = DateTime.Now;
+
+                for (int i = 0; i < Cells[y].Length; i++)
+                {
+                    Cell cell = Cells[y][i];
+                    if (cell != null && cell.Objects != null)
+                    {
+                        foreach (MapObject ob in cell.Objects)
+                        {
+                            if (ob != null && ob.RenderY == y)
+                                ob.Draw();
+                        }
+                    }
+                }
+ /*               foreach (MapObject ob in Objects)
                 {
                     if (ob.RenderY == y)
                         ob.Draw();
-                }
+                }*/
+                DateTime endMapObjects = DateTime.Now;
+                Console.WriteLine("MapObject Draw is {0} ms", (endMapObjects - startMapObjects).Milliseconds);
 
                 if (Config.DrawEffects)
                 {
@@ -386,7 +401,6 @@ namespace Client.Scenes.Views
                             ob.Draw();
                     }
                 }
-
             }
 
             if (User.Opacity != 1f) return;
@@ -433,41 +447,46 @@ namespace Client.Scenes.Views
 
                     mStream.Seek(28, SeekOrigin.Begin);
 
-                    Cells = new Cell[Width, Height];
-                    for (int x = 0; x < Width; x++)
-                        for (int y = 0; y < Height; y++)
-                            Cells[x, y] = new Cell();
+                    Cells = new Cell[Height][];
+                    for(int i = 0; i < Height; i++)
+                    {
+                        Cells[i] = new Cell[Width];
+                        for(int j = 0; j < Width; j++)
+                        {
+                            Cells[i][j] = new Cell();
+                        }
+                    }
 
                     for (int x = 0; x < Width/2; x++)
                         for (int y = 0; y < Height/2; y++)
                         {
-                            Cells[(x*2), (y*2)].BackFile = reader.ReadByte();
-                            Cells[(x*2), (y*2)].BackImage = reader.ReadUInt16();
+                            Cells[y * 2][x * 2].BackFile = reader.ReadByte();
+                            Cells[y * 2][x * 2].BackImage = reader.ReadUInt16();
                         }
 
                     for (int x = 0; x < Width; x++)
                         for (int y = 0; y < Height; y++)
                         {
                             byte flag = reader.ReadByte();
-                            Cells[x, y].MiddleAnimationFrame = reader.ReadByte();
+                            Cells[y][x].MiddleAnimationFrame = reader.ReadByte();
 
                             byte value = reader.ReadByte();
-                            Cells[x, y].FrontAnimationFrame = value == 255 ? 0 : value;
-                            Cells[x, y].FrontAnimationFrame &= 0x8F; //Probably a Blend Flag
+                            Cells[y][x].FrontAnimationFrame = value == 255 ? 0 : value;
+                            Cells[y][x].FrontAnimationFrame &= 0x8F; //Probably a Blend Flag
 
-                            Cells[x, y].FrontFile = reader.ReadByte();
-                            Cells[x, y].MiddleFile = reader.ReadByte();
+                            Cells[y][x].FrontFile = reader.ReadByte();
+                            Cells[y][x].MiddleFile = reader.ReadByte();
 
-                            Cells[x, y].MiddleImage = reader.ReadUInt16() + 1;
-                            Cells[x, y].FrontImage = reader.ReadUInt16() + 1;
+                            Cells[y][x].MiddleImage = reader.ReadUInt16() + 1;
+                            Cells[y][x].FrontImage = reader.ReadUInt16() + 1;
 
                             mStream.Seek(3, SeekOrigin.Current);
 
-                            Cells[x, y].Light = (byte) (reader.ReadByte() & 0x0F)*2;
+                            Cells[y][x].Light = (byte) (reader.ReadByte() & 0x0F)*2;
 
                             mStream.Seek(1, SeekOrigin.Current);
 
-                            Cells[x, y].Flag = ((flag & 0x01) != 1) || ((flag & 0x02) != 2);
+                            Cells[y][x].Flag = ((flag & 0x01) != 1) || ((flag & 0x02) != 2);
                         }
                 }
             }
@@ -478,7 +497,7 @@ namespace Client.Scenes.Views
 
             foreach (MapObject ob in Objects)
                 if (ob.CurrentLocation.X < Width && ob.CurrentLocation.Y < Height)
-                    Cells[ob.CurrentLocation.X, ob.CurrentLocation.Y].AddObject(ob);
+                    Cells[ob.CurrentLocation.Y][ob.CurrentLocation.X].AddObject(ob);
         }
 
         public override void OnMouseMove(MouseEventArgs e)
@@ -647,7 +666,7 @@ namespace Client.Scenes.Views
                         if (x >= Width) continue;
                         if (x < 0) break;
 
-                        List<MapObject> list = Cells[x, y].Objects;
+                        List<MapObject> list = Cells[y][x].Objects;
                         if (list == null) continue;
 
                         MapObject cellSelect = null;
@@ -797,7 +816,7 @@ namespace Client.Scenes.Views
                         {
                             MiningPoint = Functions.Move(User.CurrentLocation, direction);
 
-                            if (MiningPoint.X >= 0 && MiningPoint.Y >= 0 && MiningPoint.X < Width && MiningPoint.Y < Height && Cells[MiningPoint.X, MiningPoint.Y].Flag)
+                            if (MiningPoint.X >= 0 && MiningPoint.Y >= 0 && MiningPoint.X < Width && MiningPoint.Y < Height && Cells[MiningPoint.Y][MiningPoint.X].Flag)
                             {
                                 Mining = true;
                                 break;
@@ -845,7 +864,7 @@ namespace Client.Scenes.Views
                 ClientUserItem weap = GameScene.Game.Equipment[(int)EquipmentSlot.Weapon];
 
                 if (MapInfo.CanMine && weap != null && (weap.CurrentDurability > 0 || weap.Info.Durability == 0) && weap.Info.Effect == ItemEffect.PickAxe &&
-                    MiningPoint.X >= 0 && MiningPoint.Y >= 0 && MiningPoint.X < Width && MiningPoint.Y < Height && Cells[MiningPoint.X, MiningPoint.Y].Flag &&
+                    MiningPoint.X >= 0 && MiningPoint.Y >= 0 && MiningPoint.X < Width && MiningPoint.Y < Height && Cells[MiningPoint.Y][MiningPoint.X].Flag &&
                     Functions.Distance(MiningPoint, MapObject.User.CurrentLocation) == 1  && User.Horse == HorseType.None)
                 {
                     if (CEnvir.Now > User.AttackTime)
@@ -928,7 +947,7 @@ namespace Client.Scenes.Views
 
             Point loc = Functions.Move(MapObject.User.CurrentLocation, dir, distance);
 
-            if (loc.X >= 0 && loc.Y >= 0 && loc.X < Width && loc.Y < Height && !Cells[loc.X, loc.Y].Blocking()) return dir;
+            if (loc.X >= 0 && loc.Y >= 0 && loc.X < Width && loc.Y < Height && !Cells[loc.Y][loc.X].Blocking()) return dir;
             
 
             PointF c = new PointF(OffSetX * CellWidth + CellWidth / 2F, OffSetY * CellHeight + CellHeight / 2F);
@@ -966,7 +985,7 @@ namespace Client.Scenes.Views
         {
             Point loc = Functions.Move(MapObject.User.CurrentLocation, dir, distance);
 
-            if (loc.X >= 0 && loc.Y >= 0 && loc.X < Width && loc.Y < Height && !Cells[loc.X, loc.Y].Blocking()) return dir;
+            if (loc.X >= 0 && loc.Y >= 0 && loc.X < Width && loc.Y < Height && !Cells[loc.Y][loc.X].Blocking()) return dir;
             
 
             PointF c = new PointF(MapObject.OffSetX * MapObject.CellWidth + MapObject.CellWidth / 2F, MapObject.OffSetY * MapObject.CellHeight + MapObject.CellHeight / 2F);
@@ -1007,7 +1026,7 @@ namespace Client.Scenes.Views
 
                 if (loc.X < 0 || loc.Y < 0 || loc.X >= Width || loc.Y > Height) return false;
 
-                if (Cells[loc.X, loc.Y].Blocking())
+                if (Cells[loc.Y][loc.X].Blocking())
                     return false;
             }
             return true;
@@ -1049,7 +1068,7 @@ namespace Client.Scenes.Views
 
 
             if (ob.CurrentLocation.X < Width && ob.CurrentLocation.Y < Height)
-                Cells[ob.CurrentLocation.X, ob.CurrentLocation.Y].AddObject(ob);
+                Cells[ob.CurrentLocation.Y][ob.CurrentLocation.X].AddObject(ob);
 
         }
 
@@ -1058,7 +1077,7 @@ namespace Client.Scenes.Views
             Objects.Remove(ob);
 
             if (ob.CurrentLocation.X < Width && ob.CurrentLocation.Y < Height)
-                Cells[ob.CurrentLocation.X, ob.CurrentLocation.Y].RemoveObject(ob);
+                Cells[ob.CurrentLocation.Y][ob.CurrentLocation.X].RemoveObject(ob);
         }
 
         public bool CanAttack(MapObject ob)
@@ -1095,7 +1114,7 @@ namespace Client.Scenes.Views
         {
             if (loc.X < 0 || loc.Y < 0 || loc.X >= Width || loc.Y > Height) return false;
 
-            Cell cell = Cells[loc.X, loc.Y];
+            Cell cell = Cells[loc.Y][loc.X];
 
             if (cell.Objects == null) return false;
 
@@ -1131,7 +1150,7 @@ namespace Client.Scenes.Views
         {
             if (location.X < 0 || location.Y < 0 || location.X >= Width || location.Y >= Height) return false;
 
-            return !Cells[location.X, location.Y].Flag;
+            return !Cells[location.Y][location.X].Flag;
         }
         #endregion
         
@@ -1230,7 +1249,7 @@ namespace Client.Scenes.Views
 
                         int drawX = (x - User.CurrentLocation.X + OffSetX) * CellWidth - User.MovingOffSet.X;
 
-                        Cell tile = GameScene.Game.MapControl.Cells[x, y];
+                        Cell tile = GameScene.Game.MapControl.Cells[y][x];
 
                         if (y % 2 == 0 && x % 2 == 0)
                         {
@@ -1254,7 +1273,7 @@ namespace Client.Scenes.Views
                     {
                         int drawX = (x - User.CurrentLocation.X + OffSetX) * CellWidth - User.MovingOffSet.X;
 
-                        Cell cell = GameScene.Game.MapControl.Cells[x, y];
+                        Cell cell = GameScene.Game.MapControl.Cells[y][x];
 
                         MirLibrary library;
                         LibraryFile file;
@@ -1427,7 +1446,7 @@ namespace Client.Scenes.Views
 
                         int drawX = (x - User.CurrentLocation.X + OffSetX)*CellWidth - User.MovingOffSet.X;
 
-                        Cell tile = GameScene.Game.MapControl.Cells[x, y];
+                        Cell tile = GameScene.Game.MapControl.Cells[y][x];
 
                         if (tile.Light == 0) continue;
 

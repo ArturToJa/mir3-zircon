@@ -218,9 +218,7 @@ namespace Client.Envir
             if (!CheckImage(index)) return;
 
             MirImage image = Images[index];
-            
             Texture texture;
-
             float oldOpacity = DXManager.Opacity;
             switch (type)
             {
@@ -242,8 +240,6 @@ namespace Client.Envir
                         x += image.ShadowOffSetX;
                         y += image.ShadowOffSetY;
                     }
-
-
                     if (texture == null)
                     {
                         if (!image.ImageValid) image.CreateImage(_BReader);
@@ -281,9 +277,6 @@ namespace Client.Envir
                                 image.ExpireTime = Time.Now + Config.CacheDuration;
                                 break;
                         }
-
-
-
                         return;
                     }
 
@@ -334,15 +327,6 @@ namespace Client.Envir
                     break;
                 case ImageType.Shadow:
                     return;
-                /*     if (!image.ShadowValid) image.CreateShadow(_BReader);
-                     texture = image.Shadow;
-
-                     if (useOffSet)
-                     {
-                         x += image.ShadowOffSetX;
-                         y += image.ShadowOffSetY;
-                     }
-                     break;*/
                 case ImageType.Overlay:
                     if (!image.OverlayValid) image.CreateOverlay(_BReader);
                     texture = image.Overlay;
@@ -385,7 +369,6 @@ namespace Client.Envir
             if (!CheckImage(index)) return;
 
             MirImage image = Images[index];
-
             Texture texture;
 
             switch (type)
@@ -401,15 +384,6 @@ namespace Client.Envir
                     break;
                 case ImageType.Shadow:
                     return;
-               /*     if (!image.ShadowValid) image.CreateShadow(_BReader);
-                    texture = image.Shadow;
-
-                    if (useOffSet)
-                    {
-                        x += image.ShadowOffSetX;
-                        y += image.ShadowOffSetY;
-                    }
-                    break;*/
                 case ImageType.Overlay:
                     if (!image.OverlayValid) image.CreateOverlay(_BReader);
                     texture = image.Overlay;
