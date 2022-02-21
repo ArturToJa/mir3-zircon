@@ -15808,7 +15808,7 @@ namespace Server.Models
             {
                 int heal = (int)Math.Floor(LifeSteal);
                 LifeSteal -= heal;
-                ChangeHP(/*Math.Min((hasLotus ? 1500 : 750),*/ heal));
+                ChangeHP(/*Math.Min((hasLotus ? 1500 : 750),*/ heal);
             }
 
             //  if (primary)
