@@ -107,8 +107,8 @@ namespace Server.Envir
 
 
         [ConfigSection("Monsters")]
-        public static TimeSpan DeadDuration { get; set; } = TimeSpan.FromMinutes(1);
-        public static TimeSpan HarvestDuration { get; set; } = TimeSpan.FromMinutes(5);
+        public static TimeSpan DeadDuration { get; set; } = TimeSpan.FromSeconds(10);
+        public static TimeSpan HarvestDuration { get; set; } = TimeSpan.FromMinutes(2);
         public static int MysteryShipRegionIndex { get; set; } = 0;
         public static int LairRegionIndex { get; set; } = 0;
 

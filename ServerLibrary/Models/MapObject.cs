@@ -1588,114 +1588,66 @@ namespace Server.Models
             return ob?.GroupMembers != null && ob.GroupMembers == GroupMembers;
         }
 
+        private int GetAttackStat(Stat minStat, Stat maxStat)
+        {
+            int min = Stats[minStat];
+            int max = Stats[maxStat];
+            int luck = Stats[Stat.Luck];
+
+            if (min < 0) min = 0;
+            if (min >= max) return max;
+
+            if (luck > 0)
+            {
+                if (luck >= 10) return max;
+
+                if (SEnvir.Random.Next(10) < luck) return max;
+            }
+            else if (luck < 0)
+            {
+                if (luck < -SEnvir.Random.Next(10)) return min;
+            }
+
+            return SEnvir.Random.Next(min, max + 1);
+        }
 
         public int GetDC()
         {
-            int min = Stats[Stat.MinDC];
-            int max = Stats[Stat.MaxDC];
-            int luck = Stats[Stat.Luck];
-
-            if (min < 0) min = 0;
-            if (min >= max) return max;
-
-            if (luck > 0)
-            {
-                if (luck >= 10) return max;
-
-                if (SEnvir.Random.Next(10) < luck) return max;
-            }
-            else if (luck < 0)
-            {
-                if (luck < -SEnvir.Random.Next(10)) return min;
-            }
-
-            return SEnvir.Random.Next(min, max + 1);
+            return GetAttackStat(Stat.MinDC, Stat.MaxDC);
         }
         public int GetMC()
         {
-            int min = Stats[Stat.MinMC];
-            int max = Stats[Stat.MaxMC];
-            int luck = Stats[Stat.Luck];
-
-            if (min < 0) min = 0;
-            if (min >= max) return max;
-
-            if (luck > 0)
-            {
-                if (luck >= 10) return max;
-
-                if (SEnvir.Random.Next(10) < luck) return max;
-            }
-            else if (luck < 0)
-            {
-                if (luck < -SEnvir.Random.Next(10)) return min;
-            }
-
-            return SEnvir.Random.Next(min, max + 1);
+            return GetAttackStat(Stat.MinMC, Stat.MaxMC);
         }
         public int GetSC()
         {
-            int min = Stats[Stat.MinSC];
-            int max = Stats[Stat.MaxSC];
-            int luck = Stats[Stat.Luck];
-
-            if (min < 0) min = 0;
-            if (min >= max) return max;
-
-            if (luck > 0)
-            {
-                if (luck >= 10) return max;
-
-                if (SEnvir.Random.Next(10) < luck) return max;
-            }
-            else if (luck < 0)
-            {
-                if (luck < -SEnvir.Random.Next(10)) return min;
-            }
-
-            return SEnvir.Random.Next(min, max + 1);
+            return GetAttackStat(Stat.MinSC, Stat.MaxSC);
         }
         public int GetSP()
         {
-            int min = Math.Min(Stats[Stat.MinMC], Stats[Stat.MinSC]);
-            int max = Math.Min(Stats[Stat.MaxMC], Stats[Stat.MaxSC]);
-            int luck = Stats[Stat.Luck];
+            Stat min = (Stats[Stat.MinMC] < Stats[Stat.MinSC]) ? Stat.MinMC : Stat.MinSC;
+            Stat max = (Stats[Stat.MaxMC] < Stats[Stat.MaxSC]) ? Stat.MaxMC : Stat.MaxSC;
+            return GetAttackStat(min, max);
+        }
+
+        private int GetDefenceStat(Stat minStat, Stat maxStat)
+        {
+            int min = Stats[minStat];
+            int max = Stats[maxStat];
 
             if (min < 0) min = 0;
             if (min >= max) return max;
-
-            if (luck > 0)
-            {
-                if (luck >= 10) return max;
-
-                if (SEnvir.Random.Next(10) < luck) return max;
-            }
-            else if (luck < 0)
-            {
-                if (luck < -SEnvir.Random.Next(10)) return min;
-            }
 
             return SEnvir.Random.Next(min, max + 1);
         }
+
         public int GetAC()
         {
-            int min = Stats[Stat.MinAC];
-            int max = Stats[Stat.MaxAC];
-
-            if (min < 0) min = 0;
-            if (min >= max) return max;
-
-            return SEnvir.Random.Next(min, max + 1);
+            return GetDefenceStat(Stat.MinAC, Stat.MaxAC);
         }
         public int GetMR()
         {
-            int min = Stats[Stat.MinMR];
-            int max = Stats[Stat.MaxMR];
-
-            if (min < 0) min = 0;
-            if (min >= max) return max;
-
-            return SEnvir.Random.Next(min, max + 1);
+            return GetDefenceStat(Stat.MinMR, Stat.MaxMR);
         }
     }
 

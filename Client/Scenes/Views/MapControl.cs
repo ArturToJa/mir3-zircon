@@ -364,8 +364,6 @@ namespace Client.Scenes.Views
                     }
                 }
 
-                DateTime startMapObjects = DateTime.Now;
-
                 for (int i = 0; i < Cells[y].Length; i++)
                 {
                     Cell cell = Cells[y][i];
@@ -373,18 +371,16 @@ namespace Client.Scenes.Views
                     {
                         foreach (MapObject ob in cell.Objects)
                         {
-                            if (ob != null && ob.RenderY == y)
+                            if (ob != null)
                                 ob.Draw();
                         }
                     }
                 }
- /*               foreach (MapObject ob in Objects)
-                {
-                    if (ob.RenderY == y)
-                        ob.Draw();
-                }*/
-                DateTime endMapObjects = DateTime.Now;
-                Console.WriteLine("MapObject Draw is {0} ms", (endMapObjects - startMapObjects).Milliseconds);
+                /*                foreach (MapObject ob in Objects)
+                                {
+                                    if (ob.RenderY == y)
+                                        ob.Draw();
+                                }*/
 
                 if (Config.DrawEffects)
                 {

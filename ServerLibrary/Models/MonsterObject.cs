@@ -2381,11 +2381,12 @@ namespace Server.Models
                 MinionList[i].Master = null;
 
             MinionList.Clear();
-
             DeadTime = SEnvir.Now + Config.DeadDuration;
 
             if (Drops != null)
+            {
                 DeadTime += Config.HarvestDuration;
+            }
 
             if (SpawnInfo != null)
                 SpawnInfo.AliveCount--;

@@ -15784,7 +15784,7 @@ namespace Server.Models
             decimal lifestealAmount = damage * Stats[Stat.LifeSteal] / 100M;
 
 
-            if (hasSwiftBlade)
+/*            if (hasSwiftBlade)
             {
                 lifestealAmount = Math.Min(lifestealAmount, 2000 - SwiftBladeLifeSteal);
                 SwiftBladeLifeSteal += lifestealAmount;
@@ -15800,7 +15800,7 @@ namespace Server.Models
                 lifestealAmount = Math.Min(lifestealAmount, 750 - DestructiveSurgeLifeSteal);
                 DestructiveSurgeLifeSteal += lifestealAmount;
             }
-
+*/
             if (primary || Class == MirClass.Warrior || hasFlameSplash)
                 LifeSteal += lifestealAmount;
 
@@ -15808,7 +15808,7 @@ namespace Server.Models
             {
                 int heal = (int)Math.Floor(LifeSteal);
                 LifeSteal -= heal;
-                ChangeHP(Math.Min((hasLotus ? 1500 : 750), heal));
+                ChangeHP(/*Math.Min((hasLotus ? 1500 : 750),*/ heal));
             }
 
             //  if (primary)
@@ -15941,7 +15941,7 @@ namespace Server.Models
                         break;
                     case MagicType.HellFire:
                         element = Element.Fire;
-                        power += magic.GetPower() + GetDC();
+                        power += magic.GetPower() + GetMC();
                         break;
                     case MagicType.IceBolt:
                     case MagicType.FrozenEarth:
