@@ -657,6 +657,12 @@ namespace Library.SystemModels
         GiveItemExperience,
 
         SpecialRefine,
-        Rebirth
+        Rebirth,
+
+        GiveLevels,
+        TakeLevels,
+
+        LearnSkill,
+        SetSkilllevel
     }
 }

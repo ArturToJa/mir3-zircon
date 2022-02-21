@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using Library;
 using Library.Network;
 using Library.SystemModels;
@@ -181,6 +182,52 @@ namespace Server.Models
                     case NPCActionType.Rebirth:
                         if (Globals.RebirthDataList.Count > (ob.Character.Rebirth + 1) && ob.Level >= Globals.RebirthDataList[ob.Character.Rebirth + 1].RequiredLevel)
                             ob.NPCRebirth();
+                        break;
+
+                    case NPCActionType.GiveLevels:
+                        ob.Level += action.IntParameter1;
+                        ob.LevelUp();
+                        break;
+                    case NPCActionType.TakeLevels:
+                        ob.Level -= action.IntParameter1;
+                        ob.LevelUp();
+                        break;
+                    case NPCActionType.LearnSkill:
+                        MagicInfo info = SEnvir.MagicInfoList.Binding.First(x => x.Index == action.IntParameter1);
+                        UserMagic magic;
+                        if (!ob.Magics.TryGetValue(info.Magic, out magic))
+                        {
+                            magic = SEnvir.UserMagicList.CreateNewObject();
+                            magic.Character = ob.Character;
+                            magic.Info = info;
+                            ob.Magics[info.Magic] = magic;
+
+                            ob.Enqueue(new S.NewMagic { Magic = magic.ToClientInfo() });
+
+                            ob.Connection.ReceiveChat(string.Format(ob.Connection.Language.LearnBookSuccess, magic.Info.Name), MessageType.System);
+
+                            foreach (SConnection con in ob.Connection.Observers)
+                                con.ReceiveChat(string.Format(con.Language.LearnBookSuccess, magic.Info.Name), MessageType.System);
+
+                            RefreshStats();
+                        }
+                        break;
+                    case NPCActionType.SetSkilllevel:
+                        info = SEnvir.MagicInfoList.Binding.First(x => x.Index == action.IntParameter1);
+                        if (!ob.Magics.TryGetValue(info.Magic, out magic))
+                        {
+                            magic.Level++;
+                            magic.Experience = 0;
+
+                            ob.Enqueue(new S.MagicLeveled { InfoIndex = magic.Info.Index, Level = magic.Level, Experience = magic.Experience });
+
+                            ob.Connection.ReceiveChat(string.Format(ob.Connection.Language.LearnBookSuccess, magic.Info.Name, magic.Level), MessageType.System);
+
+                            foreach (SConnection con in ob.Connection.Observers)
+                                con.ReceiveChat(string.Format(con.Language.LearnBookSuccess, magic.Info.Name, magic.Level), MessageType.System);
+
+                            RefreshStats();
+                        }
                         break;
                 }
             }
