@@ -2769,6 +2769,7 @@ namespace Server.Envir
             account.Referral = refferal;
             account.CreationIP = con.IPAddress;
             account.CreationDate = Now;
+            account.Activated = true;
 
             if (refferal != null)
             {
