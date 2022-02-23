@@ -5385,7 +5385,7 @@ namespace Server.Models
                 return;
             }
 
-            if (GroupMembers.Any(x => x.CurrentMap.Instance != null))
+            if (GroupMembers != null && GroupMembers.Any(x => x.CurrentMap.Instance != null))
             {
                 Connection.ReceiveChat(Connection.Language.NoActionOnInstance, MessageType.System);
 
