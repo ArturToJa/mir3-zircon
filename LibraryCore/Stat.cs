@@ -778,6 +778,7 @@ namespace Library
         Added,
         Refine,
         Enhancement, //Temporary Buff!?
+        NPCAdded,
         Other,
     }
 

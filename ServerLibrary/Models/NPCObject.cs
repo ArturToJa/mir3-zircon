@@ -229,6 +229,9 @@ namespace Server.Models
                             RefreshStats();
                         }
                         break;
+                    case NPCActionType.AddItemStat:
+                        ob.NPCAddItemStat(action.IntParameter1, action.StatParameter1, action.IntParameter2);
+                        break;
                 }
             }
         }

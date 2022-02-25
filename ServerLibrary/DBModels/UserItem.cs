@@ -464,24 +464,23 @@ namespace Server.DBModels
         }
         public void AddStat(Stat stat, int amount, StatSource source)
         {
+            if (amount == 0) return;
+
             foreach (UserItemStat addedStat in AddedStats)
             {
                 if (addedStat.Stat != stat || addedStat.StatSource != source) continue;
 
-
                 addedStat.Amount += amount;
-
+                addedStat.AddedCount++;
                 return;
             }
 
-            if (amount == 0) return;
-
             UserItemStat newStat = SEnvir.UserItemStatsList.CreateNewObject();
-
             newStat.StatSource = source;
             newStat.Stat = stat;
             newStat.Amount = amount;
             newStat.Item = this;
+            newStat.AddedCount = 1;
         }
 
         public ClientUserItem ToClientInfo()

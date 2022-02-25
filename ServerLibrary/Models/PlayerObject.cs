@@ -11758,6 +11758,35 @@ namespace Server.Models
             Enqueue(new S.ItemStatsRefreshed { GridType = GridType.Equipment, Slot = (int)EquipmentSlot.Weapon, NewStats = new Stats(weapon.Stats) });
         }
 
+        public void NPCAddItemStat(int WhatWeapon, Stat stat, int amount)
+        {
+            UserItem item = Equipment[WhatWeapon];
+            bool canStatBeAdded = true;
+            if (item == null) return;
+            foreach (UserItemStat addedStat in item.AddedStats)
+            {
+                if (addedStat.Stat != stat || addedStat.StatSource != StatSource.NPCAdded) continue;
+
+                canStatBeAdded = addedStat.AddedCount < 15;
+                break;
+            }
+            if(canStatBeAdded)
+            {
+                item.AddStat(stat, amount, StatSource.NPCAdded);
+
+                Connection.ReceiveChat(Connection.Language.NPCRefineSuccess, MessageType.System);
+
+                foreach (SConnection con in Connection.Observers)
+                    con.ReceiveChat(con.Language.NPCRefineSuccess, MessageType.System);
+
+                item.StatsChanged();
+                SendShapeUpdate();
+                RefreshStats();
+
+                Enqueue(new S.ItemStatsRefreshed { GridType = GridType.Equipment, Slot = WhatWeapon, NewStats = new Stats(item.Stats) });
+            }
+        }
+
         public void NPCSpecialRefine(Stat stat, int amount)
         {
             UserItem weapon = Equipment[(int)EquipmentSlot.Weapon];

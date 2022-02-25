@@ -67,6 +67,21 @@ namespace Server.DBModels
         }
         private StatSource _StatSource;
 
+        public int AddedCount
+        {
+            get { return _AddedCount; }
+            set
+            {
+                if (_AddedCount == value) return;
+
+                var oldValue = _AddedCount;
+                _AddedCount = value;
+
+                OnChanged(oldValue, value, "Amount");
+            }
+        }
+        private int _AddedCount;
+
         protected override void OnDeleted()
         {
             Item = null;
