@@ -104,6 +104,7 @@ namespace Server.Envir
         public static TimeSpan PvPCurseDuration { get; set; } = TimeSpan.FromMinutes(60);
         public static int PvPCurseRate { get; set; } = 4;
         public static TimeSpan AutoReviveDelay { get; set; } = TimeSpan.FromMinutes(10);
+        public static int MaxHermitPoints { get; set; } = 2000;
 
 
         [ConfigSection("Monsters")]
@@ -126,6 +127,7 @@ namespace Server.Envir
         public static int StrengthAddRate { get; set; } = 10;
         public static int StrengthLossRate { get; set; } = 20;
         public static bool DropVisibleOtherPlayers { get; set; } = false;
+        public static int MaxItemStatBonus { get; set; } = 15;
 
         [ConfigSection("Rates")]
         public static int ExperienceRate { get; set; } = 0;

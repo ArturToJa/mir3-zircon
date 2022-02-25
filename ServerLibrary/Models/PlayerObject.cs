@@ -858,7 +858,7 @@ namespace Server.Models
                 con.Enqueue(new S.RefineList { List = refines });
 
 
-            con.Enqueue(new S.StatsUpdate { Stats = Stats, HermitStats = Character.HermitStats, HermitPoints = Math.Max(0, Level - 39 - Character.SpentPoints) });
+            con.Enqueue(new S.StatsUpdate { Stats = Stats, HermitStats = Character.HermitStats, HermitPoints = Math.Min(Config.MaxHermitPoints - Character.SpentPoints, Math.Max(0, Level - 39 - Character.SpentPoints)) });
 
             con.Enqueue(new S.WeightUpdate { BagWeight = BagWeight, WearWeight = WearWeight, HandWeight = HandWeight });
 
@@ -2702,7 +2702,7 @@ namespace Server.Models
                 Stats[BonusStats.Key] += BonusStats.Value;
             }
 
-            Enqueue(new S.StatsUpdate { Stats = Stats, HermitStats = Character.HermitStats, HermitPoints = Math.Max(0, Level - 39 - Character.SpentPoints) });
+            Enqueue(new S.StatsUpdate { Stats = Stats, HermitStats = Character.HermitStats, HermitPoints = Math.Min(Config.MaxHermitPoints - Character.SpentPoints, Math.Max(0, Level - 39 - Character.SpentPoints)) });
 
             S.DataObjectMaxHealthMana p = new S.DataObjectMaxHealthMana { ObjectID = ObjectID, MaxHealth = Stats[Stat.Health], MaxMana = Stats[Stat.Mana] };
 
@@ -2836,14 +2836,14 @@ namespace Server.Models
         }
         public void AssignHermit(Stat stat)
         {
-            if (Level - 39 - Character.SpentPoints <= 0) return;
+            if (Math.Min(Config.MaxHermitPoints - Character.SpentPoints, Level - 39 - Character.SpentPoints) <= 0) return;
 
             switch (stat)
             {
                 case Stat.MaxDC:
                 case Stat.MaxMC:
                 case Stat.MaxSC:
-                    Character.HermitStats[stat] += 2 + Character.SpentPoints / 10;
+                    Character.HermitStats[stat] += 2;
                     break;
                 case Stat.MaxAC:
                     Character.HermitStats[Stat.MinAC] += 2;
@@ -2854,16 +2854,16 @@ namespace Server.Models
                     Character.HermitStats[Stat.MaxMR] += 2;
                     break;
                 case Stat.Health:
-                    Character.HermitStats[stat] += 10 + (Character.SpentPoints / 10) * 10;
+                    Character.HermitStats[stat] += 20;
                     break;
                 case Stat.Mana:
-                    Character.HermitStats[stat] += 15 + (Character.SpentPoints / 10) * 15;
+                    Character.HermitStats[stat] += 30;
                     break;
                 case Stat.WeaponElement:
 
                     if (Character.SpentPoints >= 20) return;
 
-                    int count = 2 + Character.SpentPoints / 10;
+                    int count = 2;
 
                     List<Stat> Elements = new List<Stat>();
 
@@ -11767,7 +11767,7 @@ namespace Server.Models
             {
                 if (addedStat.Stat != stat || addedStat.StatSource != StatSource.NPCAdded) continue;
 
-                canStatBeAdded = addedStat.AddedCount < 15;
+                canStatBeAdded = addedStat.AddedCount < Config.MaxItemStatBonus;
                 break;
             }
             if(canStatBeAdded)
