@@ -7417,29 +7417,32 @@ namespace Server.Models
                 if (count == 0) return;
             }
 
-            for (int i = 0; i < Companion.Inventory.Length; i++)
+            if(Companion != null)
             {
-                UserItem item = Companion.Inventory[i];
-
-                if (item == null || item.Info != info) continue;
-
-                if (item.Count > count)
+                for (int i = 0; i < Companion.Inventory.Length; i++)
                 {
-                    item.Count -= count;
+                    UserItem item = Companion.Inventory[i];
 
-                    Enqueue(new S.ItemChanged { Link = new CellLinkInfo { GridType = GridType.CompanionInventory, Slot = i, Count = item.Count }, Success = true });
-                    return;
+                    if (item == null || item.Info != info) continue;
+
+                    if (item.Count > count)
+                    {
+                        item.Count -= count;
+
+                        Enqueue(new S.ItemChanged { Link = new CellLinkInfo { GridType = GridType.CompanionInventory, Slot = i, Count = item.Count }, Success = true });
+                        return;
+                    }
+
+                    count -= item.Count;
+
+                    RemoveItem(item);
+                    Companion.Inventory[i] = null;
+                    item.Delete();
+
+                    Enqueue(new S.ItemChanged { Link = new CellLinkInfo { GridType = GridType.CompanionInventory, Slot = i }, Success = true });
+
+                    if (count == 0) return;
                 }
-
-                count -= item.Count;
-
-                RemoveItem(item);
-                Companion.Inventory[i] = null;
-                item.Delete();
-
-                Enqueue(new S.ItemChanged { Link = new CellLinkInfo { GridType = GridType.CompanionInventory, Slot = i }, Success = true });
-
-                if (count == 0) return;
             }
 
             throw new Exception(string.Format("Unable to Take {0}x{1} from {2}", info.ItemName, count, Name));
