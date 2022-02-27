@@ -9849,31 +9849,8 @@ namespace Server.Models
 
             if (!ParseLinks(p.Target)) return;
 
-
             UserItem[] targetArray = null;
-
-            switch (p.Target.GridType)
-            {
-                case GridType.Inventory:
-                    targetArray = Inventory;
-                    break;
-                case GridType.Equipment:
-                    targetArray = Equipment;
-                    break;
-                case GridType.Storage:
-                    targetArray = Storage;
-                    break;
-                case GridType.CompanionInventory:
-                    if (Companion == null) return;
-
-                    targetArray = Companion.Inventory;
-                    break;
-                default:
-                    return;
-            }
-
-            if (p.Target.Slot < 0 || p.Target.Slot >= targetArray.Length) return;
-            UserItem targetItem = targetArray[p.Target.Slot];
+            UserItem targetItem = FindUserItem(p.Target, out targetArray);
 
             if (targetItem == null || p.Target.Count > targetItem.Count) return; //Already Leveled.
             if ((targetItem.Flags & UserItemFlags.Refinable) != UserItemFlags.Refinable) return;
@@ -10160,14 +10137,21 @@ namespace Server.Models
             if (gemItem == null || p.Target.Count > gemItem.Count) return; //Already Leveled.
             if (gemItem.Info.Effect != ItemEffect.UpgradeGem || (gemItem.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return;
 
-            S.ItemStatsChanged result = new S.ItemStatsChanged { GridType = p.Target.GridType, Slot = p.Target.Slot, NewStats = new Stats() };
-            Enqueue(result);
+            S.ItemsChanged gemResult = new S.ItemsChanged { Links = new List<CellLinkInfo>(), Success = true };
+            S.ItemStatsChanged targetResult = new S.ItemStatsChanged { GridType = p.Target.GridType, Slot = p.Target.Slot, NewStats = new Stats() };
+            Enqueue(gemResult);
+            Enqueue(targetResult);
 
             foreach (KeyValuePair<Stat, int> stat in gemItem.Info.Stats.Values)
             {
                 targetItem.AddStatLimited(stat.Key, stat.Value);
-                result.NewStats[stat.Key] += stat.Value;
+                targetResult.NewStats[stat.Key] += stat.Value;
             }
+            gemResult.Links.Add(p.Gem);
+
+            RemoveItem(gemItem);
+            targetArray[p.Gem.Slot] = null;
+            gemItem.Delete();
 
             targetItem.StatsChanged();
             RefreshStats();
