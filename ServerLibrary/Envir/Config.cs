@@ -128,6 +128,7 @@ namespace Server.Envir
         public static int StrengthLossRate { get; set; } = 20;
         public static bool DropVisibleOtherPlayers { get; set; } = false;
         public static int MaxItemStatBonus { get; set; } = 15;
+        public static bool AutoPickGold { get; set; } = false;
 
         [ConfigSection("Rates")]
         public static int ExperienceRate { get; set; } = 0;

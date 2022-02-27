@@ -2742,7 +2742,12 @@ namespace Server.Models
                     amount = (long)(userDrop.Progress - userDrop.DropCount);
 
                 userDrop.DropCount += amount;
-
+                if(Config.AutoPickGold && drop.Item.Effect == ItemEffect.Gold)
+                {
+                    owner.Gold += amount;
+                    owner.GoldChanged();
+                    continue;
+                }
                 result = true;
                 while (amount > 0)
                 {
