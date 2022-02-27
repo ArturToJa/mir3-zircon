@@ -168,6 +168,8 @@ namespace Library
         AccessoryRefineCombTarget,
         AccessoryRefineCombItems,
         PartsStorage,
+        EquipmentUpgradeGemTarget,
+        EquipmentUpgradeGemItems,
     }
 
     public enum BuffType
@@ -435,6 +437,7 @@ namespace Library
         AccessoryReset,
         WeaponCraft,
         AccessoryRefine,
+        UpgradeGem
     }
 
     public enum MagicSchool
@@ -1138,6 +1141,7 @@ namespace Library
         StatExtractor = 90,
         SpiritBlade = 91,
         RefineExtractor = 92,
+        UpgradeGem = 93,
     }
 
     [Flags]
@@ -1153,7 +1157,8 @@ namespace Library
         QuestItem = 32,
         GameMaster = 64,
         Marriage = 128,
-        NonRefinable = 256
+        NonRefinable = 256,
+        NonUpgradeable = 512,
     }
     
     public enum HorseType : byte

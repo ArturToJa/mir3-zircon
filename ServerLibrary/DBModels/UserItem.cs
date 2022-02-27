@@ -483,6 +483,23 @@ namespace Server.DBModels
             newStat.AddedCount = 1;
         }
 
+        public void AddStatLimited(Stat stat, int amount)
+        {
+            if (amount == 0) return;
+
+            int totalAddedStats = 0;
+            foreach (UserItemStat addedStat in AddedStats)
+            {
+                if (addedStat.StatSource != StatSource.NPCAdded) continue;
+                totalAddedStats += addedStat.AddedCount;
+            }
+            if(totalAddedStats + 1 >= Config.MaxItemStatBonus)
+            {
+                Flags |= UserItemFlags.NonUpgradeable;
+            }
+            AddStat(stat, amount, StatSource.NPCAdded);
+        }
+
         public ClientUserItem ToClientInfo()
         {
             return new ClientUserItem

@@ -586,6 +586,11 @@ namespace Server.Envir
             Player.NPCAccessoryUpgrade(p);
         }
 
+        public void Process(C.NPCUpgradeGem p)
+        {
+            if (Stage != GameStage.Game) return;
+            Player.NPCUpgradeGem(p);
+        }
 
         public void Process(C.MagicKey p)
         {

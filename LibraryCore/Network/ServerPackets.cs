@@ -638,6 +638,11 @@ namespace Library.Network.ServerPackets
         public bool Success { get; set; }
     }
 
+    public sealed class NPCUpgradeGem : Packet
+    {
+        public CellLinkInfo Target { get; set; }
+        public CellLinkInfo Gem { get; set; }
+    }
 
     public sealed class NPCRefineRetrieve : Packet
     {

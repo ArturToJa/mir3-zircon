@@ -110,6 +110,9 @@ namespace Client.Scenes.Views
             if (GameScene.Game.NPCAccessoryRefineBox != null && !IsVisible)
                 GameScene.Game.NPCAccessoryRefineBox.Visible = false;
 
+            if (GameScene.Game.NPCUpgradeGemBox != null && !IsVisible)
+                GameScene.Game.NPCUpgradeGemBox.Visible = false;
+            
             if (Opened)
             {
                 GameScene.Game.NPCID = 0;
@@ -191,6 +194,7 @@ namespace Client.Scenes.Views
             GameScene.Game.NPCMasterRefineBox.Visible = false;
             GameScene.Game.NPCAccessoryResetBox.Visible = false;
             GameScene.Game.NPCWeaponCraftBox.Visible = false;
+            GameScene.Game.NPCUpgradeGemBox.Visible = false;
 
             switch (info.Page.DialogType)
             {
@@ -257,6 +261,10 @@ namespace Client.Scenes.Views
                 case NPCDialogType.AccessoryRefine:
                     GameScene.Game.NPCAccessoryRefineBox.Visible = true;
                     GameScene.Game.NPCAccessoryRefineBox.Location = new Point(Size.Width - GameScene.Game.NPCAccessoryRefineBox.Size.Width, Size.Height);
+                    break;
+                case NPCDialogType.UpgradeGem:
+                    GameScene.Game.NPCUpgradeGemBox.Visible = true;
+                    GameScene.Game.NPCUpgradeGemBox.Location = new Point(Size.Width - GameScene.Game.NPCUpgradeGemBox.Size.Width, Size.Height);
                     break;
             }
         }
@@ -6150,6 +6158,117 @@ namespace Client.Scenes.Views
                 }
             }
 
+        }
+
+        #endregion
+    }
+
+    public sealed class NPCUpgradeGemDialog : DXWindow
+    {
+        #region Properties
+        public DXItemGrid TargetCell;
+        public DXItemGrid Grid;
+        public DXButton UpgradeButton;
+        public override void OnIsVisibleChanged(bool oValue, bool nValue)
+        {
+            base.OnIsVisibleChanged(oValue, nValue);
+
+            if (GameScene.Game.InventoryBox == null) return;
+
+            if (IsVisible)
+                GameScene.Game.InventoryBox.Visible = true;
+
+            if (!IsVisible)
+            {
+                TargetCell.ClearLinks();
+                Grid.ClearLinks();
+            }
+        }
+
+        public override WindowType Type => WindowType.None;
+        public override bool CustomSize => false;
+        public override bool AutomaticVisiblity => false;
+
+        #endregion
+
+        public NPCUpgradeGemDialog()
+        {
+            TitleLabel.Text = "Upgrade Gem";
+
+            DXLabel label = new DXLabel
+            {
+                Text = "Item to upgrade",
+                Parent = this,
+                Font = new Font(Config.FontName, CEnvir.FontSize(8F), FontStyle.Underline)
+            };
+
+            Movable = false;
+            SetClientSize(new Size(label.Size.Width + 50, label.Size.Height + 150));
+            label.Location = new Point(ClientArea.X + (ClientArea.Width - label.Size.Width) / 2, ClientArea.Y);
+
+            TargetCell = new DXItemGrid
+            {
+                GridSize = new Size(1, 1),
+                Parent = this,
+                GridType = GridType.EquipmentUpgradeGemTarget,
+                Linked = true,
+            };
+            TargetCell.Location = new Point(label.Location.X + (label.Size.Width - TargetCell.Size.Width) / 2, label.Location.Y + label.Size.Height + 5);
+
+            label = new DXLabel
+            {
+                Text = "Gem",
+                Parent = this,
+                Font = new Font(Config.FontName, CEnvir.FontSize(8F), FontStyle.Underline)
+            };
+            label.Location = new Point(TargetCell.Location.X + (TargetCell.Size.Width - label.Size.Width) / 2, TargetCell.Location.Y + 60);
+
+            Grid = new DXItemGrid
+            {
+                GridSize = new Size(1, 1),
+                Parent = this,
+                GridType = GridType.EquipmentUpgradeGemItems,
+                Linked = true
+            };
+            Grid.Location = new Point(label.Location.X + (label.Size.Width - Grid.Size.Width) / 2, label.Location.Y + label.Size.Height + 5);
+
+            UpgradeButton = new DXButton
+            {
+                Label = { Text = "Upgrade" },
+                ButtonType = ButtonType.SmallButton,
+                Parent = this,
+                Size = new Size(79, SmallButtonHeight),
+                Enabled = false,
+            };
+            UpgradeButton.Location = new Point(Grid.Location.X + (Grid.Size.Width - UpgradeButton.Size.Width) / 2, Grid.Location.Y + Grid.Size.Height + 5);
+            UpgradeButton.MouseClick += (o, e) =>
+            {
+                if (GameScene.Game.Observer) return;
+
+                DXItemCell target = TargetCell.Grid[0];
+                DXItemCell gem = Grid.Grid[0];
+
+                if (target.Link == null) return;
+                if (gem.Link == null) return;
+
+                CellLinkInfo targetLink = new CellLinkInfo { Count = target.LinkedCount, GridType = target.Link.GridType, Slot = target.Link.Slot };
+                target.Link.Locked = true;
+                target.Link = null;
+
+                CellLinkInfo gemLink = new CellLinkInfo { Count = gem.LinkedCount, GridType = gem.Link.GridType, Slot = gem.Link.Slot };
+                gem.Link.Locked = true;
+                gem.Link = null;
+
+                CEnvir.Enqueue(new C.NPCUpgradeGem { Target = targetLink, Gem = gemLink});
+            };
+            Grid.Grid[0].LinkChanged += (o, e) => ShouldEnableButton();
+            TargetCell.Grid[0].LinkChanged += (o, e) => ShouldEnableButton();
+        }
+
+        #region Methods
+        private void ShouldEnableButton()
+        {
+            UpgradeButton.Enabled = Grid.Grid[0].Item != null && TargetCell.Grid[0].Item != null;
         }
 
         #endregion

@@ -280,6 +280,12 @@ namespace Library.Network.ClientPackets
         public RefineType RefineType { get; set; }
     }
 
+    public sealed class NPCUpgradeGem : Packet
+    {
+        public CellLinkInfo Target { get; set; }
+        public CellLinkInfo Gem { get; set; }
+    }
+
     public sealed class MagicKey : Packet
     {
         public MagicType Magic { get; set; }

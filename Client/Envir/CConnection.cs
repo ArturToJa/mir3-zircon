@@ -2875,35 +2875,44 @@ namespace Client.Envir
 
             foreach (CellLinkInfo cellLinkInfo in p.Links)
             {
-                DXItemCell[] grid;
-
-                switch (cellLinkInfo.GridType)
-                {
-                    case GridType.Inventory:
-                        grid = GameScene.Game.InventoryBox.Grid.Grid;
-                        break;
-                    case GridType.Equipment:
-                        grid = GameScene.Game.CharacterBox.Grid;
-                        break;
-                    case GridType.Storage:
-                        grid = GameScene.Game.StorageBox.Grid.Grid;
-                        break;
-                    case GridType.PartsStorage:
-                        grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                        break;
-                    case GridType.CompanionInventory:
-                        grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                        break;
-                    case GridType.CompanionEquipment:
-                        grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                DXItemCell fromCell = grid[cellLinkInfo.Slot];
-                fromCell.Locked = false;
+                UnlockItemFromCell(cellLinkInfo);
             }
+        }
+
+        public void Process(S.NPCUpgradeGem p)
+        {
+            UnlockItemFromCell(p.Target);
+            UnlockItemFromCell(p.Gem);
+        }
+
+        private void UnlockItemFromCell(CellLinkInfo info)
+        {
+            DXItemCell[] grid;
+            switch (info.GridType)
+            {
+                case GridType.Inventory:
+                    grid = GameScene.Game.InventoryBox.Grid.Grid;
+                    break;
+                case GridType.Equipment:
+                    grid = GameScene.Game.CharacterBox.Grid;
+                    break;
+                case GridType.Storage:
+                    grid = GameScene.Game.StorageBox.Grid.Grid;
+                    break;
+                case GridType.PartsStorage:
+                    grid = GameScene.Game.StorageBox.PartGrid.Grid;
+                    break;
+                case GridType.CompanionInventory:
+                    grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
+                    break;
+                case GridType.CompanionEquipment:
+                    grid = GameScene.Game.CompanionBox.EquipmentGrid;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            DXItemCell fromCell = grid[info.Slot];
+            fromCell.Locked = false;
         }
 
         public void Process(S.GroupSwitch p)
@@ -3302,8 +3311,6 @@ namespace Client.Envir
         }
         public void Process(S.TradeAddItem p)
         {
-
-
             DXItemCell fromCell;
 
             switch (p.Cell.GridType)

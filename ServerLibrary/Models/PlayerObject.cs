@@ -9735,31 +9735,8 @@ namespace Server.Models
 
             if (!ParseLinks(p.Links, 0, 100) || !ParseLinks(p.Target)) return;
 
-
             UserItem[] targetArray = null;
-
-            switch (p.Target.GridType)
-            {
-                case GridType.Inventory:
-                    targetArray = Inventory;
-                    break;
-                case GridType.Equipment:
-                    targetArray = Equipment;
-                    break;
-                case GridType.Storage:
-                    targetArray = Storage;
-                    break;
-                case GridType.CompanionInventory:
-                    if (Companion == null) return;
-
-                    targetArray = Companion.Inventory;
-                    break;
-                default:
-                    return;
-            }
-
-            if (p.Target.Slot < 0 || p.Target.Slot >= targetArray.Length) return;
-            UserItem targetItem = targetArray[p.Target.Slot];
+            UserItem targetItem = FindUserItem(p.Target, out targetArray);
 
             if (targetItem == null || p.Target.Count > targetItem.Count) return; //Already Leveled.
             if ((targetItem.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return; //No harm in checking
@@ -9784,28 +9761,8 @@ namespace Server.Models
             {
                 if ((targetItem.Flags & UserItemFlags.Refinable) == UserItemFlags.Refinable) break;
 
-
                 UserItem[] fromArray = null;
-
-                switch (link.GridType)
-                {
-                    case GridType.Inventory:
-                        fromArray = Inventory;
-                        break;
-                    case GridType.Storage:
-                        fromArray = Storage;
-                        break;
-                    case GridType.CompanionInventory:
-                        if (Companion == null) continue;
-
-                        fromArray = Companion.Inventory;
-                        break;
-                    default:
-                        continue;
-                }
-
-                if (link.Slot < 0 || link.Slot >= fromArray.Length) continue;
-                UserItem item = fromArray[link.Slot];
+                UserItem item = FindUserItem(p.Target, out fromArray);
 
                 if (item == null || link.Count > item.Count || (item.Flags & UserItemFlags.Locked) == UserItemFlags.Locked) continue;
                 if ((item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) continue;
@@ -9814,7 +9771,6 @@ namespace Server.Models
                 if ((item.Flags & UserItemFlags.Bound) == UserItemFlags.Bound && (targetItem.Flags & UserItemFlags.Bound) != UserItemFlags.Bound) continue;
 
                 long cost = Globals.AccessoryLevelCost * link.Count;
-
 
                 if (Gold < cost)
                 {
@@ -10173,6 +10129,48 @@ namespace Server.Models
             }
 
             Enqueue(new S.ItemExperience { Target = p.Cell, Experience = targetItem.Experience, Level = targetItem.Level, Flags = targetItem.Flags });
+        }
+
+        public void NPCUpgradeGem(C.NPCUpgradeGem p)
+        {
+            Enqueue(new S.NPCUpgradeGem { Target = p.Target, Gem = p.Gem });
+
+            if (Dead || NPC == null || NPCPage == null || NPCPage.DialogType != NPCDialogType.UpgradeGem) return;
+            if (!ParseLinks(p.Gem) || !ParseLinks(p.Target)) return;
+
+            UserItem[] targetArray = null;
+            UserItem targetItem = FindUserItem(p.Target, out targetArray);
+            if (targetItem == null || p.Target.Count > targetItem.Count) return; //Already Leveled.
+            if ((targetItem.Flags & UserItemFlags.NonUpgradeable) == UserItemFlags.NonUpgradeable) return; //No harm in checking
+
+            switch (targetItem.Info.ItemType)
+            {
+                case ItemType.Ring:
+                case ItemType.Bracelet:
+                case ItemType.Necklace:
+                case ItemType.Weapon:
+                case ItemType.Armour:
+                case ItemType.Helmet:
+                case ItemType.Shoes:
+                case ItemType.Shield:
+                    break;
+                default: return;
+            }
+            UserItem gemItem = FindUserItem(p.Gem, out targetArray);
+            if (gemItem == null || p.Target.Count > gemItem.Count) return; //Already Leveled.
+            if (gemItem.Info.Effect != ItemEffect.UpgradeGem || (gemItem.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return;
+
+            S.ItemStatsChanged result = new S.ItemStatsChanged { GridType = p.Target.GridType, Slot = p.Target.Slot, NewStats = new Stats() };
+            Enqueue(result);
+
+            foreach (KeyValuePair<Stat, int> stat in gemItem.Info.Stats.Values)
+            {
+                targetItem.AddStatLimited(stat.Key, stat.Value);
+                result.NewStats[stat.Key] += stat.Value;
+            }
+
+            targetItem.StatsChanged();
+            RefreshStats();
         }
 
         public void NPCRepair(C.NPCRepair p)
@@ -11256,6 +11254,34 @@ namespace Server.Models
             AdjustRebirth(Character.Rebirth + 1);
         }
 
+        private UserItem FindUserItem(CellLinkInfo linkInfo, out UserItem[] targetArray)
+        {
+            targetArray = null;
+
+            switch (linkInfo.GridType)
+            {
+                case GridType.Inventory:
+                    targetArray = Inventory;
+                    break;
+                case GridType.Equipment:
+                    targetArray = Equipment;
+                    break;
+                case GridType.Storage:
+                    targetArray = Storage;
+                    break;
+                case GridType.CompanionInventory:
+                    if (Companion == null) return null;
+
+                    targetArray = Companion.Inventory;
+                    break;
+                default:
+                    return null;
+            }
+
+            if (linkInfo.Slot < 0 || linkInfo.Slot >= targetArray.Length) return null;
+            return targetArray[linkInfo.Slot];
+        }
+
         public void AdjustRebirth(int rebirth)
         {
             Level -= Globals.RebirthDataList[rebirth].LevelLoss;
@@ -11764,18 +11790,11 @@ namespace Server.Models
         public void NPCAddItemStat(int WhatWeapon, Stat stat, int amount)
         {
             UserItem item = Equipment[WhatWeapon];
-            bool canStatBeAdded = true;
             if (item == null) return;
-            foreach (UserItemStat addedStat in item.AddedStats)
-            {
-                if (addedStat.Stat != stat || addedStat.StatSource != StatSource.NPCAdded) continue;
 
-                canStatBeAdded = addedStat.AddedCount < Config.MaxItemStatBonus;
-                break;
-            }
-            if(canStatBeAdded)
+            if ((item.Flags & UserItemFlags.NonUpgradeable) == UserItemFlags.NonUpgradeable)
             {
-                item.AddStat(stat, amount, StatSource.NPCAdded);
+                item.AddStatLimited(stat, amount);
 
                 Connection.ReceiveChat(Connection.Language.NPCRefineSuccess, MessageType.System);
 

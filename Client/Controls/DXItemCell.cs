@@ -1417,6 +1417,30 @@ namespace Client.Controls
                         if (!Item.AddedStats.Compare(GameScene.Game.NPCAccessoryRefineBox.TargetCell.Grid[0].Link?.Item?.AddedStats)) return false;
                     }
                     break;
+                case GridType.EquipmentUpgradeGemTarget:
+                    if (GridType != GridType.Inventory && GridType != GridType.Equipment && GridType != GridType.CompanionInventory && GridType != GridType.Storage) return false;
+
+                    switch (Item.Info.ItemType)
+                    {
+                        case ItemType.Necklace:
+                        case ItemType.Bracelet:
+                        case ItemType.Ring:
+                        case ItemType.Shoes:
+                        case ItemType.Armour:
+                        case ItemType.Weapon:
+                        case ItemType.Helmet:
+                        case ItemType.Shield:
+                            break;
+                        default:
+                            return false;
+                    }
+
+                    if ((Item.Flags & UserItemFlags.NonUpgradeable) == UserItemFlags.NonUpgradeable) return false;
+                    break;
+                case GridType.EquipmentUpgradeGemItems:
+                    if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
+                    if (Item.Info.Effect != ItemEffect.UpgradeGem || (Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
+                    break;
             }
 
             return true;
@@ -1889,6 +1913,18 @@ namespace Client.Controls
 
                                 return;
                             }
+                            if (GameScene.Game.NPCUpgradeGemBox.IsVisible)
+                            {
+                                if (GameScene.Game.NPCUpgradeGemBox.TargetCell.Grid[0].Link == null)
+                                {
+                                    if (!MoveItem(GameScene.Game.NPCUpgradeGemBox.TargetCell))
+                                        GameScene.Game.ReceiveChat($"Unable to Upgrade {Item.Info.ItemName}.", MessageType.System);
+                                }
+                                else if (!MoveItem(GameScene.Game.NPCUpgradeGemBox.Grid))
+                                    GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to upgrade item.", MessageType.System);
+
+                                return;
+                            }
 
                             if (GameScene.Game.NPCRefineBox.IsVisible)
                             {
@@ -2093,6 +2129,18 @@ namespace Client.Controls
                             {
                                 if (!MoveItem(GameScene.Game.NPCAccessoryResetBox.AccessoryGrid))
                                     GameScene.Game.ReceiveChat($"Unable to Reset {Item.Info.ItemName}.", MessageType.System);
+
+                                return;
+                            }
+                            if (GameScene.Game.NPCUpgradeGemBox.IsVisible)
+                            {
+                                if (GameScene.Game.NPCUpgradeGemBox.TargetCell.Grid[0].Link == null)
+                                {
+                                    if (!MoveItem(GameScene.Game.NPCUpgradeGemBox.TargetCell))
+                                        GameScene.Game.ReceiveChat($"Unable to Upgrade {Item.Info.ItemName}.", MessageType.System);
+                                }
+                                else if (!MoveItem(GameScene.Game.NPCUpgradeGemBox.Grid))
+                                    GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to upgrade item.", MessageType.System);
 
                                 return;
                             }
