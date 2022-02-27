@@ -1549,7 +1549,7 @@ namespace Server.Models
                         }
 
                         if (player == null) return;
-
+                        player.ExperienceIndex = -1;
                         player.Level = value;
                         player.LevelUp();
                         break;
@@ -2728,7 +2728,6 @@ namespace Server.Models
             {
                 StartIndex = ExperienceIndex + 1;
             }
-
             for (int i = StartIndex; i < Globals.ExperienceList.Count; i++)
             {
                 Globals.ExperienceData ExpData = Globals.ExperienceList[i];

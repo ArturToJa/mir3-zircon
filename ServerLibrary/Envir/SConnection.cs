@@ -753,7 +753,7 @@ namespace Server.Envir
                 player = SEnvir.GetPlayerByCharacter(p.Name);
             }
             if (player == null) return;
-
+            player.ExperienceIndex = -1;
             player.Level = p.Level;
             player.LevelUp();
         }
