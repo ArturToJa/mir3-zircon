@@ -18456,54 +18456,54 @@ namespace Server.Models
 
             Stats buffStats = new Stats
             {
-                [Stat.MaxMR] = 5 + magic.Level
+                [Stat.MaxMR] = 5 + (ob.Level / 8)
             };
 
             if (stats[Stat.FireAffinity] > 0)
             {
-                buffStats[Stat.FireResistance] = 1;
+                buffStats[Stat.FireResistance] = 6;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
 
             if (stats[Stat.IceAffinity] > 0)
             {
-                buffStats[Stat.IceResistance] = 1;
+                buffStats[Stat.IceResistance] = 6;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
 
             if (stats[Stat.LightningAffinity] > 0)
             {
-                buffStats[Stat.LightningResistance] = 1;
+                buffStats[Stat.LightningResistance] = 6;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
 
             if (stats[Stat.WindAffinity] > 0)
             {
-                buffStats[Stat.WindResistance] = 1;
+                buffStats[Stat.WindResistance] = 6;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
 
             if (stats[Stat.HolyAffinity] > 0)
             {
-                buffStats[Stat.HolyResistance] = 1;
+                buffStats[Stat.HolyResistance] = 6;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
 
             if (stats[Stat.DarkAffinity] > 0)
             {
-                buffStats[Stat.DarkResistance] = 1;
+                buffStats[Stat.DarkResistance] = 6;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
 
             if (stats[Stat.PhantomAffinity] > 0)
             {
-                buffStats[Stat.PhantomResistance] = 1;
+                buffStats[Stat.PhantomResistance] = 6;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
@@ -18519,7 +18519,7 @@ namespace Server.Models
 
             Stats buffStats = new Stats
             {
-                [Stat.MaxAC] = 5 + magic.Level,
+                [Stat.MaxAC] = 5 + (ob.Level / 8),
                 [Stat.PhysicalResistance] = 1,
             };
 
@@ -18534,55 +18534,55 @@ namespace Server.Models
 
             Stats buffStats = new Stats
             {
-                [Stat.MaxMC] = 5 + magic.Level,
-                [Stat.MaxSC] = 5 + magic.Level
+                [Stat.MaxMC] = 5 + (ob.Level / 8),
+                [Stat.MaxSC] = 5 + (ob.Level / 8)
             };
 
             if (stats[Stat.FireAffinity] > 0)
             {
-                buffStats[Stat.FireAttack] = 5 + magic.Level;
+                buffStats[Stat.FireAttack] = 5 + (ob.Level / 8);
                 buffStats[Stat.MaxMC] = 0;
                 buffStats[Stat.MaxSC] = 0;
             }
 
             if (stats[Stat.IceAffinity] > 0)
             {
-                buffStats[Stat.IceAttack] = 5 + magic.Level;
+                buffStats[Stat.IceAttack] = 5 + (ob.Level / 8);
                 buffStats[Stat.MaxMC] = 0;
                 buffStats[Stat.MaxSC] = 0;
             }
 
             if (stats[Stat.LightningAffinity] > 0)
             {
-                buffStats[Stat.LightningAttack] = 5 + magic.Level;
+                buffStats[Stat.LightningAttack] = 5 + (ob.Level / 8);
                 buffStats[Stat.MaxMC] = 0;
                 buffStats[Stat.MaxSC] = 0;
             }
 
             if (stats[Stat.WindAffinity] > 0)
             {
-                buffStats[Stat.WindAttack] = 5 + magic.Level;
+                buffStats[Stat.WindAttack] = 5 + (ob.Level / 8);
                 buffStats[Stat.MaxMC] = 0;
                 buffStats[Stat.MaxSC] = 0;
             }
 
             if (stats[Stat.HolyAffinity] > 0)
             {
-                buffStats[Stat.HolyAttack] = 5 + magic.Level;
+                buffStats[Stat.HolyAttack] = 5 + (ob.Level / 8);
                 buffStats[Stat.MaxMC] = 0;
                 buffStats[Stat.MaxSC] = 0;
             }
 
             if (stats[Stat.DarkAffinity] > 0)
             {
-                buffStats[Stat.DarkAttack] = 5 + magic.Level;
+                buffStats[Stat.DarkAttack] = 5 + (ob.Level / 8);
                 buffStats[Stat.MaxMC] = 0;
                 buffStats[Stat.MaxSC] = 0;
             }
 
             if (stats[Stat.PhantomAffinity] > 0)
             {
-                buffStats[Stat.PhantomAttack] = 5 + magic.Level;
+                buffStats[Stat.PhantomAttack] = 5 + (ob.Level / 8);
                 buffStats[Stat.MaxMC] = 0;
                 buffStats[Stat.MaxSC] = 0;
             }
@@ -18598,7 +18598,7 @@ namespace Server.Models
 
             Stats buffStats = new Stats
             {
-                [Stat.MaxDC] = 5 + magic.Level
+                [Stat.MaxDC] = 5 + (ob.Level / 8)
             };
 
             ob.BuffAdd(BuffType.BloodLust, TimeSpan.FromSeconds((magic.GetPower() + GetSC() * 2)), buffStats, true, false, TimeSpan.Zero);

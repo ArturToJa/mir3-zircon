@@ -192,7 +192,6 @@ namespace Server.Models
         {
             PoisonType current = PoisonType.None;
 
-
             for (int i = PoisonList.Count - 1; i >= 0; i--)
             {
                 Poison poison = PoisonList[i];
@@ -201,7 +200,6 @@ namespace Server.Models
                     PoisonList.Remove(poison);
                     continue;
                 }
-
 
                 current |= poison.Type;
 
@@ -248,9 +246,7 @@ namespace Server.Models
 
                         foreach (MapObject ob in poison.Owner.GetTargets(CurrentMap, CurrentLocation, 1))
                         {
-                            //if (ob.Race != ObjectType.Monster) continue;
-
-
+                            if (ob.Race != ObjectType.Monster) continue;
                             //if (ob.Race == ObjectType.Monster && ((MonsterObject)ob).MonsterInfo.IsBoss) continue;
 
                             if (ob.PoisonList.Any(x => x.Type == PoisonType.Infection)) continue;
@@ -330,7 +326,6 @@ namespace Server.Models
                                                 conquest.BossDamageDealt += damage;
                                             break;
                                         case ObjectType.Monster:
-
                                             mob = (MonsterObject)poison.Owner;
                                             if (mob.PetOwner != null)
                                             {
@@ -374,7 +369,6 @@ namespace Server.Models
             {
                 int amount;
                 PlayerObject player;
-
                 UserMagic magic;
 
                 if (buff.Pause) continue;
@@ -402,8 +396,6 @@ namespace Server.Models
 
                             player.Companion.UserCompanion.Experience += highest + Stats[Stat.CompanionRate];
 
-
-
                             if (player.Companion.UserCompanion.Experience >= player.Companion.LevelInfo.MaxExperience)
                             {
                                 player.Companion.UserCompanion.Experience = 0;
@@ -411,7 +403,6 @@ namespace Server.Models
                                 player.Companion.CheckSkills();
                                 player.Companion.RefreshStats();
                             }
-
                         }
 
                         player.Companion.AutoFeed();
@@ -518,7 +509,6 @@ namespace Server.Models
 
                         player = this as PlayerObject;
 
-
                         if (player != null)
                         {
                             if (SEnvir.ConquestWars.Any(war => war.Map == CurrentMap))
@@ -527,7 +517,6 @@ namespace Server.Models
                                 continue;
                             }
                         }
-
 
                         if (buff.Stats[Stat.AvailableHuntGold] >= buff.Stats[Stat.AvailableHuntGoldCap]) continue;
 
@@ -552,8 +541,6 @@ namespace Server.Models
                         buff.TickTime += buff.TickFrequency;
 
                         List<Cell> cells = CurrentMap.GetCells(CurrentLocation, 0, 5);
-
-
 
                         switch (Race)
                         {
