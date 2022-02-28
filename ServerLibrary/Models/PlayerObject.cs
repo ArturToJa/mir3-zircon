@@ -327,8 +327,6 @@ namespace Server.Models
                     PacketWaiting = false;
                     Mount();
                     break;
-
-
             }
 
             base.ProcessAction(action);
@@ -375,8 +373,6 @@ namespace Server.Models
 
             if (CurrentHP < Stats[Stat.Health] || CurrentMP < Stats[Stat.Mana])
                 LevelMagic(magic);
-
-
 
             if (CurrentHP < Stats[Stat.Health])
             {
@@ -454,6 +450,38 @@ namespace Server.Models
             AutoPotionCheckTime = SEnvir.Now.AddMilliseconds(200);
         }
 
+        private bool ProcessItemExpireForArray(UserItem[] itemArray, GridType gridType, TimeSpan ticks)
+        {
+            bool refresh = false;
+            for (int i = 0; i < itemArray.Length; i++)
+            {
+                UserItem item = itemArray[i];
+                if (item == null) continue;
+                if ((item.Flags & UserItemFlags.Expirable) != UserItemFlags.Expirable) continue;
+
+                item.ExpireTime -= ticks;
+
+                if (item.ExpireTime > TimeSpan.Zero) continue;
+
+                Connection.ReceiveChat(string.Format(Connection.Language.Expired, item.Info.ItemName), MessageType.System);
+                foreach (SConnection con in Connection.Observers)
+                    con.ReceiveChat(string.Format(con.Language.Expired, item.Info.ItemName), MessageType.System);
+
+                RemoveItem(item);
+                itemArray[i] = null;
+                item.Delete();
+
+                refresh = true;
+
+                Enqueue(new S.ItemChanged
+                {
+                    Link = new CellLinkInfo { GridType = gridType, Slot = i },
+                    Success = true,
+                });
+            }
+            return refresh;
+        }
+
         public void ProcessItemExpire()
         {
             if (ItemTime.AddSeconds(1) > SEnvir.Now) return;
@@ -464,120 +492,14 @@ namespace Server.Models
             if (InSafeZone) return;
             bool refresh = false;
 
-            for (int i = 0; i < Equipment.Length; i++)
-            {
-                UserItem item = Equipment[i];
-                if (item == null) continue;
-                if ((item.Flags & UserItemFlags.Expirable) != UserItemFlags.Expirable) continue;
-
-                item.ExpireTime -= ticks;
-
-                if (item.ExpireTime > TimeSpan.Zero) continue;
-
-                Connection.ReceiveChat(string.Format(Connection.Language.Expired, item.Info.ItemName), MessageType.System);
-                foreach (SConnection con in Connection.Observers)
-                    con.ReceiveChat(string.Format(con.Language.Expired, item.Info.ItemName), MessageType.System);
-
-                RemoveItem(item);
-                Equipment[i] = null;
-                item.Delete();
-
-                refresh = true;
-
-                Enqueue(new S.ItemChanged
-                {
-                    Link = new CellLinkInfo { GridType = GridType.Equipment, Slot = i },
-                    Success = true,
-                });
-            }
-
-
-            for (int i = 0; i < Inventory.Length; i++)
-            {
-                UserItem item = Inventory[i];
-                if (item == null) continue;
-                if ((item.Flags & UserItemFlags.Expirable) != UserItemFlags.Expirable) continue;
-
-
-                item.ExpireTime -= ticks;
-
-                if (item.ExpireTime > TimeSpan.Zero) continue;
-
-                Connection.ReceiveChat(string.Format(Connection.Language.Expired, item.Info.ItemName), MessageType.System);
-                foreach (SConnection con in Connection.Observers)
-                    con.ReceiveChat(string.Format(con.Language.Expired, item.Info.ItemName), MessageType.System);
-
-                RemoveItem(item);
-                Inventory[i] = null;
-                item.Delete();
-
-                refresh = true;
-
-                Enqueue(new S.ItemChanged
-                {
-                    Link = new CellLinkInfo { GridType = GridType.Inventory, Slot = i },
-                    Success = true,
-                });
-            }
+            refresh |= ProcessItemExpireForArray(Equipment, GridType.Equipment, ticks);
+            refresh |= ProcessItemExpireForArray(Inventory, GridType.Inventory, ticks);
 
             if (Companion != null)
             {
-                for (int i = 0; i < Companion.Inventory.Length; i++)
-                {
-                    UserItem item = Companion.Inventory[i];
-                    if (item == null) continue;
-                    if ((item.Flags & UserItemFlags.Expirable) != UserItemFlags.Expirable) continue;
-
-
-                    item.ExpireTime -= ticks;
-
-                    if (item.ExpireTime > TimeSpan.Zero) continue;
-
-                    Connection.ReceiveChat(string.Format(Connection.Language.Expired, item.Info.ItemName), MessageType.System);
-                    foreach (SConnection con in Connection.Observers)
-                        con.ReceiveChat(string.Format(con.Language.Expired, item.Info.ItemName), MessageType.System);
-
-                    RemoveItem(item);
-                    Companion.Inventory[i] = null;
-                    item.Delete();
-
-                    refresh = true;
-
-                    Enqueue(new S.ItemChanged
-                    {
-                        Link = new CellLinkInfo { GridType = GridType.CompanionInventory, Slot = i },
-                        Success = true,
-                    });
-                }
-                for (int i = 0; i < Companion.Equipment.Length; i++)
-                {
-                    UserItem item = Companion.Equipment[i];
-                    if (item == null) continue;
-                    if ((item.Flags & UserItemFlags.Expirable) != UserItemFlags.Expirable) continue;
-
-
-                    item.ExpireTime -= ticks;
-
-                    if (item.ExpireTime > TimeSpan.Zero) continue;
-
-                    Connection.ReceiveChat(string.Format(Connection.Language.Expired, item.Info.ItemName), MessageType.System);
-                    foreach (SConnection con in Connection.Observers)
-                        con.ReceiveChat(string.Format(con.Language.Expired, item.Info.ItemName), MessageType.System);
-
-                    RemoveItem(item);
-                    Companion.Equipment[i] = null;
-                    item.Delete();
-
-                    refresh = true;
-
-                    Enqueue(new S.ItemChanged
-                    {
-                        Link = new CellLinkInfo { GridType = GridType.CompanionEquipment, Slot = i },
-                        Success = true,
-                    });
-                }
+                refresh |= ProcessItemExpireForArray(Companion.Inventory, GridType.CompanionInventory, ticks);
+                refresh |= ProcessItemExpireForArray(Companion.Equipment, GridType.CompanionEquipment, ticks);
             }
-
 
             if (refresh)
                 RefreshStats();
@@ -10156,9 +10078,17 @@ namespace Server.Models
             }
             gemResult.Links.Add(p.Gem);
 
-            RemoveItem(gemItem);
-            targetArray[p.Gem.Slot] = null;
-            gemItem.Delete();
+
+            if (gemItem.Count > 1)
+            {
+                gemItem.Count--;
+            }
+            else
+            {
+                RemoveItem(gemItem);
+                targetArray[p.Gem.Slot] = null;
+                gemItem.Delete();
+            }
 
             targetItem.StatsChanged();
             RefreshStats();
