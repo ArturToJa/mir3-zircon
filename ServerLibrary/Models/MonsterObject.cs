@@ -2565,9 +2565,6 @@ namespace Server.Models
             {
                 if (!EXPOwner.Dead && EXPOwner.CurrentMap == CurrentMap && Functions.InRange(EXPOwner.CurrentLocation, CurrentLocation, Config.MaxViewRange))
                 {
-                    if (EXPOwner.Stats[Stat.Rebirth] > 0 && ExtraExperienceRate > 0)
-                        exp /= ExtraExperienceRate;
-
                     EXPOwner.GainExperience(exp, PlayerTagged, Level);
                 }
             }
@@ -2582,8 +2579,8 @@ namespace Server.Models
                 {
                     decimal expfinal = exp * player.Level / totalLevels;
 
-                    if (player.Stats[Stat.Rebirth] > 0 && ExtraExperienceRate > 0)
-                        expfinal /= ExtraExperienceRate;
+/*                    if (player.Stats[Stat.Rebirth] > 0 && ExtraExperienceRate > 0)
+                        expfinal /= ExtraExperienceRate;*/
 
                     player.GainExperience(expfinal, PlayerTagged, Level);
                 }

@@ -2833,36 +2833,44 @@ namespace Server.Models
             Stats[Stat.BaseHealth] = Stats[Stat.Health];
             Stats[Stat.BaseMana] = Stats[Stat.Mana];
         }
-        public void AssignHermit(Stat stat)
+        public void AssignHermit(Stat stat, int multiple)
         {
-            if (Math.Min(Config.MaxHermitPoints - Character.SpentPoints, Level - 39 - Character.SpentPoints) <= 0) return;
+            if (Math.Min(Config.MaxHermitPoints - Character.SpentPoints, Level - 39 - Character.SpentPoints) <= (multiple - 1))
+            {
+                multiple = Math.Min(Config.MaxHermitPoints - Character.SpentPoints, Level - 39 - Character.SpentPoints);
+                if(multiple <= 0)
+                {
+                    return;
+                }
+            }
 
             switch (stat)
             {
                 case Stat.MaxDC:
                 case Stat.MaxMC:
                 case Stat.MaxSC:
-                    Character.HermitStats[stat] += 2;
+                    Character.HermitStats[stat] += 2 * multiple;
                     break;
                 case Stat.MaxAC:
-                    Character.HermitStats[Stat.MinAC] += 2;
-                    Character.HermitStats[Stat.MaxAC] += 2;
+                    Character.HermitStats[Stat.MinAC] += 2 * multiple;
+                    Character.HermitStats[Stat.MaxAC] += 2 * multiple;
                     break;
                 case Stat.MaxMR:
-                    Character.HermitStats[Stat.MinMR] += 2;
-                    Character.HermitStats[Stat.MaxMR] += 2;
+                    Character.HermitStats[Stat.MinMR] += 2 * multiple;
+                    Character.HermitStats[Stat.MaxMR] += 2 * multiple;
                     break;
                 case Stat.Health:
-                    Character.HermitStats[stat] += 20;
+                    Character.HermitStats[stat] += 20 * multiple;
                     break;
                 case Stat.Mana:
-                    Character.HermitStats[stat] += 30;
+                    Character.HermitStats[stat] += 30 * multiple;
                     break;
                 case Stat.WeaponElement:
 
                     if (Character.SpentPoints >= 20) return;
+                    multiple = Math.Min(20 - Character.SpentPoints, multiple);
 
-                    int count = 2;
+                    int count = 2 * multiple;
 
                     List<Stat> Elements = new List<Stat>();
 
@@ -2896,7 +2904,7 @@ namespace Server.Models
                     return;
             }
 
-            Character.SpentPoints++;
+            Character.SpentPoints += multiple;
             RefreshStats();
         }
 

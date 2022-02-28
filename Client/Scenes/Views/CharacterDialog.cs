@@ -39,12 +39,14 @@ namespace Client.Scenes.Views
         public override WindowType Type => WindowType.CharacterBox;
         public override bool CustomSize => false;
         public override bool AutomaticVisiblity => true;
+        public int HermitMultiplier;
 
         #endregion
 
         public CharacterDialog()
         { 
             HasTitle = false;
+            HermitMultiplier = 1;
             SetClientSize(new Size(266, 371));
 
 
@@ -1421,6 +1423,31 @@ namespace Client.Scenes.Views
             };
             check.Location = new Point(HermitTab.Size.Width - check.Size.Width - 10, HermitTab.Size.Height - check.Size.Height - 10);
 
+            DXButton muliplierButton = new DXButton
+            {
+                Parent = HermitTab,
+                Location = new Point(10, HermitTab.Size.Height - check.Size.Height - 10),
+                Label = { Text = "x1" },
+                ButtonType = ButtonType.SmallButton,
+                Size = new Size(80, SmallButtonHeight)
+            };
+            muliplierButton.MouseClick += (s, e) =>
+            {
+                if (HermitMultiplier == 1)
+                {
+                    HermitMultiplier = Math.Min(MapObject.User.HermitPoints, 10);
+                }
+                else if (HermitMultiplier == 10)
+                {
+                    HermitMultiplier = Math.Min(MapObject.User.HermitPoints, 100); ;
+                }
+                else
+                {
+                    HermitMultiplier = 1;
+                }
+                muliplierButton.Label.Text = "x" + HermitMultiplier.ToString();
+            };
+
             DXButton but = new DXButton
             {
                 Parent = HermitTab,
@@ -1439,12 +1466,12 @@ namespace Client.Scenes.Views
 
                     box.YesButton.MouseClick += (o1, e1) =>
                     {
-                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxAC });
+                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxAC, Multiple = HermitMultiplier });
                     };
                 }
                 else
                 {
-                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxAC });
+                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxAC, Multiple = HermitMultiplier });
                 }
             };
 
@@ -1466,12 +1493,12 @@ namespace Client.Scenes.Views
 
                     box.YesButton.MouseClick += (o1, e1) =>
                     {
-                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxMR });
+                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxMR, Multiple = HermitMultiplier });
                     };
                 }
                 else
                 {
-                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxMR });
+                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxMR, Multiple = HermitMultiplier });
                 }
             };
 
@@ -1493,12 +1520,12 @@ namespace Client.Scenes.Views
 
                     box.YesButton.MouseClick += (o1, e1) =>
                     {
-                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.Health });
+                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.Health, Multiple = HermitMultiplier });
                     };
                 }
                 else
                 {
-                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.Health });
+                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.Health, Multiple = HermitMultiplier });
                 }
             };
 
@@ -1520,12 +1547,12 @@ namespace Client.Scenes.Views
 
                     box.YesButton.MouseClick += (o1, e1) =>
                     {
-                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.Mana });
+                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.Mana, Multiple = HermitMultiplier });
                     };
                 }
                 else
                 {
-                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.Mana });
+                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.Mana, Multiple = HermitMultiplier });
                 }
             };
 
@@ -1548,12 +1575,12 @@ namespace Client.Scenes.Views
 
                     box.YesButton.MouseClick += (o1, e1) =>
                     {
-                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxDC });
+                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxDC, Multiple = HermitMultiplier });
                     };
                 }
                 else
                 {
-                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxDC });
+                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxDC, Multiple = HermitMultiplier });
                 }
             };
 
@@ -1575,12 +1602,12 @@ namespace Client.Scenes.Views
 
                     box.YesButton.MouseClick += (o1, e1) =>
                     {
-                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxMC });
+                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxMC, Multiple = HermitMultiplier });
                     };
                 }
                 else
                 {
-                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxMC });
+                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxMC, Multiple = HermitMultiplier });
                 }
             };
 
@@ -1602,12 +1629,12 @@ namespace Client.Scenes.Views
 
                     box.YesButton.MouseClick += (o1, e1) =>
                     {
-                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxSC });
+                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxSC, Multiple = HermitMultiplier });
                     };
                 }
                 else
                 {
-                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxSC });
+                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.MaxSC, Multiple = HermitMultiplier });
                 }
             };
 
@@ -1630,12 +1657,12 @@ namespace Client.Scenes.Views
 
                     box.YesButton.MouseClick += (o1, e1) =>
                     {
-                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.WeaponElement });
+                        CEnvir.Enqueue(new C.Hermit { Stat = Stat.WeaponElement, Multiple = HermitMultiplier });
                     };
                 }
                 else
                 {
-                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.WeaponElement });
+                    CEnvir.Enqueue(new C.Hermit { Stat = Stat.WeaponElement, Multiple = HermitMultiplier });
                 }
             };
 

@@ -232,9 +232,6 @@ namespace Server.Models
                         else
                         {
                             damage += poison.Value;
-
-                            for (int x = 0; x < poison.Owner.Stats[Stat.Rebirth]; x++)
-                                damage = (int)(damage * 1.5F);
                         }
 
                         infection = true;
@@ -254,7 +251,7 @@ namespace Server.Models
                             //if (ob.Race != ObjectType.Monster) continue;
 
 
-                            if (ob.Race == ObjectType.Monster && ((MonsterObject)ob).MonsterInfo.IsBoss) continue;
+                            //if (ob.Race == ObjectType.Monster && ((MonsterObject)ob).MonsterInfo.IsBoss) continue;
 
                             if (ob.PoisonList.Any(x => x.Type == PoisonType.Infection)) continue;
 
@@ -273,9 +270,9 @@ namespace Server.Models
 
                 if (damage > 0)
                 {
-                    if (Race == ObjectType.Monster && ((MonsterObject)this).MonsterInfo.IsBoss)
+/*                    if (Race == ObjectType.Monster && ((MonsterObject)this).MonsterInfo.IsBoss)
                         damage = 0;
-                    else if (!infection)
+                    else */if (!infection)
                         damage = Math.Min(CurrentHP - 1, damage);
 
                     if (damage > 0)

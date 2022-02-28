@@ -347,6 +347,7 @@ namespace Library.Network.ClientPackets
     public sealed class Hermit : Packet
     {
         public Stat Stat { get; set; }
+        public int Multiple { get; set; }
     }
 
     public sealed class ServerRates : Packet 

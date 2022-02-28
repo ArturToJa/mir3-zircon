@@ -697,7 +697,7 @@ namespace Server.Envir
         {
             if (Stage != GameStage.Game) return;
 
-            Player.AssignHermit(p.Stat);
+            Player.AssignHermit(p.Stat, p.Multiple);
         }
 
         public void Process(C.ServerRates p)
