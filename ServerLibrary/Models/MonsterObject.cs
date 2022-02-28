@@ -607,6 +607,18 @@ namespace Server.Models
                     };
                 case 127:
                     return new JinchonDevil { MonsterInfo = monsterInfo, CastDelay = TimeSpan.FromSeconds(8), DeathCloudDurationMin = 2000, DeathCloudDurationRandom = 5000 };
+                case 128:
+                    return new KingsSpawner
+                    {
+                        MonsterInfo = monsterInfo,
+                        SpawnInfo = SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.KingsSpider),
+                    };
+                case 129:
+                    return new KingsSpawner
+                    {
+                        MonsterInfo = monsterInfo,
+                        SpawnInfo = SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.KingsSalamander),
+                    };
                 default:
                     return new MonsterObject { MonsterInfo = monsterInfo };
             }

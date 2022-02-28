@@ -1326,6 +1326,9 @@ namespace Library
         QuartzMiniTurtle = 204,
         QuartzTurtleSub = 205,
 
+        KingsSpider = 206,
+        KingsSalamander = 207,
+
         Sacrafice = 210,
     }
 
