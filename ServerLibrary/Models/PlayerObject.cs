@@ -9769,7 +9769,7 @@ namespace Server.Models
                 if ((targetItem.Flags & UserItemFlags.Refinable) == UserItemFlags.Refinable) break;
 
                 UserItem[] fromArray = null;
-                UserItem item = FindUserItem(p.Target, out fromArray);
+                UserItem item = FindUserItem(link, out fromArray);
 
                 if (item == null || link.Count > item.Count || (item.Flags & UserItemFlags.Locked) == UserItemFlags.Locked) continue;
                 if ((item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) continue;
