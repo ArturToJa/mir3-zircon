@@ -774,8 +774,8 @@ namespace Server.Models
             Enqueue(new S.MailList { Mail = Character.Account.Mail.Select(x => x.ToClientInfo()).ToList() });
 
 
-            if (Character.Account.Characters.Max(x => x.Level) > Level && Character.Rebirth == 0)
-                BuffAdd(BuffType.Veteran, TimeSpan.MaxValue, new Stats { [Stat.ExperienceRate] = 50 }, false, false, TimeSpan.Zero);
+/*            if (Character.Account.Characters.Max(x => x.Level) > Level && Character.Rebirth == 0)
+                BuffAdd(BuffType.Veteran, TimeSpan.MaxValue, new Stats { [Stat.ExperienceRate] = 50 }, false, false, TimeSpan.Zero);*/
 
 
             Enqueue(new S.GameGoldChanged { GameGold = Character.Account.GameGold, ObserverPacket = false });
@@ -8494,7 +8494,7 @@ namespace Server.Models
 
             Stats stats = new Stats();
 
-            stats[Stat.ExperienceRate] += 15;
+            //stats[Stat.ExperienceRate] += 15;
             stats[Stat.DropRate] += 15;
             stats[Stat.GoldRate] += 15;
 
@@ -8508,7 +8508,7 @@ namespace Server.Models
 
             Stats stats = new Stats();
 
-            stats[Stat.ExperienceRate] += 10;
+           // stats[Stat.ExperienceRate] += 10;
             stats[Stat.DropRate] += 10;
             stats[Stat.GoldRate] += 10;
 
@@ -8524,40 +8524,40 @@ namespace Server.Models
 
             if (Character.Account.GuildMember.Guild.StarterGuild)
             {
-                if (Level < 50)
+                if (Level < 1000)
                 {
-                    stats[Stat.ExperienceRate] += 50;
+                    //stats[Stat.ExperienceRate] += 50;
                     stats[Stat.DropRate] += 50;
                     stats[Stat.GoldRate] += 50;
                 }
                 else
                 {
-                    stats[Stat.ExperienceRate] -= 50;
+                    //stats[Stat.ExperienceRate] -= 50;
                     stats[Stat.DropRate] -= 50;
                     stats[Stat.GoldRate] -= 50;
                 }
             }
             else if (Character.Account.GuildMember.Guild.Members.Count <= 15)
             {
-                stats[Stat.ExperienceRate] += 30;
+                //stats[Stat.ExperienceRate] += 30;
                 stats[Stat.DropRate] += 30;
                 stats[Stat.GoldRate] += 30;
             }
             else if (Character.Account.GuildMember.Guild.Members.Count <= 30)
             {
-                stats[Stat.ExperienceRate] += 23;
+               // stats[Stat.ExperienceRate] += 23;
                 stats[Stat.DropRate] += 23;
                 stats[Stat.GoldRate] += 23;
             }
             else if (Character.Account.GuildMember.Guild.Members.Count <= 45)
             {
-                stats[Stat.ExperienceRate] += 18;
+               // stats[Stat.ExperienceRate] += 18;
                 stats[Stat.DropRate] += 18;
                 stats[Stat.GoldRate] += 18;
             }
             else
             {
-                stats[Stat.ExperienceRate] += 13;
+               // stats[Stat.ExperienceRate] += 13;
                 stats[Stat.DropRate] += 13;
                 stats[Stat.GoldRate] += 13;
             }
