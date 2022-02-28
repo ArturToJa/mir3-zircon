@@ -1017,10 +1017,8 @@ namespace Server.Models
 
             SearchTime = SEnvir.Now + SearchDelay;
 
-
             int bestDistance = int.MaxValue;
             List<MapObject> closest = new List<MapObject>();
-
 
             //Save resources
             foreach (PlayerObject player in CurrentMap.Players)
@@ -1105,7 +1103,6 @@ namespace Server.Models
 
                 return;
             }
-
         }
 
         public virtual void ProcessRoam()
@@ -1122,7 +1119,6 @@ namespace Server.Models
             if (SEnvir.Now < RoamTime || SeenByPlayers.Count == 0) return;
 
             RoamTime = SEnvir.Now + RoamDelay;
-
 
             foreach (MapObject ob in CurrentCell.Objects)
             {
@@ -1291,8 +1287,6 @@ namespace Server.Models
 
                     if (PetOwner == mob.PetOwner) return false;
 
-
-
                     switch (PetOwner.AttackMode)
                     {
                         case AttackMode.Peace:
@@ -1399,7 +1393,6 @@ namespace Server.Models
                 case ObjectType.Spell:
                     return false;
             }
-
 
             if (ob.Buffs.Any(x => x.Type == BuffType.Invisibility) && !CoolEye) return false;
 
