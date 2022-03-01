@@ -185,11 +185,11 @@ namespace Server.Models
                         break;
 
                     case NPCActionType.GiveLevels:
-                        ob.Level += action.IntParameter1;
+                        ob.Level = Math.Min(Level + action.IntParameter1, Config.MaxLevel);
                         ob.LevelUp();
                         break;
                     case NPCActionType.TakeLevels:
-                        ob.Level -= action.IntParameter1;
+                        ob.Level = Math.Max(Level - action.IntParameter1, 1);
                         ob.LevelUp();
                         break;
                     case NPCActionType.LearnSkill:

@@ -592,6 +592,12 @@ namespace Server.Envir
             Player.NPCUpgradeGem(p);
         }
 
+        public void Process(C.NPCLevelUpScroll p)
+        {
+            if (Stage != GameStage.Game) return;
+            Player.NPCLevelUpScroll(p);
+        }
+
         public void Process(C.MagicKey p)
         {
             if (Stage != GameStage.Game) return;

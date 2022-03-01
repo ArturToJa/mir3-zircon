@@ -766,7 +766,8 @@ namespace Library
         [StatDescription(Title = "Rebirth ", Format = "{0}", Mode = StatType.Default)]
         Rebirth,
 
-
+        [StatDescription(Title = "LevelUp", Format = "{0}", Mode = StatType.Default)]
+        LevelUp,
 
         [StatDescription(Title = "Duration", Mode = StatType.Time)]
         Duration = 10000,

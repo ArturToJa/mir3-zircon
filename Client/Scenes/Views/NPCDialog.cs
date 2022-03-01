@@ -112,8 +112,11 @@ namespace Client.Scenes.Views
 
             if (GameScene.Game.NPCUpgradeGemBox != null && !IsVisible)
                 GameScene.Game.NPCUpgradeGemBox.Visible = false;
-            
-            if (Opened)
+
+            if (GameScene.Game.NPCLevelUpBox != null && !IsVisible)
+                GameScene.Game.NPCLevelUpBox.Visible = false;
+
+            if (Opened) 
             {
                 GameScene.Game.NPCID = 0;
                 Opened = false;
@@ -192,6 +195,7 @@ namespace Client.Scenes.Views
             GameScene.Game.NPCAccessoryUpgradeBox.Visible = false;
             GameScene.Game.NPCAccessoryLevelBox.Visible = false;
             GameScene.Game.NPCMasterRefineBox.Visible = false;
+            GameScene.Game.NPCLevelUpBox.Visible = false;
             GameScene.Game.NPCAccessoryResetBox.Visible = false;
             GameScene.Game.NPCWeaponCraftBox.Visible = false;
             GameScene.Game.NPCUpgradeGemBox.Visible = false;
@@ -265,6 +269,10 @@ namespace Client.Scenes.Views
                 case NPCDialogType.UpgradeGem:
                     GameScene.Game.NPCUpgradeGemBox.Visible = true;
                     GameScene.Game.NPCUpgradeGemBox.Location = new Point(Size.Width - GameScene.Game.NPCUpgradeGemBox.Size.Width, Size.Height);
+                    break;
+                case NPCDialogType.LevelUpScroll:
+                    GameScene.Game.NPCLevelUpBox.Visible = true;
+                    GameScene.Game.NPCLevelUpBox.Location = new Point(Size.Width - GameScene.Game.NPCLevelUpBox.Size.Width, Size.Height);
                     break;
             }
         }
@@ -6269,6 +6277,100 @@ namespace Client.Scenes.Views
         private void ShouldEnableButton()
         {
             UpgradeButton.Enabled = Grid.Grid[0].Item != null && TargetCell.Grid[0].Item != null;
+        }
+
+        #endregion
+    }
+
+    public sealed class NPCLevelUpDialog : DXWindow
+    {
+        #region Properties
+
+        public DXItemGrid Grid;
+        public DXButton LevelUpButton;
+
+        public override void OnIsVisibleChanged(bool oValue, bool nValue)
+        {
+            base.OnIsVisibleChanged(oValue, nValue);
+
+            if (GameScene.Game.InventoryBox == null) return;
+
+            if (IsVisible)
+                GameScene.Game.InventoryBox.Visible = true;
+
+            if (!IsVisible)
+            {
+                Grid.ClearLinks();
+            }
+        }
+
+        public override WindowType Type => WindowType.None;
+        public override bool CustomSize => false;
+        public override bool AutomaticVisiblity => false;
+
+        #endregion
+
+        public NPCLevelUpDialog()
+        {
+            TitleLabel.Text = "Level Up Scrolls";
+
+            Movable = false;
+            Grid = new DXItemGrid
+            {
+                GridSize = new Size(7, 3),
+                Parent = this,
+                GridType = GridType.LevelUpScrolls,
+                Linked = true
+            };
+
+            Movable = false;
+            SetClientSize(new Size(Grid.Size.Width, Grid.Size.Height + 110));
+            Grid.Location = new Point(ClientArea.X, ClientArea.Y + 60);
+
+            foreach (DXItemCell cell in Grid.Grid)
+                cell.LinkChanged += (o, e) => ShouldEnableButton();
+
+            LevelUpButton = new DXButton
+            {
+                Label = { Text = "Use Level Up Scrolls" },
+                ButtonType = ButtonType.SmallButton,
+                Parent = this,
+                Size = new Size(79, SmallButtonHeight),
+                Enabled = false,
+            };
+            LevelUpButton.Location = new Point(ClientArea.X + (ClientArea.Width - LevelUpButton.Size.Width) / 2, ClientArea.Bottom - 45);
+            LevelUpButton.MouseClick += (o, e) =>
+            {
+                if (GameScene.Game.Observer) return;
+
+                List<CellLinkInfo> links = new List<CellLinkInfo>();
+
+                foreach (DXItemCell cell in Grid.Grid)
+                {
+                    if (cell.Link == null) continue;
+
+                    links.Add(new CellLinkInfo { Count = cell.LinkedCount, GridType = cell.Link.GridType, Slot = cell.Link.Slot });
+
+                    cell.Link.Locked = true;
+                    cell.Link = null;
+                }
+
+                CEnvir.Enqueue(new C.NPCLevelUpScroll { Links = links });
+            };
+        }
+
+        #region Methods
+        private void ShouldEnableButton()
+        {
+            int count = 0;
+            foreach (DXItemCell cell in Grid.Grid)
+            {
+                if (cell.Link?.Item == null) continue;
+
+                count++;
+            }
+
+            LevelUpButton.Enabled = count > 0;
         }
 
         #endregion

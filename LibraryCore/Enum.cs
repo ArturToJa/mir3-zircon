@@ -170,6 +170,7 @@ namespace Library
         PartsStorage,
         EquipmentUpgradeGemTarget,
         EquipmentUpgradeGemItems,
+        LevelUpScrolls,
     }
 
     public enum BuffType
@@ -437,7 +438,8 @@ namespace Library
         AccessoryReset,
         WeaponCraft,
         AccessoryRefine,
-        UpgradeGem
+        UpgradeGem,
+        LevelUpScroll
     }
 
     public enum MagicSchool
@@ -1142,6 +1144,7 @@ namespace Library
         SpiritBlade = 91,
         RefineExtractor = 92,
         UpgradeGem = 93,
+        LevelUpScroll = 94
     }
 
     [Flags]

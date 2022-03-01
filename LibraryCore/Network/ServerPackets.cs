@@ -644,6 +644,11 @@ namespace Library.Network.ServerPackets
         public CellLinkInfo Gem { get; set; }
     }
 
+    public sealed class NPCLevelUpScroll : Packet
+    {
+        public List<CellLinkInfo> Links { get; set; }
+    }
+
     public sealed class NPCRefineRetrieve : Packet
     {
         public int Index { get; set; }

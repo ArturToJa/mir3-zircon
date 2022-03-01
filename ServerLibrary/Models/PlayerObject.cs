@@ -6113,12 +6113,9 @@ namespace Server.Models
                                 return;
                             }
 
-
-
                             if (item.Info.Stats[Stat.Experience] > 0) GainExperience(item.Info.Stats[Stat.Experience], false);
 
                             IncreasePKPoints(item.Info.Stats[Stat.PKPoint]);
-
 
                             if (item.Info.Stats[Stat.FootballArmourAction] > 0 && SEnvir.Random.Next(item.Info.Stats[Stat.FootballArmourAction]) == 0)
                             {
@@ -6446,6 +6443,18 @@ namespace Server.Models
 
                             Enqueue(new S.ItemStatsRefreshed { Slot = (int)EquipmentSlot.Weapon, GridType = GridType.Equipment, NewStats = new Stats(weapon.Stats) });
                             RefreshStats();
+                            break;
+                        case 23: // Level Up Scrolls
+                            Level = Math.Min(Level + item.Info.Stats[Stat.LevelUp], Config.MaxLevel);
+                            LevelUp();
+                            break;
+                        case 24: // Kings Cave Scroll
+                            MapInfo kingsInfo = SEnvir.MapInfoList.Binding.FirstOrDefault(x => string.Compare(x.FileName, "D2301", StringComparison.OrdinalIgnoreCase) == 0);
+                            Map kingsMap = SEnvir.GetMap(kingsInfo, null, 0);
+
+                            if (kingsMap == null) break;
+
+                            Teleport(kingsMap, new Point(17, 53));
                             break;
                     }
 
@@ -10092,6 +10101,50 @@ namespace Server.Models
 
             targetItem.StatsChanged();
             RefreshStats();
+        }
+
+        public void NPCLevelUpScroll(C.NPCLevelUpScroll p)
+        {
+            Enqueue(new S.NPCLevelUpScroll { Links = p.Links});
+
+            if (Dead || NPC == null || NPCPage == null || NPCPage.DialogType != NPCDialogType.LevelUpScroll) return;
+            if (!ParseLinks(p.Links, 0, 100)) return;
+
+            S.ItemsChanged result = new S.ItemsChanged { Links = new List<CellLinkInfo>(), Success = true };
+            Enqueue(result);
+
+            int levelBonus = 0;
+            bool changed = false;
+
+            foreach (CellLinkInfo link in p.Links)
+            {
+                UserItem[] fromArray = null;
+                UserItem item = FindUserItem(link, out fromArray);
+
+                if (item == null || link.Count > item.Count || (item.Flags & UserItemFlags.Locked) == UserItemFlags.Locked) continue;
+                if (item.Info.Effect != ItemEffect.LevelUpScroll) continue;
+                
+                result.Links.Add(link);
+
+                levelBonus += (item.Info.Stats[Stat.LevelUp] * (int)link.Count);
+
+                if (item.Count == link.Count)
+                {
+                    RemoveItem(item);
+                    fromArray[link.Slot] = null;
+                    item.Delete();
+                }
+                else
+                    item.Count -= link.Count;
+
+                changed = true;
+            }
+
+            if (changed)
+            {
+                Level = Math.Min(Level + levelBonus, Config.MaxLevel);
+                LevelUp();
+            }
         }
 
         public void NPCRepair(C.NPCRepair p)

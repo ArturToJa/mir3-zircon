@@ -1441,6 +1441,9 @@ namespace Client.Controls
                     if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
                     if (Item.Info.Effect != ItemEffect.UpgradeGem || (Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
                     break;
+                case GridType.LevelUpScrolls:
+                    if (Item.Info.Effect != ItemEffect.LevelUpScroll) return false;
+                    break;
             }
 
             return true;

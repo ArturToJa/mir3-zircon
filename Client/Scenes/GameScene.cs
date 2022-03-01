@@ -170,6 +170,7 @@ namespace Client.Scenes
         public NPCAccessoryLevelDialog NPCAccessoryLevelBox;
         public NPCAccessoryResetDialog NPCAccessoryResetBox;
         public NPCUpgradeGemDialog NPCUpgradeGemBox;
+        public NPCLevelUpDialog NPCLevelUpBox;
         public NPCMasterRefineDialog NPCMasterRefineBox;
         public MiniMapDialog MiniMapBox;
         public BigMapDialog BigMapBox;
@@ -518,6 +519,11 @@ namespace Client.Scenes
                 Visible = false,
             };
             NPCUpgradeGemBox = new NPCUpgradeGemDialog
+            {
+                Parent = this,
+                Visible = false,
+            };
+            NPCLevelUpBox = new NPCLevelUpDialog
             {
                 Parent = this,
                 Visible = false,
@@ -4222,6 +4228,14 @@ namespace Client.Scenes
                         NPCUpgradeGemBox.Dispose();
 
                     NPCUpgradeGemBox = null;
+                }
+
+                if (NPCLevelUpBox != null)
+                {
+                    if (!NPCLevelUpBox.IsDisposed)
+                        NPCLevelUpBox.Dispose();
+
+                    NPCLevelUpBox = null;
                 }
 
                 if (MiniMapBox != null)

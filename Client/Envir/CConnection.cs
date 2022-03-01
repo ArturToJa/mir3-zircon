@@ -2885,6 +2885,14 @@ namespace Client.Envir
             UnlockItemFromCell(p.Gem);
         }
 
+        public void Process(S.NPCLevelUpScroll p)
+        {
+            foreach (CellLinkInfo cellLinkInfo in p.Links)
+            {
+                UnlockItemFromCell(cellLinkInfo);
+            }
+        }
+
         private void UnlockItemFromCell(CellLinkInfo info)
         {
             DXItemCell[] grid;

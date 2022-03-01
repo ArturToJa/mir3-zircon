@@ -286,6 +286,11 @@ namespace Library.Network.ClientPackets
         public CellLinkInfo Gem { get; set; }
     }
 
+    public sealed class NPCLevelUpScroll : Packet
+    {
+        public List<CellLinkInfo> Links { get; set; }
+    }
+
     public sealed class MagicKey : Packet
     {
         public MagicType Magic { get; set; }
