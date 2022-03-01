@@ -6332,7 +6332,7 @@ namespace Client.Scenes.Views
 
             LevelUpButton = new DXButton
             {
-                Label = { Text = "Use Level Up Scrolls" },
+                Label = { Text = "Level Up" },
                 ButtonType = ButtonType.SmallButton,
                 Parent = this,
                 Size = new Size(79, SmallButtonHeight),
