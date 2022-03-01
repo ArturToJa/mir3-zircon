@@ -497,7 +497,28 @@ namespace Server.Models.Monsters
             }
             if (listClass.Count > 0)
             {
-                hasClass = itemClass == RequiredClass.All || listClass.Contains(itemClass.ToString());
+                switch(itemClass)
+                {
+                    case RequiredClass.All:
+                    case RequiredClass.None:
+                        hasClass = true;
+                        break;
+                    case RequiredClass.Warrior:
+                    case RequiredClass.Assassin:
+                    case RequiredClass.Wizard:
+                    case RequiredClass.Taoist:
+                        hasClass = listClass.Contains(itemClass.ToString());
+                        break;
+                    case RequiredClass.WarWizTao:
+                        hasClass = listClass.Contains(RequiredClass.Warrior.ToString()) || listClass.Contains(RequiredClass.Wizard.ToString()) || listClass.Contains(RequiredClass.Taoist.ToString());
+                        break;
+                    case RequiredClass.WizTao:
+                        hasClass = listClass.Contains(RequiredClass.Taoist.ToString()) || listClass.Contains(RequiredClass.Wizard.ToString());
+                        break;
+                    case RequiredClass.AssWar:
+                        hasClass = listClass.Contains(RequiredClass.Warrior.ToString()) || listClass.Contains(RequiredClass.Assassin.ToString());
+                        break;
+                }
             }
             return hasFilterType && hasRarity && hasClass;
         }
