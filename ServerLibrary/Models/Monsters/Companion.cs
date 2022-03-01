@@ -487,15 +487,15 @@ namespace Server.Models.Monsters
                 itemRarity = check.Info.Rarity;
                 itemClass = check.Info.RequiredClass;
             }
-            if (listType.Count > 0)
+            if (CompanionOwner.FiltersItemType.Length > 0)
             {
                 hasFilterType = listType.Contains(itemType.ToString());
             }
-            if (listRarity.Count > 0)
+            if (CompanionOwner.FiltersRarity.Length > 0)
             {
                 hasRarity = listRarity.Contains(itemRarity.ToString());
             }
-            if (listClass.Count > 0)
+            if (CompanionOwner.FiltersClass.Length > 0)
             {
                 switch(itemClass)
                 {
