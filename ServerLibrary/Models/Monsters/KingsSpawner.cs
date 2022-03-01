@@ -11,14 +11,14 @@ namespace Server.Models.Monsters
 {
     public class KingsSpawner : MonsterObject
     {
-        public MonsterInfo SpawnInfo;
+        public MonsterInfo MonsterSpawnInfo;
         public int NumberToSpawn;
 
         public override void Die()
         {
             base.Die();
 
-            if (SpawnInfo == null) return;
+            if (MonsterSpawnInfo == null) return;
             if(EXPOwner.GroupMembers != null)
             {
                 foreach (PlayerObject ob in EXPOwner.GroupMembers)
@@ -27,7 +27,7 @@ namespace Server.Models.Monsters
 
                     for (int i = 0; i < NumberToSpawn; i++)
                     {
-                        MonsterObject mob = GetMonster(SpawnInfo);
+                        MonsterObject mob = GetMonster(MonsterSpawnInfo);
                         mob.Spawn(CurrentMap, ob.CurrentLocation);
                     }
                 }
@@ -36,7 +36,7 @@ namespace Server.Models.Monsters
             {
                 for (int i = 0; i < NumberToSpawn; i++)
                 {
-                    MonsterObject mob = GetMonster(SpawnInfo);
+                    MonsterObject mob = GetMonster(MonsterSpawnInfo);
                     mob.Spawn(CurrentMap, EXPOwner.CurrentLocation);
                 }
             }

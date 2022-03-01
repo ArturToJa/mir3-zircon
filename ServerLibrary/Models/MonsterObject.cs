@@ -611,13 +611,15 @@ namespace Server.Models
                     return new KingsSpawner
                     {
                         MonsterInfo = monsterInfo,
-                        SpawnInfo = SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.KingsSpider),
+                        MonsterSpawnInfo = SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.KingsSpider),
+                        NumberToSpawn = 2
                     };
                 case 129:
                     return new KingsSpawner
                     {
                         MonsterInfo = monsterInfo,
-                        SpawnInfo = SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.KingsSalamander),
+                        MonsterSpawnInfo = SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.KingsSalamander),
+                        NumberToSpawn = 2
                     };
                 default:
                     return new MonsterObject { MonsterInfo = monsterInfo };
