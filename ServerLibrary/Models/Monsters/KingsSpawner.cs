@@ -16,9 +16,8 @@ namespace Server.Models.Monsters
 
         public override void Die()
         {
-            base.Die();
-
             if (MonsterSpawnInfo == null) return;
+
             if(EXPOwner.GroupMembers != null)
             {
                 foreach (PlayerObject ob in EXPOwner.GroupMembers)
@@ -40,6 +39,7 @@ namespace Server.Models.Monsters
                     mob.Spawn(CurrentMap, EXPOwner.CurrentLocation);
                 }
             }
+            base.Die();
         }
     }
 }
