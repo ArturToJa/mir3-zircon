@@ -273,6 +273,8 @@ namespace Server.Models
             ProcessAutoPotion();
 
             ProcessItemExpire();
+
+            ProcessLevelUp();
         }
         public override void ProcessAction(DelayedAction action)
         {
@@ -448,6 +450,35 @@ namespace Server.Models
             }
 
             AutoPotionCheckTime = SEnvir.Now.AddMilliseconds(200);
+        }
+
+        public void ProcessLevelUp()
+        {
+            bool changed = false;
+            int index = Math.Min(Globals.ExperienceList.Count - 1, ExperienceIndex + 1);
+            while(Experience > MaxExperience)
+            {
+                Globals.ExperienceData NextExpData = Globals.ExperienceList[index];
+                if (ExperienceIndex != (Globals.ExperienceList.Count - 1) && (NextExpData.Level - Level) * MaxExperience <= Experience)
+                {
+                    Experience -= (NextExpData.Level - Level) * MaxExperience;
+                    Level += NextExpData.Level - Level;
+                    ExperienceIndex++;
+                    index = Math.Min(Globals.ExperienceList.Count - 1, ExperienceIndex + 1);
+                    MaxExperience = NextExpData.Experience;
+                    changed = true;
+                }
+                else
+                {
+                    Level += (int)Math.Floor(Experience / MaxExperience);
+                    Experience -= (int)Math.Floor(Experience / MaxExperience) * MaxExperience;
+                    changed = true;
+                }
+            }
+            if(changed)
+            {
+                LevelUp();
+            }
         }
 
         private bool ProcessItemExpireForArray(UserItem[] itemArray, GridType gridType, TimeSpan ticks)
@@ -2233,20 +2264,6 @@ namespace Server.Models
                 amount *= 1M + Stats[Stat.BaseExperienceRate] / 100M;
             }
 
-            /*
-            if (Level >= 60)
-            {
-    
-                if (Level > gainLevel)
-                    amount -= Math.Min(amount, amount * Math.Min(0.9M, (Level - gainLevel) * 0.10M));
-            }
-            else
-            {
-                if (Level > gainLevel)
-                    amount -= Math.Min(amount, amount * Math.Min(0.3M, (Level - gainLevel) * 0.06M));
-            }
-            */
-
             if (amount == 0) return;
 
             Experience += amount;
@@ -2268,7 +2285,6 @@ namespace Server.Models
                 }
             }
 
-
             if (huntGold)
             {
                 BuffInfo buff = Buffs.First(x => x.Type == BuffType.HuntGold);
@@ -2288,11 +2304,11 @@ namespace Server.Models
                 return;
             }
 
-            Experience -= MaxExperience;
+/*            Experience -= MaxExperience;
 
 
             Level++;
-            LevelUp();
+            LevelUp();*/
         }
         public void LevelUp()
         {
