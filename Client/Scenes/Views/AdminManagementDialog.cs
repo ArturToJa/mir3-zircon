@@ -34,6 +34,10 @@ namespace Client.Scenes.Views
         public DXTextBox ItemNameBox;
         public DXNumberTextBox ItemAmountNumberBox;
 
+
+
+        public DXNumberTextBox ExpEventDurationNumberBox;
+
         public override WindowType Type => WindowType.CharacterBox;
         public override bool CustomSize => false;
         public override bool AutomaticVisiblity => true;
@@ -311,6 +315,44 @@ namespace Client.Scenes.Views
                 Border = true,
                 TabButton = { Label = { Text = "Event" } },
             };
+
+            DXButton executeExpEvent = new DXButton
+            {
+                Parent = EventTab,
+                Label = { Text = "ExpEvent", },
+                ButtonType = ButtonType.SmallButton,
+                Size = new Size(50, SmallButtonHeight)
+            };
+            executeExpEvent.Location = new Point(10, 10);
+            executeExpEvent.MouseClick += (o, e) =>
+            {
+                GameScene.Game.ReceiveChat("Executing Exp Event...", MessageType.System);
+                CEnvir.Enqueue(new C.ExpEvent
+                {
+                    Duration = (int)ExpEventDurationNumberBox.Value
+                });
+            };
+
+            ExpEventDurationNumberBox = new DXNumberTextBox
+            {
+                Parent = EventTab,
+                Border = true,
+                BorderColour = Color.FromArgb(198, 166, 99),
+                Location = new Point(executeExpEvent.Location.X + executeExpEvent.Size.Width + 30, 10),
+                Size = new Size(50, 18),
+                MaxValue = 9999999999,
+                MinValue = 1
+            };
+
+            ExpEventDurationNumberBox.Value = 300;
+
+            DXLabel label = new DXLabel
+            {
+                Parent = EventTab,
+                Text = "seconds"
+            };
+            label.Location = new Point(ExpEventDurationNumberBox.Location.X + ExpEventDurationNumberBox.Size.Width + 1, 10);
+
         }
     }
 }

@@ -627,7 +627,10 @@ namespace Library.SystemModels
 
         Random,
 
-        WeaponAddedStats
+        WeaponAddedStats,
+
+        ExpEventStarted,
+        BossEventStarted,
     }
     public enum Operator
     {

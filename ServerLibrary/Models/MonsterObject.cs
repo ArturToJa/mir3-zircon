@@ -621,6 +621,13 @@ namespace Server.Models
                         MonsterSpawnInfo = SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.KingsSalamander),
                         NumberToSpawn = 2
                     };
+                case 130:
+                    return new KingsSpawner
+                    {
+                        MonsterInfo = monsterInfo,
+                        MonsterSpawnInfo = SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.ExpChicken),
+                        NumberToSpawn = 8
+                    };
                 default:
                     return new MonsterObject { MonsterInfo = monsterInfo };
             }

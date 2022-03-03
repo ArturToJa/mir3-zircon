@@ -1332,6 +1332,8 @@ namespace Library
         KingsSpider = 206,
         KingsSalamander = 207,
 
+        ExpChicken = 208,
+
         Sacrafice = 210,
     }
 

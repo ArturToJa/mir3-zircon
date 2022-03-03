@@ -18,27 +18,31 @@ namespace Server.Models.Monsters
         {
             if (MonsterSpawnInfo == null) return;
 
-            if(EXPOwner.GroupMembers != null)
+            if(EXPOwner != null)
             {
-                foreach (PlayerObject ob in EXPOwner.GroupMembers)
+                if (EXPOwner.GroupMembers != null)
                 {
-                    if (ob.CurrentMap != CurrentMap || !Functions.InRange(ob.CurrentLocation, CurrentLocation, Config.MaxViewRange)) continue;
+                    foreach (PlayerObject ob in EXPOwner.GroupMembers)
+                    {
+                        if (ob.CurrentMap != CurrentMap || !Functions.InRange(ob.CurrentLocation, CurrentLocation, Config.MaxViewRange)) continue;
 
+                        for (int i = 0; i < NumberToSpawn; i++)
+                        {
+                            MonsterObject mob = GetMonster(MonsterSpawnInfo);
+                            mob.Spawn(CurrentMap, ob.CurrentLocation);
+                        }
+                    }
+                }
+                else
+                {
                     for (int i = 0; i < NumberToSpawn; i++)
                     {
                         MonsterObject mob = GetMonster(MonsterSpawnInfo);
-                        mob.Spawn(CurrentMap, ob.CurrentLocation);
+                        mob.Spawn(CurrentMap, EXPOwner.CurrentLocation);
                     }
                 }
             }
-            else 
-            {
-                for (int i = 0; i < NumberToSpawn; i++)
-                {
-                    MonsterObject mob = GetMonster(MonsterSpawnInfo);
-                    mob.Spawn(CurrentMap, EXPOwner.CurrentLocation);
-                }
-            }
+
             base.Die();
         }
     }

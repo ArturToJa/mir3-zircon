@@ -309,6 +309,7 @@ namespace Server.Envir
         public static List<ConquestWar> ConquestWars = new List<ConquestWar>();
 
         public static List<SpawnInfo> Spawns = new List<SpawnInfo>();
+        public static List<EventObject> Events = new List<EventObject>();
 
         private static float _DayTime;
         public static float DayTime
@@ -842,6 +843,7 @@ namespace Server.Envir
             Players.Clear();
 
             Spawns.Clear();
+            Events.Clear();
 
             _ObjectID = 0;
 
@@ -1028,6 +1030,10 @@ namespace Server.Envir
 
                         foreach (SpawnInfo spawn in Spawns)
                             spawn.DoSpawn(false);
+                        for(int i= Events.Count - 1; i > -1; i--)
+                        {
+                            Events[i].DoEvent();
+                        }
 
                         for (int i = ConquestWars.Count - 1; i >= 0; i--)
                             ConquestWars[i].Process();
@@ -3180,6 +3186,9 @@ namespace Server.Envir
             cInfo.ArmourColour = p.ArmourColour;
             cInfo.CreationIP = con.IPAddress;
             cInfo.CreationDate = Now;
+            cInfo.FiltersClass = "";
+            cInfo.FiltersItemType = "";
+            cInfo.FiltersRarity = "";
 
             cInfo.RankingNode = Rankings.AddLast(cInfo);
 

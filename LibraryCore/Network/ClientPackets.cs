@@ -391,6 +391,11 @@ namespace Library.Network.ClientPackets
         public string Name { get; set; }
     }
 
+    public sealed class ExpEvent : Packet
+    {
+        public int Duration { get; set; }
+    }
+
     public sealed class MarketPlaceHistory : Packet
     {
         public int Index { get; set; }

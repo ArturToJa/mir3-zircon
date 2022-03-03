@@ -812,6 +812,21 @@ namespace Server.Envir
             }
         }
 
+        public void Process(C.ExpEvent p)
+        {
+            if (Stage != GameStage.Game) return;
+            if (!Account.TempAdmin) return;
+
+            foreach(MapInfo info in SEnvir.MapInfoList.Binding)
+            {
+                if (!info.FileName.StartsWith("12_")) continue;
+                Map Map = SEnvir.GetMap(info, null, 0);
+                SpawnInfo spawn = SEnvir.Spawns.FirstOrDefault(x => x.CurrentMap == Map);
+                if (spawn == null) continue;
+                SEnvir.Events.Add(new EventObject(spawn, null, 0, SEnvir.Now.AddSeconds(p.Duration)));
+            }
+        }
+
         public void Process(C.MarketPlaceHistory p)
         {
             if (Stage != GameStage.Game && Stage != GameStage.Observer) return;

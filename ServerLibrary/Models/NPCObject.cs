@@ -426,6 +426,9 @@ namespace Server.Models
                     case NPCCheckType.Random:
                         if (!Compare(check.Operator, SEnvir.Random.Next(check.IntParameter1), check.IntParameter2)) return false;
                         break;
+                    case NPCCheckType.ExpEventStarted:
+                        if (!SEnvir.Events.Exists(x => x.CurrentMap.Info.FileName.StartsWith("12_"))) return false;
+                        break;
                 }
             }
             return true;
