@@ -440,10 +440,10 @@ namespace Server.Envir
 
             for (int i = AccountInfoList.Count - 1; i >= 0; i--)
             {
-                for(int j = AccountInfoList[i].Items.Count - 1; j >= 0; j--)
+                for (int j = AccountInfoList[i].Items.Count - 1; j >= 0; j--)
                 {
                     UserItem item = AccountInfoList[i].Items[j];
-                    if(item.Info == null)
+                    if (item.Info == null)
                     {
                         item.Slot = -1;
                         item.Character = null;
@@ -455,7 +455,7 @@ namespace Server.Envir
                         item.Delete();
                     }
                 }
-                for(int j = AccountInfoList[i].Characters.Count - 1; j >= 0; j--)
+                for (int j = AccountInfoList[i].Characters.Count - 1; j >= 0; j--)
                 {
                     for (int k = AccountInfoList[i].Characters[j].Items.Count - 1; k >= 0; k--)
                     {
@@ -492,9 +492,10 @@ namespace Server.Envir
                         }
                     }
                 }
+            }
 
 
-                GoldInfo = ItemInfoList.Binding.First(x => x.Effect == ItemEffect.Gold);
+            GoldInfo = ItemInfoList.Binding.First(x => x.Effect == ItemEffect.Gold);
             RefinementStoneInfo = ItemInfoList.Binding.First(x => x.Effect == ItemEffect.RefinementStone);
             FragmentInfo = ItemInfoList.Binding.First(x => x.Effect == ItemEffect.Fragment1);
             Fragment2Info = ItemInfoList.Binding.First(x => x.Effect == ItemEffect.Fragment2);
