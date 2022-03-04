@@ -163,40 +163,9 @@ namespace Server.Models
 
             Character.LastStats = Stats = new Stats();
 
-            foreach (UserCompanion companion in Character.Account.Companions)
-            {
-                for (int i = companion.Items.Count - 1; i >= 0; i--)
-                {
-                    UserItem item = companion.Items[i];
-                    if (item.Info == null)
-                    {
-                        item.Slot = -1;
-                        item.Character = null;
-                        item.Account = null;
-                        item.Mail = null;
-                        item.Auction = null;
-                        item.Companion = null;
-                        item.Guild = null;
-                        item.Delete();
-                    }
-                }
-            }
-
             for (int i = Character.Account.Items.Count - 1; i >= 0; i--)
             {
                 UserItem item = Character.Account.Items[i];
-                if (item.Info == null)
-                {
-                    item.Slot = -1;
-                    item.Character = null;
-                    item.Account = null;
-                    item.Mail = null;
-                    item.Auction = null;
-                    item.Companion = null;
-                    item.Guild = null;
-                    item.Delete();
-                    continue;
-                }
                 if (item.Slot >= 2000)
                 {
                     PartsStorage[item.Slot - Globals.PartsStorageOffset] = item;
@@ -208,18 +177,6 @@ namespace Server.Models
             for(int i = Character.Items.Count - 1; i >= 0; i--)
             {
                 UserItem item = Character.Items[i];
-                if (item.Info == null)
-                {
-                    item.Slot = -1;
-                    item.Character = null;
-                    item.Account = null;
-                    item.Mail = null;
-                    item.Auction = null;
-                    item.Companion = null;
-                    item.Guild = null;
-                    item.Delete();
-                    continue;
-                }
                 if (item.Slot >= Globals.EquipmentOffSet)
                 {
                     Equipment[item.Slot - Globals.EquipmentOffSet] = item;
