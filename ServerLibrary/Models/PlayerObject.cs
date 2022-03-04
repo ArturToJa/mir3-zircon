@@ -162,7 +162,27 @@ namespace Server.Models
             DisplayHP = CurrentHP;
 
             Character.LastStats = Stats = new Stats();
-            for(int i = Character.Account.Items.Count - 1; i >= 0; i--)
+
+            foreach (UserCompanion companion in Character.Account.Companions)
+            {
+                for (int i = companion.Items.Count - 1; i >= 0; i--)
+                {
+                    UserItem item = companion.Items[i];
+                    if (item.Info == null)
+                    {
+                        item.Slot = -1;
+                        item.Character = null;
+                        item.Account = null;
+                        item.Mail = null;
+                        item.Auction = null;
+                        item.Companion = null;
+                        item.Guild = null;
+                        item.Delete();
+                    }
+                }
+            }
+
+            for (int i = Character.Account.Items.Count - 1; i >= 0; i--)
             {
                 UserItem item = Character.Account.Items[i];
                 if (item.Info == null)
@@ -184,15 +204,6 @@ namespace Server.Models
                 else
                     Storage[item.Slot] = item;
             }
-/*            foreach (UserItem item in Character.Account.Items)
-            {
-                if (item.Slot >= 2000)
-                {
-                    PartsStorage[item.Slot - Globals.PartsStorageOffset] = item;
-                }
-                else
-                    Storage[item.Slot] = item;
-            }*/
                 
             for(int i = Character.Items.Count - 1; i >= 0; i--)
             {
@@ -217,16 +228,6 @@ namespace Server.Models
 
                 Inventory[item.Slot] = item;
             }
-/*            foreach (UserItem item in Character.Items)
-            {
-                if (item.Slot >= Globals.EquipmentOffSet)
-                {
-                    Equipment[item.Slot - Globals.EquipmentOffSet] = item;
-                    continue;
-                }
-
-                Inventory[item.Slot] = item;
-            }*/
 
             ItemReviveTime = info.ItemReviveTime;
             ItemTime = SEnvir.Now;
