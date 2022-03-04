@@ -1551,7 +1551,7 @@ namespace Server.Models
                             if (player.Level >= mInfo.NeedLevel3)
                                 level = 3;
 
-                            uMagic.Level = level;
+                            uMagic.Level = 5;
 
                             player.Enqueue(new S.MagicLeveled { InfoIndex = uMagic.Info.Index, Level = uMagic.Level, Experience = uMagic.Experience });
                         }
@@ -6558,6 +6558,7 @@ namespace Server.Models
                         magic = SEnvir.UserMagicList.CreateNewObject();
                         magic.Character = Character;
                         magic.Info = info;
+                        magic.Level = 5;
                         Magics[info.Magic] = magic;
 
                         Enqueue(new S.NewMagic { Magic = magic.ToClientInfo() });

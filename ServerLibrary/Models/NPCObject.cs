@@ -200,6 +200,7 @@ namespace Server.Models
                             magic = SEnvir.UserMagicList.CreateNewObject();
                             magic.Character = ob.Character;
                             magic.Info = info;
+                            magic.Level = 5;
                             ob.Magics[info.Magic] = magic;
 
                             ob.Enqueue(new S.NewMagic { Magic = magic.ToClientInfo() });
@@ -216,7 +217,7 @@ namespace Server.Models
                         info = SEnvir.MagicInfoList.Binding.First(x => x.Index == action.IntParameter1);
                         if (!ob.Magics.TryGetValue(info.Magic, out magic))
                         {
-                            magic.Level++;
+                            magic.Level = action.IntParameter2;
                             magic.Experience = 0;
 
                             ob.Enqueue(new S.MagicLeveled { InfoIndex = magic.Info.Index, Level = magic.Level, Experience = magic.Experience });
