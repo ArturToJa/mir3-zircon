@@ -174,6 +174,7 @@ namespace Client.Scenes
         public NPCMasterRefineDialog NPCMasterRefineBox;
         public MiniMapDialog MiniMapBox;
         public BigMapDialog BigMapBox;
+        public AnnouncementDialog AnnouncementBox;
         public MagicDialog MagicBox;
         public GroupDialog GroupBox;
         public BuffDialog BuffBox;
@@ -462,6 +463,9 @@ namespace Client.Scenes
             MiniMapBox = new MiniMapDialog
             {
                 Parent = this,
+            };
+            AnnouncementBox = new AnnouncementDialog
+            {
             };
             MagicBox = new MagicDialog()
             {
@@ -965,7 +969,6 @@ namespace Client.Scenes
                 MagicLabel.Location = new Point(x, y);
             }
 
-
             MonsterObject mob = MouseObject as MonsterObject;
 
             if (mob != null && mob.CompanionObject == null)
@@ -976,6 +979,8 @@ namespace Client.Scenes
                 if (mob != null && mob.CompanionObject == null && !FocusObject.Dead)
                     MonsterBox.Monster = mob;
             }
+
+            AnnouncementBox.Update();
         }
 
         public override void OnKeyDown(KeyEventArgs e)
@@ -4252,6 +4257,20 @@ namespace Client.Scenes
                         BigMapBox.Dispose();
 
                     BigMapBox = null;
+                }
+
+                if(AnnouncementBox != null)
+                {
+                    AnnouncementBox.Dispose();
+                    AnnouncementBox = null;
+                }
+
+                if(AdminManagementBox != null)
+                {
+                    if (!AdminManagementBox.IsDisposed)
+                        AdminManagementBox.Dispose();
+
+                    AdminManagementBox = null;
                 }
 
                 if (MagicBox != null)

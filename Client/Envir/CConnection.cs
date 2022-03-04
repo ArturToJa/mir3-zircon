@@ -2260,6 +2260,15 @@ namespace Client.Envir
         {
             if (GameScene.Game == null) return;
 
+            switch (p.Type)
+            {
+                case MessageType.Announcement:
+                    GameScene.Game.AnnouncementBox.AddNewLabel(p.Text);
+                    return;
+                default:
+                    break;
+            }
+
             GameScene.Game.ReceiveChat(p.Text, p.Type);
 
             if (p.Type != MessageType.Normal || p.ObjectID <= 0) return;

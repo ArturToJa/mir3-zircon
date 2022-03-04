@@ -45,6 +45,13 @@ namespace Server.Models
                     player.Teleport(player.Character.BindPoint.BindRegion, CurrentMap.Instance, CurrentMap.InstanceIndex);
                 }
                 SEnvir.Events.Remove(this);
+                for(int i = CurrentMap.Objects.Count - 1; i >= 0; i--)
+                {
+                    if (CurrentMap.Objects[i] == null || !(CurrentMap.Objects[i] is MonsterObject)) continue;
+                    MonsterObject monster = CurrentMap.Objects[i] as MonsterObject;
+                    monster.EXPOwner = null;
+                    monster.Die();
+                }
             }
         }
     }

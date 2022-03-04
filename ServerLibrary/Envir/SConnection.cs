@@ -825,6 +825,18 @@ namespace Server.Envir
                 if (spawn == null) continue;
                 SEnvir.Events.Add(new EventObject(spawn, null, 0, SEnvir.Now.AddSeconds(p.Duration)));
             }
+
+            foreach (SConnection con in SEnvir.Connections)
+            {
+                switch (con.Stage)
+                {
+                    case GameStage.Game:
+                    case GameStage.Observer:
+                        con.ReceiveChat(String.Format("Exp event started, you have {0}:{1} minutes to gain as many levels as possible.", p.Duration/60, p.Duration%60), MessageType.Announcement);
+                        break;
+                    default: continue;
+                }
+            }
         }
 
         public void Process(C.MarketPlaceHistory p)
