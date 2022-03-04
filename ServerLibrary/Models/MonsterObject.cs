@@ -628,6 +628,11 @@ namespace Server.Models
                         MonsterSpawnInfo = SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.ExpChicken),
                         NumberToSpawn = 8
                     };
+                case 131:
+                    return new InfernalSoldier
+                    {
+                        MonsterInfo = monsterInfo,
+                    };
                 default:
                     return new MonsterObject { MonsterInfo = monsterInfo };
             }
@@ -694,28 +699,28 @@ namespace Server.Models
             MoveDelay = MonsterInfo.MoveDelay;
             AttackDelay = MonsterInfo.AttackDelay;
 
-
             if (SummonLevel > 0)
             {
-                Stats[Stat.Health] += Stats[Stat.Health] * SummonLevel / 10;
+                int OwnerSC = PetOwner.GetSC();
+                Stats[Stat.Health] += OwnerSC * SummonLevel;
 
-                Stats[Stat.MinAC] += Stats[Stat.MinAC] * SummonLevel / 10;
-                Stats[Stat.MaxAC] += Stats[Stat.MaxAC] * SummonLevel / 10;
+                Stats[Stat.MinAC] += OwnerSC * SummonLevel / 20;
+                Stats[Stat.MaxAC] += OwnerSC * SummonLevel / 15;
 
-                Stats[Stat.MinMR] += Stats[Stat.MinMR] * SummonLevel / 10;
-                Stats[Stat.MaxMR] += Stats[Stat.MaxMR] * SummonLevel / 10;
+                Stats[Stat.MinMR] += OwnerSC * SummonLevel / 20;
+                Stats[Stat.MaxMR] += OwnerSC * SummonLevel / 15;
 
-                Stats[Stat.MinDC] += Stats[Stat.MinDC] * SummonLevel / 10;
-                Stats[Stat.MaxDC] += Stats[Stat.MaxDC] * SummonLevel / 10;
+                Stats[Stat.MinDC] += OwnerSC * SummonLevel / 10;
+                Stats[Stat.MaxDC] += OwnerSC * SummonLevel / 6;
 
-                Stats[Stat.MinMC] += Stats[Stat.MinMC] * SummonLevel / 10;
-                Stats[Stat.MaxMC] += Stats[Stat.MaxMC] * SummonLevel / 10;
+                Stats[Stat.MinMC] += OwnerSC * SummonLevel / 10;
+                Stats[Stat.MaxMC] += OwnerSC * SummonLevel / 6;
 
-                Stats[Stat.MinSC] += Stats[Stat.MinSC] * SummonLevel / 10;
-                Stats[Stat.MaxSC] += Stats[Stat.MaxSC] * SummonLevel / 10;
+                Stats[Stat.MinSC] += OwnerSC * SummonLevel / 10;
+                Stats[Stat.MaxSC] += OwnerSC * SummonLevel / 6;
 
-                Stats[Stat.Accuracy] += Stats[Stat.Accuracy] * SummonLevel / 10;
-                Stats[Stat.Agility] += Stats[Stat.Agility] * SummonLevel / 10;
+                Stats[Stat.Accuracy] += Stats[Stat.Accuracy] * SummonLevel / 6;
+                Stats[Stat.Agility] += Stats[Stat.Agility] * SummonLevel / 6;
             }
 
 

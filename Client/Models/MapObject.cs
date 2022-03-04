@@ -2151,7 +2151,7 @@ namespace Client.Models
                         #region Monster Scortched Earth
 
                         case MagicType.MonsterScortchedEarth:
-                            if (Config.DrawEffects && Race != ObjectType.Monster)
+                            if (Config.DrawEffects /*&& Race != ObjectType.Monster*/)
                                 foreach (Point point in MagicLocations)
                                 {
                                     Effects.Add(new MirEffect(220, 1, TimeSpan.FromMilliseconds(2500), LibraryFile.ProgUse, 0, 0, Globals.NoneColour)
