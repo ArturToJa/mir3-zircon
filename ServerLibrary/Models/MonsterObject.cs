@@ -701,23 +701,23 @@ namespace Server.Models
 
             if (SummonLevel > 0)
             {
-                int OwnerSC = PetOwner.GetSC();
-                Stats[Stat.Health] += OwnerSC * SummonLevel;
+                int OwnerSC = PetOwner.GetSC() / 1000;
+                Stats[Stat.Health] += Stats[Stat.Health] * OwnerSC * SummonLevel;
 
-                Stats[Stat.MinAC] += OwnerSC * SummonLevel / 20;
-                Stats[Stat.MaxAC] += OwnerSC * SummonLevel / 15;
+                Stats[Stat.MinAC] += Stats[Stat.MinAC] * OwnerSC * SummonLevel / 3;
+                Stats[Stat.MaxAC] += Stats[Stat.MaxAC] * OwnerSC * SummonLevel / 2;
 
-                Stats[Stat.MinMR] += OwnerSC * SummonLevel / 20;
-                Stats[Stat.MaxMR] += OwnerSC * SummonLevel / 15;
+                Stats[Stat.MinMR] += Stats[Stat.MinMR] * OwnerSC * SummonLevel / 3;
+                Stats[Stat.MaxMR] += Stats[Stat.MaxMR] * OwnerSC * SummonLevel / 2;
 
-                Stats[Stat.MinDC] += OwnerSC * SummonLevel / 10;
-                Stats[Stat.MaxDC] += OwnerSC * SummonLevel / 6;
+                Stats[Stat.MinDC] += Stats[Stat.MinDC] * OwnerSC * SummonLevel / 2;
+                Stats[Stat.MaxDC] += Stats[Stat.MaxDC] * OwnerSC * SummonLevel / 1;
 
-                Stats[Stat.MinMC] += OwnerSC * SummonLevel / 10;
-                Stats[Stat.MaxMC] += OwnerSC * SummonLevel / 6;
+                Stats[Stat.MinMC] += Stats[Stat.MinMC] * OwnerSC * SummonLevel / 2;
+                Stats[Stat.MaxMC] += Stats[Stat.MaxMC] * OwnerSC * SummonLevel / 1;
 
-                Stats[Stat.MinSC] += OwnerSC * SummonLevel / 10;
-                Stats[Stat.MaxSC] += OwnerSC * SummonLevel / 6;
+                Stats[Stat.MinSC] += Stats[Stat.MinSC] * OwnerSC * SummonLevel / 2;
+                Stats[Stat.MaxSC] += Stats[Stat.MaxSC] * OwnerSC * SummonLevel / 1;
 
                 Stats[Stat.Accuracy] += Stats[Stat.Accuracy] * SummonLevel / 6;
                 Stats[Stat.Agility] += Stats[Stat.Agility] * SummonLevel / 6;
