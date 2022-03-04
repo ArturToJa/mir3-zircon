@@ -162,17 +162,53 @@ namespace Server.Models
             DisplayHP = CurrentHP;
 
             Character.LastStats = Stats = new Stats();
-
-            foreach (UserItem item in Character.Account.Items)
+            for(int i = Character.Account.Items.Count - 1; i >= 0; i--)
+            {
+                UserItem item = Character.Account.Items[i];
+                if (item.Info == null)
+                {
+                    item.Slot = -1;
+                    item.Character = null;
+                    item.Account = null;
+                    item.Mail = null;
+                    item.Auction = null;
+                    item.Companion = null;
+                    item.Guild = null;
+                    item.Delete();
+                    continue;
+                }
                 if (item.Slot >= 2000)
                 {
                     PartsStorage[item.Slot - Globals.PartsStorageOffset] = item;
                 }
                 else
                     Storage[item.Slot] = item;
-
-            foreach (UserItem item in Character.Items)
+            }
+/*            foreach (UserItem item in Character.Account.Items)
             {
+                if (item.Slot >= 2000)
+                {
+                    PartsStorage[item.Slot - Globals.PartsStorageOffset] = item;
+                }
+                else
+                    Storage[item.Slot] = item;
+            }*/
+                
+            for(int i = Character.Items.Count - 1; i >= 0; i--)
+            {
+                UserItem item = Character.Items[i];
+                if (item.Info == null)
+                {
+                    item.Slot = -1;
+                    item.Character = null;
+                    item.Account = null;
+                    item.Mail = null;
+                    item.Auction = null;
+                    item.Companion = null;
+                    item.Guild = null;
+                    item.Delete();
+                    continue;
+                }
                 if (item.Slot >= Globals.EquipmentOffSet)
                 {
                     Equipment[item.Slot - Globals.EquipmentOffSet] = item;
@@ -181,6 +217,16 @@ namespace Server.Models
 
                 Inventory[item.Slot] = item;
             }
+/*            foreach (UserItem item in Character.Items)
+            {
+                if (item.Slot >= Globals.EquipmentOffSet)
+                {
+                    Equipment[item.Slot - Globals.EquipmentOffSet] = item;
+                    continue;
+                }
+
+                Inventory[item.Slot] = item;
+            }*/
 
             ItemReviveTime = info.ItemReviveTime;
             ItemTime = SEnvir.Now;
