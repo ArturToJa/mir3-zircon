@@ -2263,8 +2263,9 @@ namespace Client.Envir
             switch (p.Type)
             {
                 case MessageType.Announcement:
+                case MessageType.System:
                     GameScene.Game.AnnouncementBox.AddNewLabel(p.Text);
-                    return;
+                    break;
                 default:
                     break;
             }

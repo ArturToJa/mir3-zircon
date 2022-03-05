@@ -33,7 +33,9 @@ namespace Client.Scenes.Views
         public AnnouncementLabel window;
 
         public DateTime expireTime;
-        private int duration = 3;
+        private int duration = 8;
+        private int slideMiliseconds = 500;
+        private DateTime moveTime;
 
         public AnnouncementDialog()
         {
@@ -46,6 +48,7 @@ namespace Client.Scenes.Views
                 CanResizeWidth = false,
                 Opacity = 0.5f,
                 HasTitle = false,
+                BorderSize = 0,
                 
             };
             window.CloseButton.Visible = false;
@@ -76,20 +79,30 @@ namespace Client.Scenes.Views
                 if(label.Location.Y == window.Size.Height + label.Size.Height)
                 {
                     label.Text = announcements[0];
-                    label.Location = new Point((window.Size.Width - label.Size.Width) / 2, -50);
+                    label.Location = new Point((window.Size.Width - label.Size.Width) / 2, -label.Size.Height);
                     expireTime = CEnvir.Now.AddSeconds(duration);
+                    moveTime = CEnvir.Now.AddMilliseconds(slideMiliseconds / ((window.Size.Height - label.Size.Height) / 2) - label.Size.Height);
                 }
 
-                if(label.Location.Y != window.Size.Height / 2)
+                if(label.Location.Y != (window.Size.Height - label.Size.Height) / 2)
                 {
                     if(expireTime > CEnvir.Now)
                     {
-                        label.Location = new Point(label.Location.X, label.Location.Y + 1);
+                        if(moveTime <= CEnvir.Now)
+                        {
+                            label.Location = new Point(label.Location.X, label.Location.Y + 1);
+                            moveTime = CEnvir.Now.AddMilliseconds(slideMiliseconds / ((window.Size.Height - label.Size.Height) / 2) - label.Size.Height);
+                        }
+                        
                     }
                 }
                 if (expireTime <= CEnvir.Now)
                 {
-                    label.Location = new Point(label.Location.X, label.Location.Y + 1);
+                    if (moveTime <= CEnvir.Now)
+                    {
+                        label.Location = new Point(label.Location.X, label.Location.Y + 1);
+                        moveTime = CEnvir.Now.AddMilliseconds(slideMiliseconds / window.Size.Height + label.Size.Height -((window.Size.Height - label.Size.Height) / 2));
+                    }
                 }
                 if(label.Location.Y >= window.Size.Height + label.Size.Height)
                 {
