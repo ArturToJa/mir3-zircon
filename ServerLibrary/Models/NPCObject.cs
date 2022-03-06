@@ -277,6 +277,7 @@ namespace Server.Models
 
                         switch ((Element)check.IntParameter1)
                         {
+                            case Element.Null:
                             case Element.None:
                                 value += weap.Stats.GetWeaponElementValue();
                                 value += weap.Info.Stats.GetWeaponElementValue();

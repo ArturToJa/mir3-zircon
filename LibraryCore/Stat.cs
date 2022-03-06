@@ -395,6 +395,7 @@ namespace Library
                     return this[Stat.DarkResistance];
                 case Element.Phantom:
                     return this[Stat.PhantomResistance];
+                case Element.Null:
                 case Element.None:
                     return this[Stat.PhysicalResistance];
                 default:

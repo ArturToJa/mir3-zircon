@@ -13,6 +13,7 @@ using Server.Models;
 using G = Library.Network.GeneralPackets;
 using C = Library.Network.ClientPackets;
 using S = Library.Network.ServerPackets;
+using System.Text;
 
 namespace Server.Envir
 {
@@ -816,8 +817,9 @@ namespace Server.Envir
         {
             if (Stage != GameStage.Game) return;
             if (!Account.TempAdmin) return;
+            if (SEnvir.Events.Exists(x => x.CurrentMap.Info.FileName.StartsWith("12_"))) return;
 
-            foreach(MapInfo info in SEnvir.MapInfoList.Binding)
+            foreach (MapInfo info in SEnvir.MapInfoList.Binding)
             {
                 if (!info.FileName.StartsWith("12_")) continue;
                 Map Map = SEnvir.GetMap(info, null, 0);
@@ -832,7 +834,8 @@ namespace Server.Envir
                 {
                     case GameStage.Game:
                     case GameStage.Observer:
-                        con.ReceiveChat(String.Format("Exp event started, you have {0}:{1} minutes to gain as many levels as possible.", p.Duration/60, p.Duration%60), MessageType.Announcement);
+                        TimeSpan time = TimeSpan.FromSeconds(p.Duration);
+                        con.ReceiveChat(String.Format("Exp event started, you have {0:D2}h:{1:D2}m:{2:D2}s to gain as many levels as possible.", time.TotalHours, time.Minutes, time.Seconds), MessageType.Announcement);
                         break;
                     default: continue;
                 }

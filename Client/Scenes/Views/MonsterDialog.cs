@@ -466,6 +466,7 @@ namespace Client.Scenes.Views
 
                 switch (Monster.Stats.GetAffinityElement())
                 {
+                    case Element.Null:
                     case Element.None:
                         AttackIcon.Index = 1517;
                         AttackIcon.Hint = "Physical";
@@ -497,6 +498,8 @@ namespace Client.Scenes.Views
                     case Element.Phantom:
                         AttackIcon.Index = 1516;
                         AttackIcon.Hint = "Phantom";
+                        break;
+                    default:
                         break;
                 }
             }
@@ -522,6 +525,7 @@ namespace Client.Scenes.Views
 
                 switch (data.Stats.GetAffinityElement())
                 {
+                    case Element.Null:
                     case Element.None:
                         AttackIcon.Index = 1517;
                         AttackIcon.Hint = "Physical";
@@ -553,6 +557,8 @@ namespace Client.Scenes.Views
                     case Element.Phantom:
                         AttackIcon.Index = 1516;
                         AttackIcon.Hint = "Phantom";
+                        break;
+                    default:
                         break;
                 }
             }

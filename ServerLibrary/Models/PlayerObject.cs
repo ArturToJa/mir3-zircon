@@ -16244,6 +16244,7 @@ namespace Server.Models
 
             switch (element)
             {
+                case Element.Null:
                 case Element.None:
                     power -= power * ob.Stats[Stat.PhysicalResistance] / 10;
                     break;

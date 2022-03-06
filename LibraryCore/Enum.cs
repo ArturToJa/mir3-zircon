@@ -469,6 +469,7 @@ namespace Library
         Holy,
         Dark ,
         Phantom,
+        Null,
     }
 
     public enum MagicType

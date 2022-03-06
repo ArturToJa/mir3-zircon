@@ -52,6 +52,18 @@ namespace Server.Models
                     monster.EXPOwner = null;
                     monster.Die();
                 }
+
+                foreach (SConnection con in SEnvir.Connections)
+                {
+                    switch (con.Stage)
+                    {
+                        case GameStage.Game:
+                        case GameStage.Observer:
+                            con.ReceiveChat(String.Format("Exp event ended. See you next time ;)"), MessageType.Announcement);
+                            break;
+                        default: continue;
+                    }
+                }
             }
         }
     }

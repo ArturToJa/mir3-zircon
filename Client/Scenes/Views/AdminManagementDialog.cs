@@ -265,7 +265,7 @@ namespace Client.Scenes.Views
                     BorderColour = Color.FromArgb(198, 166, 99),
                     Location = new Point(140, label.Location.Y),
                     Size = new Size(100, 18),
-                    MaxValue = int.MaxValue,
+                    MaxValue = 10000,
                     MinValue = 0
 
                 };

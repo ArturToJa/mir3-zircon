@@ -4023,6 +4023,8 @@ namespace Client.Models
                         Target = this,
                     });
                     break;
+                case Element.Null:
+                    break;
             }
         }
 

@@ -68,7 +68,7 @@ namespace Server.Models.Monsters
             switch (SEnvir.Random.Next(5))
             {
                 case 0:
-                    LineAoE(12, -2, 2, MagicType.MonsterScortchedEarth, Element.None);
+                    LineAoE(ViewRange, -2, 2, MagicType.MonsterScortchedEarth, Element.Null);
                     break;
                 
                 default:
@@ -108,7 +108,7 @@ namespace Server.Models.Monsters
                                 ActionType.DelayAttack,
                                 ob,
                                 GetDC(),
-                                Element.Fire));
+                                Element.Null));
                         }
                     }
                     break;
