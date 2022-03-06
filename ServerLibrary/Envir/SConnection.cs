@@ -835,7 +835,7 @@ namespace Server.Envir
                     case GameStage.Game:
                     case GameStage.Observer:
                         TimeSpan time = TimeSpan.FromSeconds(p.Duration);
-                        con.ReceiveChat(String.Format("Exp event started, you have {0:D2}h:{1:D2}m:{2:D2}s to gain as many levels as possible.", time.TotalHours, time.Minutes, time.Seconds), MessageType.Announcement);
+                        con.ReceiveChat("Exp event started, you have " + time.ToString(@"hh\:mm\:ss") + " to gain as many levels as possible.", MessageType.Announcement);
                         break;
                     default: continue;
                 }
