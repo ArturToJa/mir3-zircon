@@ -513,6 +513,25 @@ namespace Server.Envir
                 }
             }
 
+            for (int i = AuctionInfoList.Count - 1; i >= 0; i--)
+            {
+                AuctionInfo info = AuctionInfoList[i];
+                if (info.Item == null) continue;
+                if (info.Item.Info == null)
+                {
+                    UserItem item = info.Item;
+                    item.Slot = -1;
+                    item.Character = null;
+                    item.Account = null;
+                    item.Mail = null;
+                    item.Auction = null;
+                    item.Companion = null;
+                    item.Guild = null;
+                    item.Delete();
+                    info.Delete();
+                }
+            }
+
 
             GoldInfo = ItemInfoList.Binding.First(x => x.Effect == ItemEffect.Gold);
             RefinementStoneInfo = ItemInfoList.Binding.First(x => x.Effect == ItemEffect.RefinementStone);
