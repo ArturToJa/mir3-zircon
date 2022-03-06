@@ -633,6 +633,11 @@ namespace Server.Models
                     {
                         MonsterInfo = monsterInfo,
                     };
+                case 132:
+                    return new DarkKing
+                    {
+                        MonsterInfo = monsterInfo,
+                    };
                 default:
                     return new MonsterObject { MonsterInfo = monsterInfo };
             }

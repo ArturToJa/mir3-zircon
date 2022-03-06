@@ -2041,6 +2041,18 @@ namespace Client.Models
                     //Fuckjed up Mob
 
                     break;
+                case MonsterImage.DarkChampion:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_48, out BodyLibrary);
+                    BodyShape = 0;
+                    break;
+                case MonsterImage.DarkGuard:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_48, out BodyLibrary);
+                    BodyShape = 1;
+                    break;
+                case MonsterImage.DarkKing:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_48, out BodyLibrary);
+                    BodyShape = 2;
+                    break;
                 default:
                     CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_1, out BodyLibrary);
                     BodyShape = 0;
