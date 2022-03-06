@@ -770,6 +770,12 @@ namespace Library
         [StatDescription(Title = "LevelUp", Format = "{0}", Mode = StatType.Default)]
         LevelUp,
 
+        [StatDescription(Title = "AC", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent)]
+        ACPercent,
+
+        [StatDescription(Title = "MR", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent)]
+        MRPercent,
+
         [StatDescription(Title = "Duration", Mode = StatType.Time)]
         Duration = 10000,
     }

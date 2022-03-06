@@ -2601,6 +2601,12 @@ namespace Server.Models
             Stats[Stat.MinSC] += (Stats[Stat.MinSC] * Stats[Stat.SCPercent]) / 100;
             Stats[Stat.MaxSC] += (Stats[Stat.MaxSC] * Stats[Stat.SCPercent]) / 100;
 
+            Stats[Stat.MinAC] += (Stats[Stat.MinAC] * Stats[Stat.ACPercent] / 100);
+            Stats[Stat.MaxAC] += (Stats[Stat.MaxAC] * Stats[Stat.ACPercent] / 100);
+
+            Stats[Stat.MinMR] += (Stats[Stat.MinMR] * Stats[Stat.MRPercent] / 100);
+            Stats[Stat.MaxMR] += (Stats[Stat.MaxMR] * Stats[Stat.MRPercent] / 100);
+
             Stats[Stat.Health] = Math.Max(10, Stats[Stat.Health]);
             Stats[Stat.Mana] = Math.Max(10, Stats[Stat.Mana]);
 

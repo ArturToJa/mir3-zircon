@@ -781,6 +781,12 @@ namespace Server.Models
             Stats[Stat.MinSC] += (int)(Stats[Stat.MinSC] * (long)Stats[Stat.SCPercent] / 100);
             Stats[Stat.MaxSC] += (int)(Stats[Stat.MaxSC] * (long)Stats[Stat.SCPercent] / 100);
 
+            Stats[Stat.MinAC] += (int)(Stats[Stat.MinAC] * (long)Stats[Stat.ACPercent] / 100);
+            Stats[Stat.MaxAC] += (int)(Stats[Stat.MaxAC] * (long)Stats[Stat.ACPercent] / 100);
+
+            Stats[Stat.MinMR] += (int)(Stats[Stat.MinMR] * (long)Stats[Stat.MRPercent] / 100);
+            Stats[Stat.MaxMR] += (int)(Stats[Stat.MaxMR] * (long)Stats[Stat.MRPercent] / 100);
+
             if (PetOwner == null && CurrentMap != null)
             {
                 Stats[Stat.Health] += (int)(Stats[Stat.Health] * (long)MapHealthRate / 100);

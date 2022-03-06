@@ -492,6 +492,25 @@ namespace Server.Envir
                         }
                     }
                 }
+
+                for (int j = AccountInfoList[i].Mail.Count - 1; j >= 0; j--)
+                {
+                    for (int k = AccountInfoList[i].Mail[j].Items.Count - 1; k >= 0; k--)
+                    {
+                        UserItem item = AccountInfoList[i].Mail[j].Items[k];
+                        if (item.Info == null)
+                        {
+                            item.Slot = -1;
+                            item.Character = null;
+                            item.Account = null;
+                            item.Mail = null;
+                            item.Auction = null;
+                            item.Companion = null;
+                            item.Guild = null;
+                            item.Delete();
+                        }
+                    }
+                }
             }
 
 
