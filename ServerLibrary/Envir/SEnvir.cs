@@ -3509,8 +3509,6 @@ namespace Server.Envir
                     Rank = rank,
                     Index = info.Index,
                     Class = info.Class,
-                    Experience = 0, //info.Experience,
-                    MaxExperience = 0, //info.Level >= Globals.ExperienceList.Count ? 0 : Globals.ExperienceList[info.Level],
                     Level = info.Level,
                     Name = info.CharacterName,
                     Online = info.Player != null,

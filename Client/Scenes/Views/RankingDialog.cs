@@ -528,11 +528,8 @@ namespace Client.Scenes.Views
                 OnlineImage.Index = Rank.Online ? 3625 : 3624;
 
                 ObseverButton.Enabled = Rank.Online && Rank.Observable;
-
-                decimal percent = 0;
-                percent = Math.Min(1, Math.Max(0, Rank.MaxExperience > 0 ? Rank.Experience / Rank.MaxExperience : 0));
                 
-                LevelLabel.Text = $"{Rank.Level} - {percent:0.##%}";
+                LevelLabel.Text = $"{Rank.Level}";
             }
 
             RankChanged?.Invoke(this, EventArgs.Empty);
