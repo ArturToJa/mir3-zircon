@@ -2307,13 +2307,31 @@ namespace Server.Models
                 SEnvir.RankingSort(Character);
                 return;
             }
-
-/*            Experience -= MaxExperience;
-
-
-            Level++;
-            LevelUp();*/
         }
+
+        private void RefreshBuff(BuffType type)
+        {
+            BuffInfo buff = Buffs.FirstOrDefault(x => x.Type == type);
+            
+            if (buff != null)
+            {
+                Stats newStats = new Stats();
+                foreach (KeyValuePair<Stat, int> stat in buff.Stats.Values)
+                {
+                    if(stat.Value == 6)
+                    {
+                        continue;
+                    }
+                    if (stat.Value > 0)
+                    {
+                        newStats[stat.Key] = 5 + (Level / 8);
+                    }
+                }
+                buff.Stats = newStats;
+                Enqueue(new S.BuffChanged { Index = buff.Index, Stats = newStats });
+            }
+        }
+
         public void LevelUp()
         {
             RefreshStats();
@@ -2326,8 +2344,10 @@ namespace Server.Models
 
             SEnvir.RankingSort(Character);
 
-            if (Character.Account.Characters.Max(x => x.Level) <= Level)
-                BuffRemove(BuffType.Veteran);
+            RefreshBuff(BuffType.BloodLust);
+            RefreshBuff(BuffType.ElementalSuperiority);
+            RefreshBuff(BuffType.MagicResistance);
+            RefreshBuff(BuffType.Resilience);
 
             ApplyGuildBuff();
         }
@@ -18601,7 +18621,6 @@ namespace Server.Models
             Stats buffStats = new Stats
             {
                 [Stat.MaxAC] = 5 + (ob.Level / 8),
-                [Stat.PhysicalResistance] = 1,
             };
 
             ob.BuffAdd(BuffType.Resilience, TimeSpan.FromSeconds((magic.GetPower() + GetSC() * 2)), buffStats, true, false, TimeSpan.Zero);
