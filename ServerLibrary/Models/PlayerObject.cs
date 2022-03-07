@@ -458,30 +458,33 @@ namespace Server.Models
 
         public void ProcessLevelUp()
         {
-            bool changed = false;
-            int index = Math.Min(Globals.ExperienceList.Count - 1, ExperienceIndex + 1);
-            while(Experience > MaxExperience)
+            if(Level < Config.MaxLevel)
             {
-                Globals.ExperienceData NextExpData = Globals.ExperienceList[index];
-                if (ExperienceIndex != (Globals.ExperienceList.Count - 1) && (NextExpData.Level - Level) * MaxExperience <= Experience)
+                bool changed = false;
+                int index = Math.Min(Globals.ExperienceList.Count - 1, ExperienceIndex + 1);
+                while (Experience > MaxExperience)
                 {
-                    Experience -= (NextExpData.Level - Level) * MaxExperience;
-                    Level += NextExpData.Level - Level;
-                    ExperienceIndex++;
-                    index = Math.Min(Globals.ExperienceList.Count - 1, ExperienceIndex + 1);
-                    MaxExperience = NextExpData.Experience;
-                    changed = true;
+                    Globals.ExperienceData NextExpData = Globals.ExperienceList[index];
+                    if (ExperienceIndex != (Globals.ExperienceList.Count - 1) && (NextExpData.Level - Level) * MaxExperience <= Experience)
+                    {
+                        Experience -= (NextExpData.Level - Level) * MaxExperience;
+                        Level = Math.Min(Config.MaxLevel, NextExpData.Level);
+                        ExperienceIndex++;
+                        index = Math.Min(Globals.ExperienceList.Count - 1, ExperienceIndex + 1);
+                        MaxExperience = NextExpData.Experience;
+                        changed = true;
+                    }
+                    else
+                    {
+                        Level = Math.Min(Config.MaxLevel, Level + (int)Math.Floor(Experience / MaxExperience));
+                        Experience -= (int)Math.Floor(Experience / MaxExperience) * MaxExperience;
+                        changed = true;
+                    }
                 }
-                else
+                if (changed)
                 {
-                    Level += (int)Math.Floor(Experience / MaxExperience);
-                    Experience -= (int)Math.Floor(Experience / MaxExperience) * MaxExperience;
-                    changed = true;
+                    LevelUp();
                 }
-            }
-            if(changed)
-            {
-                LevelUp();
             }
         }
 
@@ -2456,37 +2459,6 @@ namespace Server.Models
 
                     if (ele != Stat.None)
                         Stats[ele] += item.Stats.GetWeaponElementValue() + item.Info.Stats.GetWeaponElementValue();
-                }
-            }
-
-
-            if (GroupMembers != null && GroupMembers.Count >= 8)
-            {
-                int warrior = 0, wizard = 0, taoist = 0, assassin = 0;
-
-                foreach (PlayerObject ob in GroupMembers)
-                {
-                    switch (ob.Class)
-                    {
-                        case MirClass.Warrior:
-                            warrior++;
-                            break;
-                        case MirClass.Wizard:
-                            wizard++;
-                            break;
-                        case MirClass.Taoist:
-                            taoist++;
-                            break;
-                        case MirClass.Assassin:
-                            assassin++;
-                            break;
-                    }
-                }
-
-                if (warrior >= 2 && wizard >= 2 && taoist >= 2 && assassin >= 2)
-                {
-                    Stats[Stat.Health] += Stats[Stat.BaseHealth] / 10;
-                    Stats[Stat.Mana] += Stats[Stat.BaseMana] / 10;
                 }
             }
 
