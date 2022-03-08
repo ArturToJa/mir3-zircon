@@ -1074,6 +1074,20 @@ namespace Client.Models
                     library.DrawBlend(4874 + GameScene.Game.MapControl.Animation / 2 % 20, DrawX, DrawY, Color.White, useOffSet: true, 1f, ImageType.Image, 0);
                     library.DrawBlend(4898 + GameScene.Game.MapControl.Animation / 2 % 20, DrawX, DrawY, Color.White, useOffSet: true, 1f, ImageType.Image, 0);
                     break;
+                case 944:
+                case 954:
+                case 984:
+                case 994:
+                    library.DrawBlend(800 + GameScene.Game.MapControl.Animation / 2 % 16, DrawX, DrawY, Color.White, useOffSet: true, 0.7f, ImageType.Image, 0);
+                    break;
+                case 985:
+                case 995:
+                    library.DrawBlend(820 + GameScene.Game.MapControl.Animation / 2 % 13, DrawX, DrawY, Color.White, useOffSet: true, 0.7f, ImageType.Image, 0);
+                    break;
+                case 986:
+                case 996:
+                    library.DrawBlend(840 + GameScene.Game.MapControl.Animation / 2 % 16, DrawX, DrawY, Color.White, useOffSet: true, 0.7f, ImageType.Image, 0);
+                    break;
             }
             if (!CEnvir.LibraryList.TryGetValue(LibraryFile.EquipEffect_Part, out library))
             {
