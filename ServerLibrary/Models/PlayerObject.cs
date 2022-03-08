@@ -2197,7 +2197,7 @@ namespace Server.Models
                 Gender = target.Gender,
                 Stats = target.LastStats,
                 HermitStats = target.HermitStats,
-                HermitPoints = Math.Max(0, target.Level - 39 - target.SpentPoints),
+                HermitPoints = Math.Max(0, Math.Min(Config.MaxHermitPoints - target.SpentPoints, target.Level - 39 - target.SpentPoints)),
                 Level = target.Level,
 
                 Hair = target.HairType,

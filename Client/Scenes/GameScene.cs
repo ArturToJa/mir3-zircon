@@ -1463,9 +1463,30 @@ namespace Client.Scenes
             };
 
             ItemInfo displayInfo = MouseItem.Info;
+            string levelInfo = "";
+            switch (displayInfo.ItemType)
+            {
+                case ItemType.Weapon:
+                case ItemType.Armour:
+                case ItemType.Bracelet:
+                case ItemType.Ring:
+                case ItemType.Necklace:
+                case ItemType.Helmet:
+                case ItemType.Shoes:
+                case ItemType.Shield:
+                    levelInfo = " +" + MouseItem.Level.ToString();
+                    break;
+                default:
+                    break;
+            }
+            
 
             if (MouseItem.Info.Effect == ItemEffect.ItemPart)
+            {
                 displayInfo = Globals.ItemInfoList.Binding.First(x => x.Index == MouseItem.AddedStats[Stat.ItemIndex]);
+                levelInfo = "";
+            }
+                
             
 
             DXLabel label = new DXLabel
@@ -1473,7 +1494,7 @@ namespace Client.Scenes
                 ForeColour = Color.Yellow,
                 Location = new Point(4, 4),
                 Parent = ItemLabel,
-                Text = displayInfo.ItemName 
+                Text = displayInfo.ItemName + levelInfo
             };
 
             if (MouseItem.Info.Effect == ItemEffect.ItemPart)
@@ -2300,30 +2321,6 @@ namespace Client.Scenes
                     ItemLabel.Size = new Size(label.DisplayArea.Right + 4 > ItemLabel.Size.Width ? label.DisplayArea.Right + 4 : ItemLabel.Size.Width,
                         label.DisplayArea.Bottom > ItemLabel.Size.Height ? label.DisplayArea.Bottom : ItemLabel.Size.Height);
 
-                    if (MouseItem.Level < Globals.WeaponExperienceList.Count)
-                    {
-                        label = new DXLabel
-                        {
-                            Location = new Point(4, ItemLabel.DisplayArea.Bottom),
-                            Parent = ItemLabel,
-                        };
-
-                        if ((MouseItem.Flags & UserItemFlags.Refinable) == UserItemFlags.Refinable)
-                        {
-                            label.Text = "Ready for Refine";
-                            label.ForeColour = Color.LightGreen;
-                        }
-                        else
-                        {
-                            label.Text = $"{displayInfo.ItemType} Training Points: {MouseItem.Experience / Globals.WeaponExperienceList[MouseItem.Level]:0.##%}";
-                            label.ForeColour = Color.White;
-                        }
-
-
-
-                        ItemLabel.Size = new Size(label.DisplayArea.Right + 4 > ItemLabel.Size.Width ? label.DisplayArea.Right + 4 : ItemLabel.Size.Width,
-                            label.DisplayArea.Bottom > ItemLabel.Size.Height ? label.DisplayArea.Bottom : ItemLabel.Size.Height);
-                    }
                     ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 5);
                     break;
                 case ItemType.Necklace:
@@ -2343,30 +2340,6 @@ namespace Client.Scenes
                     ItemLabel.Size = new Size(label.DisplayArea.Right + 4 > ItemLabel.Size.Width ? label.DisplayArea.Right + 4 : ItemLabel.Size.Width,
                         label.DisplayArea.Bottom > ItemLabel.Size.Height ? label.DisplayArea.Bottom : ItemLabel.Size.Height);
 
-                    if (MouseItem.Level < Globals.AccessoryExperienceList.Count)
-                    {
-                        label = new DXLabel
-                        {
-                            Location = new Point(4, ItemLabel.DisplayArea.Bottom),
-                            Parent = ItemLabel,
-                        };
-
-                        if ((MouseItem.Flags & UserItemFlags.Refinable) == UserItemFlags.Refinable)
-                        {
-                            label.Text = "Ready for Refine";
-                            label.ForeColour = Color.LightGreen;
-                        }
-                        else
-                        {
-                            label.Text = $"{displayInfo.ItemType} Training Points: {MouseItem.Experience / Globals.AccessoryExperienceList[MouseItem.Level]:0.##%}";
-                            label.ForeColour = Color.White;
-                        }
-
-
-
-                        ItemLabel.Size = new Size(label.DisplayArea.Right + 4 > ItemLabel.Size.Width ? label.DisplayArea.Right + 4 : ItemLabel.Size.Width,
-                            label.DisplayArea.Bottom > ItemLabel.Size.Height ? label.DisplayArea.Bottom : ItemLabel.Size.Height);
-                    }
                     ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 5);
                     break;
 
