@@ -1126,12 +1126,6 @@ namespace Client.Controls
                         return false;
                     break;
 
-                case GridType.Repair:
-                    if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-                    if (GameScene.Game.NPCBox.Page.Types.All(x => x.ItemType != Item.Info.ItemType) || !Item.Info.CanRepair || Item.CurrentDurability >= Item.MaxDurability || (GameScene.Game.NPCRepairBox.SpecialCheckBox.Checked && CEnvir.Now < Item.NextSpecialRepair))
-                        return false;
-                    break;
-
                 case GridType.PartsStorage:
                     if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
                     if (!MapObject.User.InSafeZone) return false;
@@ -1546,7 +1540,7 @@ namespace Client.Controls
                     if ((CEnvir.Now < GameScene.Game.UseItemTime && Item.Info.Effect != ItemEffect.ElixirOfPurification) || MapObject.User.Horse != HorseType.None) return false;
 
 
-                    GameScene.Game.UseItemTime = CEnvir.Now.AddMilliseconds(Math.Max(250, Item.Info.Durability));
+                    GameScene.Game.UseItemTime = CEnvir.Now.AddMilliseconds(Math.Max(250, Item.Info.SetValue));
                     
 
                     Locked = true;
@@ -1763,15 +1757,6 @@ namespace Client.Controls
                             break;
                         case GridType.Inventory:
                             if (Item == null) return;
-
-                            if (GameScene.Game.NPCRepairBox.IsVisible)
-                            {
-                                if (Item.CurrentDurability >= Item.MaxDurability || !Item.Info.CanRepair)
-                                    GameScene.Game.ReceiveChat($"Unable to repair {Item.Info.ItemName}, it is already fully repaired.", MessageType.System);
-                                else if (!MoveItem(GameScene.Game.NPCRepairBox.Grid))
-                                    GameScene.Game.ReceiveChat($"Unable to repair {Item.Info.ItemName} here.", MessageType.System);
-                                return;
-                            }
 
                             if (GameScene.Game.NPCSellBox.IsVisible)
                             {
@@ -2030,15 +2015,6 @@ namespace Client.Controls
                         case GridType.CompanionInventory:
                             if (Item == null) return;
 
-                            if (GameScene.Game.NPCRepairBox.IsVisible)
-                            {
-                                if (Item.CurrentDurability >= Item.MaxDurability || !Item.Info.CanRepair)
-                                    GameScene.Game.ReceiveChat($"Unable to repair {Item.Info.ItemName}, it is already fully repaired.", MessageType.System);
-                                else if (!MoveItem(GameScene.Game.NPCRepairBox.Grid))
-                                    GameScene.Game.ReceiveChat($"Unable to repair {Item.Info.ItemName} here.", MessageType.System);
-                                return;
-                            }
-
                             if (GameScene.Game.NPCSellBox.IsVisible)
                             {
                                 if (!Item.Info.CanSell)
@@ -2195,15 +2171,6 @@ namespace Client.Controls
                         case GridType.Storage:
                             if (Item == null) return;
 
-                            if (GameScene.Game.NPCRepairBox.Visible)
-                            {
-                                if (Item.CurrentDurability >= Item.MaxDurability || !Item.Info.CanRepair)
-                                    GameScene.Game.ReceiveChat($"Unable to repair {Item.Info.ItemName}, it is already fully repaired.", MessageType.System);
-                                else if (!MoveItem(GameScene.Game.NPCRepairBox.Grid))
-                                    GameScene.Game.ReceiveChat($"Unable to repair {Item.Info.ItemName} here.", MessageType.System);
-                                return;
-                            }
-
                             if (GameScene.Game.NPCMasterRefineBox.IsVisible)
                             {
                                 switch (Item.Info.Effect)
@@ -2294,16 +2261,6 @@ namespace Client.Controls
                             return;
                         case GridType.GuildStorage:
                             if (Item == null) return;
-
-
-                            if (GameScene.Game.NPCRepairBox.Visible)
-                            {
-                                if (Item.CurrentDurability >= Item.MaxDurability || !Item.Info.CanRepair)
-                                    GameScene.Game.ReceiveChat($"Unable to repair {Item.Info.ItemName}, it is already fully repaired.", MessageType.System);
-                                else if (!MoveItem(GameScene.Game.NPCRepairBox.Grid))
-                                    GameScene.Game.ReceiveChat($"Unable to repair {Item.Info.ItemName} here.", MessageType.System);
-                                return;
-                            }
                             
                             if (GameScene.Game.MarketPlaceBox.ConsignTab.IsVisible)
                             {
@@ -2316,15 +2273,6 @@ namespace Client.Controls
                         case GridType.Equipment:
 
                             if (Item == null) return;
-                            
-                            if (GameScene.Game.NPCRepairBox.Visible)
-                            {
-                                if (Item.CurrentDurability >= Item.MaxDurability || !Item.Info.CanRepair)
-                                    GameScene.Game.ReceiveChat($"Unable to repair {Item.Info.ItemName}, it is already fully repaired.", MessageType.System);
-                                else if (!MoveItem(GameScene.Game.NPCRepairBox.Grid))
-                                    GameScene.Game.ReceiveChat($"Unable to repair {Item.Info.ItemName} here.", MessageType.System);
-                                return;
-                            }
 
                             if (GameScene.Game.NPCAccessoryLevelBox.IsVisible)
                             {
@@ -2363,17 +2311,6 @@ namespace Client.Controls
 
                             if (Item == null) return;
 
-                            if (GameScene.Game.NPCRepairBox.Visible)
-                            {
-                                if (Item.CurrentDurability >= Item.MaxDurability || !Item.Info.CanRepair)
-                                    GameScene.Game.ReceiveChat($"Unable to repair {Item.Info.ItemName}, it is already fully repaired.", MessageType.System);
-                                else if (!MoveItem(GameScene.Game.NPCRepairBox.Grid))
-                                    GameScene.Game.ReceiveChat($"Unable to repair {Item.Info.ItemName} here.", MessageType.System);
-                                return;
-                            }
-
-
-
                             if (!MoveItem(GameScene.Game.InventoryBox.Grid))
                                 GameScene.Game.ReceiveChat("No Free Space in Inventory.", MessageType.System);
 
@@ -2381,8 +2318,6 @@ namespace Client.Controls
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
-
-
                     break;
             }
 

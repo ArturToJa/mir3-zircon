@@ -157,7 +157,6 @@ namespace Client.Scenes
         public NPCDialog NPCBox;
         public NPCGoodsDialog NPCGoodsBox;
         public NPCSellDialog NPCSellBox;
-        public NPCRepairDialog NPCRepairBox;
         public NPCRefinementStoneDialog NPCRefinementStoneBox;
         public NPCRefineDialog NPCRefineBox;
         public NPCRefineRetrieveDialog NPCRefineRetrieveBox;
@@ -433,12 +432,6 @@ namespace Client.Scenes
                 Parent = this,
                 Visible = false,
             };
-
-            NPCRepairBox = new NPCRepairDialog
-            {
-                Parent = this,
-                Visible = false,
-            };
             NPCQuestBox = new NPCQuestDialog
             {
                 Parent = this,
@@ -702,8 +695,6 @@ namespace Client.Scenes
             NPCGoodsBox.Location = new Point(0, NPCBox.Size.Height);
 
             NPCSellBox.Location = new Point(NPCGoodsBox.Size.Width, NPCBox.Size.Height);
-
-            NPCRepairBox.Location = new Point(0, NPCBox.Size.Height);
 
             MiniMapBox.Location = new Point(Size.Width - MiniMapBox.Size.Width, 0);
 
@@ -1609,42 +1600,42 @@ namespace Client.Scenes
                         CreatePotionLabel();
                     break;
                 case ItemType.Book:
-                    if (MouseItem.Info.Durability > 0)
+                    if (MouseItem.Info.SetValue > 0)
                     {
                         label = new DXLabel
                         {
                             ForeColour = Color.White,
                             Location = new Point(ItemLabel.DisplayArea.Right, 4),
                             Parent = ItemLabel,
-                            Text = $"Pages: {MouseItem.CurrentDurability}/{MouseItem.MaxDurability}",
+                            Text = $"Pages: {MouseItem.SetValue}/100",
                         };
 
                         ItemLabel.Size = new Size(label.DisplayArea.Right + 4, ItemLabel.Size.Height);
                     }
                     break;
                 case ItemType.Meat:
-                    if (MouseItem.Info.Durability > 0)
+                    if (MouseItem.Info.SetValue > 0)
                     {
                         label = new DXLabel
                         {
-                            ForeColour = MouseItem.CurrentDurability == 0 ? Color.Red : Color.White,
+                            ForeColour = MouseItem.SetValue == 0 ? Color.Red : Color.White,
                             Location = new Point(ItemLabel.DisplayArea.Right, 4),
                             Parent = ItemLabel,
-                            Text = $"Quality: {Math.Round(MouseItem.CurrentDurability/1000M)}/{Math.Round(MouseItem.MaxDurability/1000M)}",
+                            Text = $"Quality: {Math.Round((decimal)MouseItem.SetValue)}",
                         };
 
                         ItemLabel.Size = new Size(label.DisplayArea.Right + 4, ItemLabel.Size.Height);
                     }
                     break;
                 case ItemType.Ore:
-                    if (MouseItem.Info.Durability > 0)
+                    if (MouseItem.Info.SetValue > 0)
                     {
                         label = new DXLabel
                         {
-                            ForeColour = MouseItem.CurrentDurability == 0 ? Color.Red : Color.White,
+                            ForeColour = MouseItem.SetValue == 0 ? Color.Red : Color.White,
                             Location = new Point(ItemLabel.DisplayArea.Right, 4),
                             Parent = ItemLabel,
-                            Text = $"Purity: {Math.Round(MouseItem.CurrentDurability/1000M)}",
+                            Text = $"Purity: {Math.Round(MouseItem.SetValue / 1000M)}",
                         };
 
                         ItemLabel.Size = new Size(label.DisplayArea.Right + 4, ItemLabel.Size.Height);
@@ -1851,23 +1842,6 @@ namespace Client.Scenes
             }
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
 
-
-            if (MouseItem.Info.Durability > 0 && !MouseItem.Info.CanRepair && MouseItem.Info.StackSize == 1)
-            {
-                label = new DXLabel
-                {
-                    ForeColour = Color.Yellow,
-                    Location = new Point(4, ItemLabel.DisplayArea.Bottom),
-                    Parent = ItemLabel,
-                    Text = "Cannot be repaired.",
-                };
-
-                ItemLabel.Size = new Size(label.DisplayArea.Right + 4 > ItemLabel.Size.Width ? label.DisplayArea.Right + 4 : ItemLabel.Size.Width,
-                    label.DisplayArea.Bottom > ItemLabel.Size.Height ? label.DisplayArea.Bottom : ItemLabel.Size.Height);
-                ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height);
-                spacer = true;
-            }
-
             if (!MouseItem.Info.CanSell || (MouseItem.Flags & UserItemFlags.Worthless) == UserItemFlags.Worthless)
             {
                 label = new DXLabel
@@ -2026,33 +2000,6 @@ namespace Client.Scenes
 
             if (spacer)
                 ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
-
-
-            if (MouseItem.Info.Durability > 0 && MouseItem.Info.CanRepair && MouseItem.Info.StackSize == 1 && MouseItem.Info.ItemType != ItemType.Book)
-            {
-                label = new DXLabel
-                {
-                    Location = new Point(4, ItemLabel.DisplayArea.Bottom),
-                    Parent = ItemLabel,
-                };
-
-                if (CEnvir.Now >= MouseItem.NextSpecialRepair)
-                {
-                    label.Text = "Can Special Repair";
-                    label.ForeColour = Color.LimeGreen;
-                }
-                else
-                {
-                    label.Text = $"Special Repair in {Functions.ToString(MouseItem.NextSpecialRepair - CEnvir.Now, true)}";
-                    label.ForeColour = Color.Red;
-                }
-
-
-                ItemLabel.Size = new Size(label.DisplayArea.Right + 4 > ItemLabel.Size.Width ? label.DisplayArea.Right + 4 : ItemLabel.Size.Width,
-                    label.DisplayArea.Bottom > ItemLabel.Size.Height ? label.DisplayArea.Bottom : ItemLabel.Size.Height);
-
-                ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 4);
-            }
 
             if ((MouseItem.Flags & UserItemFlags.Expirable) == UserItemFlags.Expirable)
             {
@@ -2224,19 +2171,6 @@ namespace Client.Scenes
             }
 
             DXLabel label;
-            if (MouseItem.Info.Durability > 0)
-            {
-                label = new DXLabel
-                {
-                    ForeColour = MouseItem.CurrentDurability == 0 ? Color.Red : Color.FromArgb(132, 255, 255),
-                    Location = new Point(ItemLabel.DisplayArea.Right, 4),
-                    Parent = ItemLabel,
-                    Text = $"Durability: {Math.Round(MouseItem.CurrentDurability/1000M)}/{Math.Round(MouseItem.MaxDurability/1000M)}",
-                };
-
-                ItemLabel.Size = new Size(label.DisplayArea.Right + 4, ItemLabel.Size.Height);
-            }
-
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 5);
 
             bool firstele = stats.HasElementalWeakness();
@@ -2388,14 +2322,14 @@ namespace Client.Scenes
             }
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 5);
 
-            if (MouseItem.Info.Durability > 0)
+            if (MouseItem.Info.SetValue > 0)
             {
                 label = new DXLabel
                 {
                     ForeColour = Color.White,
                     Location = new Point(4, ItemLabel.DisplayArea.Bottom),
                     Parent = ItemLabel,
-                    Text = $"Cooldown: {MouseItem.Info.Durability/1000M:#,##0.#} Seconds"
+                    Text = $"Cooldown: {MouseItem.Info.SetValue / 1000M:#,##0.#} Seconds"
                 };
 
                 ItemLabel.Size = new Size(label.DisplayArea.Right + 4 > ItemLabel.Size.Width ? label.DisplayArea.Right + 4 : ItemLabel.Size.Width,
@@ -2622,7 +2556,6 @@ namespace Client.Scenes
                     if (counted.Contains(j)) continue;
                     if (equip[j] == null) continue;
                     if (equip[j].Info != info) continue;
-                    if (equip[j].CurrentDurability == 0 && equip[j].Info.Durability > 0) continue;
                     
                     counted.Add(j);
 
@@ -3518,7 +3451,6 @@ namespace Client.Scenes
             NPCBox.CloseButton.Enabled = !Observer;
             NPCGoodsBox.CloseButton.Enabled = !Observer;
             NPCRefineBox.CloseButton.Enabled = !Observer;
-            NPCRepairBox.CloseButton.Enabled = !Observer;
             NPCSellBox.CloseButton.Enabled = !Observer;
             NPCRefineRetrieveBox.CloseButton.Enabled = !Observer;
         }
@@ -4105,14 +4037,6 @@ namespace Client.Scenes
                         NPCRefinementStoneBox.Dispose();
 
                     NPCRefinementStoneBox = null;
-                }
-
-                if (NPCRepairBox != null)
-                {
-                    if (!NPCRepairBox.IsDisposed)
-                        NPCRepairBox.Dispose();
-
-                    NPCRepairBox = null;
                 }
 
                 if (NPCRefineBox != null)

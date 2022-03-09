@@ -2044,45 +2044,7 @@ namespace Client.Envir
 
             fromCell.RefreshItem();
         }
-        public void Process(S.ItemDurability p)
-        {
-            DXItemCell[] grid;
 
-            switch (p.GridType)
-            {
-                case GridType.Inventory:
-                    grid = GameScene.Game.InventoryBox.Grid.Grid;
-                    break;
-                case GridType.Equipment:
-                    grid = GameScene.Game.CharacterBox.Grid;
-                    break;
-                case GridType.Storage:
-                    grid = GameScene.Game.StorageBox.Grid.Grid;
-                    break;
-                case GridType.PartsStorage:
-                    grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                    break;
-                case GridType.CompanionInventory:
-                    grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                    break;
-                case GridType.CompanionEquipment:
-                    grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-
-            DXItemCell fromCell = grid[p.Slot];
-
-            fromCell.Item.CurrentDurability = p.CurrentDurability;
-
-
-            if (p.CurrentDurability == 0)
-                GameScene.Game.ReceiveChat($"Your item {fromCell.Item.Info.ItemName} has dropped to durability 0", MessageType.System);
-
-            fromCell.RefreshItem();
-        }
         public void Process(S.StatsUpdate p)
         {
             MapObject.User.HermitPoints = p.HermitPoints;
@@ -2289,67 +2251,6 @@ namespace Client.Envir
         public void Process(S.NPCResponse p)
         {
             GameScene.Game.NPCBox.Response(p);
-        }
-        public void Process(S.NPCRepair p)
-        {
-            foreach (CellLinkInfo cellLinkInfo in p.Links)
-            {
-
-                DXItemCell[] grid;
-
-                switch (cellLinkInfo.GridType)
-                {
-                    case GridType.Inventory:
-                        grid = GameScene.Game.InventoryBox.Grid.Grid;
-                        break;
-                    case GridType.Equipment:
-                        grid = GameScene.Game.CharacterBox.Grid;
-                        break;
-                    case GridType.Storage:
-                        grid = GameScene.Game.StorageBox.Grid.Grid;
-                        break;
-                    case GridType.PartsStorage:
-                        grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                        break;
-                    case GridType.GuildStorage:
-                        if (GameScene.Game.Observer) continue;
-
-                        grid = GameScene.Game.GuildBox.StorageGrid.Grid;
-                        break;
-                    case GridType.CompanionInventory:
-                        grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                        break;
-                    case GridType.CompanionEquipment:
-                        grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-
-
-                DXItemCell cell = grid[cellLinkInfo.Slot];
-
-                cell.Locked = false;
-
-                if (!p.Success) continue;
-
-                cell.Link = null;
-
-                if (p.Special)
-                {
-                    cell.Item.CurrentDurability = cell.Item.MaxDurability;
-                    if (cell.Item.Info.ItemType != ItemType.Weapon && p.SpecialRepairDelay > TimeSpan.Zero)
-                        cell.Item.NextSpecialRepair = CEnvir.Now.Add(p.SpecialRepairDelay);
-                }
-                else
-                {
-                    cell.Item.MaxDurability = Math.Max(0, cell.Item.MaxDurability - (cell.Item.MaxDurability - cell.Item.CurrentDurability) / Globals.DuraLossRate);
-                    cell.Item.CurrentDurability = cell.Item.MaxDurability;
-                }
-
-                cell.RefreshItem();
-            }
         }
         public void Process(S.NPCRefine p)
         {

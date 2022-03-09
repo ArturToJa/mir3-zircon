@@ -542,12 +542,6 @@ namespace Library.Network.ServerPackets
         public int Slot { get; set; }
         public Stats NewStats { get; set; }
     }
-    public sealed class ItemDurability : Packet
-    {
-        public GridType GridType { get; set; }
-        public int Slot { get; set; }
-        public int CurrentDurability { get; set; }
-    }
     public sealed class GoldChanged : Packet
     {
         public long Gold { get; set; }
@@ -587,13 +581,7 @@ namespace Library.Network.ServerPackets
         public List<CellLinkInfo> Links { get; set; }
         public bool Success { get; set; }
     }
-    public sealed class NPCRepair : Packet
-    {
-        public List<CellLinkInfo> Links { get; set; }
-        public bool Special { get; set; }
-        public bool Success { get; set; }
-        public TimeSpan SpecialRepairDelay { get; set; }
-    }
+
     public sealed class NPCRefinementStone : Packet
     {
         public List<CellLinkInfo> IronOres { get; set; }

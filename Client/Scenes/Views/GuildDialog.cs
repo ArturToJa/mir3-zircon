@@ -429,11 +429,6 @@ namespace Client.Scenes.Views
             {
                 GameScene.Game.NPCGoodsBox.GuildCheckBox.Enabled = false;
                 GameScene.Game.NPCGoodsBox.GuildCheckBox.Checked = false;
-
-                GameScene.Game.NPCRepairBox.GuildCheckBox.Checked = false;
-                GameScene.Game.NPCRepairBox.GuildCheckBox.Enabled = false;
-
-                GameScene.Game.NPCRepairBox.GuildStorageButton.Enabled = false;
                 return;
             }
 
@@ -453,22 +448,11 @@ namespace Client.Scenes.Views
 
             //Market, Buy Repair
             GameScene.Game.NPCGoodsBox.GuildCheckBox.Enabled = (GuildInfo.Permission & GuildPermission.FundsMerchant) == GuildPermission.FundsMerchant;
-            GameScene.Game.NPCRepairBox.GuildCheckBox.Enabled = (GuildInfo.Permission & GuildPermission.FundsRepair) == GuildPermission.FundsRepair;
             GameScene.Game.MarketPlaceBox.BuyGuildBox.Enabled = (GuildInfo.Permission & GuildPermission.FundsMarket) == GuildPermission.FundsMarket;
             GameScene.Game.MarketPlaceBox.ConsignGuildBox.Enabled = (GuildInfo.Permission & GuildPermission.FundsMarket) == GuildPermission.FundsMarket;
-            GameScene.Game.NPCRepairBox.GuildStorageButton.Enabled = (GuildInfo.Permission & GuildPermission.Storage) == GuildPermission.Storage;
 
             if (!GameScene.Game.NPCGoodsBox.GuildCheckBox.Enabled)
                 GameScene.Game.NPCGoodsBox.GuildCheckBox.Checked = false;
-
-            if (!GameScene.Game.NPCRepairBox.GuildCheckBox.Enabled)
-                GameScene.Game.NPCRepairBox.GuildCheckBox.Checked = false;
-
-            if (!GameScene.Game.NPCRepairBox.GuildCheckBox.Enabled)
-            {
-                GameScene.Game.MarketPlaceBox.BuyGuildBox.Checked = false;
-                GameScene.Game.MarketPlaceBox.ConsignGuildBox.Checked = false;
-            }
         }
 
         #region Create Tab
@@ -2301,7 +2285,7 @@ namespace Client.Scenes.Views
 
         public DXTextBox RankTextBox;
 
-        public DXCheckBox LeaderBox, EditNoticeBox, AddMemberBox, StorageBox, RepairBox, MerchantBox, MarketBox, StartWarBox;
+        public DXCheckBox LeaderBox, EditNoticeBox, AddMemberBox, StorageBox, MerchantBox, MarketBox, StartWarBox;
         
         public DXButton ConfirmButton, KickButton;
 
@@ -2332,7 +2316,6 @@ namespace Client.Scenes.Views
             EditNoticeBox.Enabled = MemberIndex != GameScene.Game.GuildBox.GuildInfo.UserIndex;
             AddMemberBox.Enabled = MemberIndex != GameScene.Game.GuildBox.GuildInfo.UserIndex;
             StorageBox.Enabled = MemberIndex != GameScene.Game.GuildBox.GuildInfo.UserIndex;
-            RepairBox.Enabled = MemberIndex != GameScene.Game.GuildBox.GuildInfo.UserIndex;
             MerchantBox.Enabled = MemberIndex != GameScene.Game.GuildBox.GuildInfo.UserIndex;
             MarketBox.Enabled = MemberIndex != GameScene.Game.GuildBox.GuildInfo.UserIndex;
 
@@ -2369,7 +2352,6 @@ namespace Client.Scenes.Views
             EditNoticeBox.Checked = (Permission & GuildPermission.EditNotice) == GuildPermission.EditNotice;
             AddMemberBox.Checked = (Permission & GuildPermission.AddMember) == GuildPermission.AddMember;
             StorageBox.Checked = (Permission & GuildPermission.Storage) == GuildPermission.Storage;
-            RepairBox.Checked = (Permission & GuildPermission.FundsRepair) == GuildPermission.FundsRepair;
             MerchantBox.Checked = (Permission & GuildPermission.FundsMerchant) == GuildPermission.FundsMerchant;
             MarketBox.Checked = (Permission & GuildPermission.FundsMarket) == GuildPermission.FundsMarket;
             StartWarBox.Checked = (Permission & GuildPermission.StartWar) == GuildPermission.StartWar;
@@ -2464,22 +2446,13 @@ namespace Client.Scenes.Views
             StartWarBox.CheckedChanged += (o, e) => UpdatePermission();
             StartWarBox.Location = new Point(ClientArea.X + 94 - StartWarBox.Size.Width, StorageBox.Location.Y + 20);
 
-            RepairBox = new DXCheckBox
-            {
-                Parent = this,
-                Label = { Text = "Repair Fund:" },
-            };
-            RepairBox.CheckedChanged += (o, e) => UpdatePermission();
-            RepairBox.Location = new Point(ClientArea.X + 200 - RepairBox.Size.Width, EditNoticeBox.Location.Y );
-
-
             MerchantBox = new DXCheckBox
             {
                 Parent = this,
                 Label = { Text = "Merchant Fund:" },
             };
             MerchantBox.CheckedChanged += (o, e) => UpdatePermission();
-            MerchantBox.Location = new Point(ClientArea.X + 200 - MerchantBox.Size.Width, RepairBox.Location.Y + 20);
+            MerchantBox.Location = new Point(ClientArea.X + 200 - MerchantBox.Size.Width, EditNoticeBox.Location.Y + 20);
 
             MarketBox = new DXCheckBox
             {
@@ -2545,9 +2518,6 @@ namespace Client.Scenes.Views
 
             if (StorageBox.Checked)
                 permission |= GuildPermission.Storage;
-
-            if (RepairBox.Checked)
-                permission |= GuildPermission.FundsRepair;
 
             if (MerchantBox.Checked)
                 permission |= GuildPermission.FundsMerchant;
@@ -2624,14 +2594,6 @@ namespace Client.Scenes.Views
                         StorageBox.Dispose();
 
                     StorageBox = null;
-                }
-
-                if (RepairBox != null)
-                {
-                    if (!RepairBox.IsDisposed)
-                        RepairBox.Dispose();
-
-                    RepairBox = null;
                 }
 
                 if (MerchantBox != null)

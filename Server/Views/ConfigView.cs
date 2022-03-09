@@ -135,7 +135,6 @@ namespace Server.Views
             DropDistanceEdit.EditValue = Config.DropDistance;
             DropLayersEdit.EditValue = Config.DropLayers;
             TorchRateEdit.EditValue = Config.TorchRate;
-            SpecialRepairDelayEdit.EditValue = Config.SpecialRepairDelay;
             MaxLuckEdit.EditValue = Config.MaxLuck;
             LuckRateEdit.EditValue = Config.LuckRate;
             MaxCurseEdit.EditValue = Config.MaxCurse;
@@ -249,7 +248,6 @@ namespace Server.Views
             Config.DropDistance = (int)DropDistanceEdit.EditValue;
             Config.DropLayers = (int)DropLayersEdit.EditValue;
             Config.TorchRate = (int)TorchRateEdit.EditValue;
-            Config.SpecialRepairDelay = (TimeSpan)SpecialRepairDelayEdit.EditValue;
             Config.MaxLuck = (int)MaxLuckEdit.EditValue;
             Config.LuckRate = (int)LuckRateEdit.EditValue;
             Config.MaxCurse = (int)MaxCurseEdit.EditValue;

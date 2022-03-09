@@ -118,7 +118,6 @@ namespace Server.Envir
         public static int DropDistance { get; set; } = 5;
         public static int DropLayers { get; set; } = 5;
         public static int TorchRate { get; set; } = 10;
-        public static TimeSpan SpecialRepairDelay { get; set; } = TimeSpan.FromHours(8);
         public static int MaxLuck { get; set; } = 7;
         public static int MaxCurse { get; set; } = -10;
         public static int CurseRate { get; set; } = 20;

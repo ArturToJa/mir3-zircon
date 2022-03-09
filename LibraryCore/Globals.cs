@@ -413,8 +413,7 @@ namespace Library
         public int Index { get; set; } //ItemID
         public int InfoIndex { get; set; }
 
-        public int CurrentDurability { get; set; }
-        public int MaxDurability { get; set; }
+        public int SetValue { get; set; }
 
         public long Count { get; set; }
 
@@ -425,11 +424,10 @@ namespace Library
 
         public Color Colour { get; set; }
 
-        public TimeSpan SpecialRepairCoolDown { get; set; }
         public TimeSpan ResetCoolDown { get; set; }
 
         public bool New;
-        public DateTime NextSpecialRepair, NextReset;
+        public DateTime NextReset;
 
         public Stats AddedStats { get; set; }
 
@@ -458,7 +456,6 @@ namespace Library
         {
             Info = Globals.ItemInfoList.Binding.FirstOrDefault(x => x.Index == InfoIndex);
 
-            NextSpecialRepair = Time.Now + SpecialRepairCoolDown;
             NextReset = Time.Now + ResetCoolDown;
         }
 
@@ -468,8 +465,7 @@ namespace Library
         {
             Info = info;
             Count = count;
-            MaxDurability = info.Durability;
-            CurrentDurability = info.Durability;
+            SetValue = info.SetValue;
             Level = 1;
             AddedStats = new Stats();
         }
@@ -480,8 +476,7 @@ namespace Library
             Index = item.Index;
             InfoIndex = item.InfoIndex;
 
-            CurrentDurability = item.CurrentDurability;
-            MaxDurability = item.MaxDurability;
+            SetValue = item.SetValue;
 
             Count = count;
 
@@ -492,13 +487,10 @@ namespace Library
 
             Colour = item.Colour;
 
-            SpecialRepairCoolDown = item.SpecialRepairCoolDown;
-
             Flags = item.Flags;
             ExpireTime = item.ExpireTime;
 
             New = item.New;
-            NextSpecialRepair = item.NextSpecialRepair;
 
             AddedStats = new Stats(item.AddedStats);
         }
@@ -510,16 +502,6 @@ namespace Library
 
             decimal p = Info.Price;
 
-            if (Info.Durability > 0)
-            {
-                decimal r = Info.Price / 2M / Info.Durability;
-
-                p = MaxDurability * r;
-
-                r = MaxDurability > 0 ? CurrentDurability / (decimal)MaxDurability : 0;
-
-                p = Math.Floor(p / 2M + p / 2M * r + Info.Price / 2M);
-            }
 
             p = p * (AddedStats.Count * 0.1M + 1M);
 
@@ -535,19 +517,6 @@ namespace Library
             return (long)(p * count * Info.SellRate);
         }
 
-        public int RepairCost(bool special)
-        {
-            if (Info.Durability == 0 || CurrentDurability >= MaxDurability) return 0;
-
-            int rate = special ? 2 : 1;
-
-            decimal p = Math.Floor(MaxDurability * (Info.Price / 2M / Info.Durability) + Info.Price / 2M);
-            p = p * (AddedStats.Count * 0.1M + 1M);
-
-            return (int)(p * Count - Price(Count)) * rate;
-
-
-        }
         public bool CanAccessoryUpgrade()
         {
             switch (Info.ItemType)

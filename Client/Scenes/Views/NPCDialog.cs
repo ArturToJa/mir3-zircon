@@ -64,9 +64,6 @@ namespace Client.Scenes.Views
             if (GameScene.Game.NPCSellBox != null && !IsVisible)
                 GameScene.Game.NPCSellBox.Visible = false;
 
-            if (GameScene.Game.NPCRepairBox != null && !IsVisible)
-                GameScene.Game.NPCRepairBox.Visible = false;
-
             if (GameScene.Game.NPCRefinementStoneBox != null && !IsVisible)
                 GameScene.Game.NPCRefinementStoneBox.Visible = false;
 
@@ -184,7 +181,6 @@ namespace Client.Scenes.Views
 
             GameScene.Game.NPCGoodsBox.Visible = false;
             GameScene.Game.NPCSellBox.Visible = false;
-            GameScene.Game.NPCRepairBox.Visible = false;
             GameScene.Game.NPCRefineBox.Visible = false;
             GameScene.Game.NPCRefinementStoneBox.Visible = false;
             GameScene.Game.NPCRefineRetrieveBox.Visible = false;
@@ -210,10 +206,6 @@ namespace Client.Scenes.Views
                     GameScene.Game.NPCGoodsBox.NewGoods(Page.Goods);
                     GameScene.Game.NPCSellBox.Visible = Page.Types.Count > 0;
                     GameScene.Game.NPCSellBox.Location = GameScene.Game.NPCGoodsBox.Visible ? new Point(Size.Width - GameScene.Game.NPCSellBox.Size.Width, Size.Height) : new Point(0, Size.Height);
-                    break;
-                case NPCDialogType.Repair:
-                    GameScene.Game.NPCRepairBox.Visible = true;
-                    GameScene.Game.NPCRepairBox.Location = new Point(0, Size.Height);
                     break;
                 case NPCDialogType.RefinementStone:
                     GameScene.Game.NPCRefinementStoneBox.Visible = true;
@@ -900,11 +892,11 @@ namespace Client.Scenes.Views
                     RequirementLabel.Text = string.Empty;
                     break;
                 case ItemType.Meat:
-                    RequirementLabel.Text = $"Quality: {Good.Item.Durability/1000}";
+                    RequirementLabel.Text = $"Quality: {Good.Item.SetValue / 1000}";
                     RequirementLabel.ForeColour = Color.Wheat;
                     break;
                 case ItemType.Ore:
-                    RequirementLabel.Text = $"Purity: {Good.Item.Durability/1000}";
+                    RequirementLabel.Text = $"Purity: {Good.Item.SetValue / 1000}";
                     RequirementLabel.ForeColour = Color.Wheat;
                     break;
                 case ItemType.Consumable:
@@ -1318,322 +1310,6 @@ namespace Client.Scenes.Views
 
         #endregion
     }
-
-    public sealed class NPCRepairDialog : DXWindow
-    {
-        #region Properties
-        public DXItemGrid Grid;
-
-        public DXLabel GoldLabel;
-        public DXButton RepairButton, GuildStorageButton;
-        public DXCheckBox SpecialCheckBox;
-        public DXCheckBox GuildCheckBox;
-
-        public override void OnIsVisibleChanged(bool oValue, bool nValue)
-        {
-            base.OnIsVisibleChanged(oValue, nValue);
-
-            if (GameScene.Game.InventoryBox == null) return;
-
-            if (IsVisible)
-            {
-                GameScene.Game.InventoryBox.Visible = true;
-                GameScene.Game.CharacterBox.Visible = true;
-                GameScene.Game.StorageBox.Visible = true;
-            }
-
-            if (!IsVisible)
-                Grid.ClearLinks();
-        }
-
-        public override WindowType Type => WindowType.None;
-        public override bool CustomSize => false;
-        public override bool AutomaticVisiblity => false;
-
-        #endregion
-
-        public NPCRepairDialog()
-        {
-            TitleLabel.Text = "Repair Items";
-            Movable = false;
-
-            Grid = new DXItemGrid
-            {
-                GridSize = new Size(14, 5),
-                Parent = this,
-                GridType = GridType.Repair,
-                Linked = true
-            };
-
-            SetClientSize(new Size(Grid.Size.Width, Grid.Size.Height + 70));
-            Grid.Location = ClientArea.Location;
-
-            foreach (DXItemCell cell in Grid.Grid)
-                cell.LinkChanged += (o, e) => CalculateCost();
-
-
-            GoldLabel = new DXLabel
-            {
-                AutoSize = false,
-                Border = true,
-                BorderColour = Color.FromArgb(198, 166, 99),
-                ForeColour = Color.White,
-                DrawFormat = TextFormatFlags.VerticalCenter,
-                Parent = this,
-                Location = new Point(ClientArea.Left + 80, ClientArea.Bottom - 65),
-                Text = "0",
-                Size = new Size(ClientArea.Width - 80, 20),
-            };
-
-            new DXLabel
-            {
-                AutoSize = false,
-                Border = true,
-                BorderColour = Color.FromArgb(198, 166, 99),
-                ForeColour = Color.White,
-                DrawFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter,
-                Parent = this,
-                Location = new Point(ClientArea.Left, ClientArea.Bottom - 65),
-                Text = "Repair Cost:",
-                Size = new Size(79, 20),
-                IsControl = false,
-            };
-
-            DXButton inventory = new DXButton
-            {
-                Label = { Text = "Inventory" },
-                Location = new Point(ClientArea.X, GoldLabel.Location.Y + GoldLabel.Size.Height + 5),
-                ButtonType = ButtonType.SmallButton,
-                Parent = this,
-                Size = new Size(79, SmallButtonHeight)
-            };
-            inventory.MouseClick += (o, e) =>
-            {
-                foreach (DXItemCell cell in GameScene.Game.InventoryBox.Grid.Grid)
-                {
-                    if (!cell.CheckLink(Grid)) continue;
-
-                    cell.MoveItem(Grid, true);
-                }
-            };
-
-            DXButton equipment = new DXButton
-            {
-                Label = { Text = "Equipment" },
-                Location = new Point(ClientArea.X + 5 + inventory.Size.Width, GoldLabel.Location.Y + GoldLabel.Size.Height + 5),
-                ButtonType = ButtonType.SmallButton,
-                Parent = this,
-                Size = new Size(79, SmallButtonHeight)
-            };
-            equipment.MouseClick += (o, e) =>
-            {
-                foreach (DXItemCell cell in GameScene.Game.CharacterBox.Grid)
-                {
-                    if (!cell.CheckLink(Grid)) continue;
-
-                    cell.MoveItem(Grid, true);
-                }
-            };
-
-
-            DXButton storage = new DXButton
-            {
-                Label = { Text = "Storage" },
-                Location = new Point(ClientArea.X, GoldLabel.Location.Y + GoldLabel.Size.Height + inventory.Size.Height + 5 + 5),
-                ButtonType = ButtonType.SmallButton,
-                Parent = this,
-                Size = new Size(79, SmallButtonHeight),
-            };
-            storage.MouseClick += (o, e) =>
-            {
-                foreach (DXItemCell cell in GameScene.Game.StorageBox.Grid.Grid)
-                {
-                    if (!cell.CheckLink(Grid)) continue;
-
-                    cell.MoveItem(Grid, true);
-                }
-            };
-
-            GuildStorageButton = new DXButton
-            {
-                Label = { Text = "Guild Storage" },
-                Location = new Point(ClientArea.X + inventory.Size.Width + 5, GoldLabel.Location.Y + GoldLabel.Size.Height + inventory.Size.Height + 5 + 5),
-                ButtonType = ButtonType.SmallButton,
-                Parent = this,
-                Size = new Size(79, SmallButtonHeight),
-                Enabled = false,
-            };
-            GuildStorageButton.MouseClick += (o, e) =>
-            {
-                if (GameScene.Game.GuildBox.GuildInfo == null) return;
-
-                foreach (DXItemCell cell in GameScene.Game.GuildBox.StorageGrid.Grid)
-                {
-                    if (!cell.CheckLink(Grid)) continue;
-
-                    cell.MoveItem(Grid, true);
-                }
-            };
-
-
-            SpecialCheckBox = new DXCheckBox
-            {
-                Parent = this,
-                Label = { Text = "Special Repair" },
-                Checked = Config.SpecialRepair,
-            };
-            SpecialCheckBox.Location = new Point(ClientArea.Right - 80 - SpecialCheckBox.Size.Width - 5, GoldLabel.Location.Y + GoldLabel.Size.Height + 7);
-            SpecialCheckBox.CheckedChanged += (o, e) =>
-            {
-                Config.SpecialRepair = SpecialCheckBox.Checked;
-
-                if (SpecialCheckBox.Checked)
-                    foreach (DXItemCell cell in Grid.Grid)
-                    {
-                        if (cell.Item == null) continue;
-                        if (CEnvir.Now > cell.Item.NextSpecialRepair) continue;
-
-
-                        cell.Link = null;
-                    }
-
-                CalculateCost();
-            };
-
-
-            GuildCheckBox = new DXCheckBox
-            {
-                Parent = this,
-                Label = { Text = "Use Guild Funds" },
-                Enabled = false,
-            };
-            GuildCheckBox.Location = new Point(ClientArea.Right - 80 - GuildCheckBox.Size.Width - 5, GoldLabel.Location.Y + GoldLabel.Size.Height + SpecialCheckBox.Size.Height + 5 + 7);
-            GuildCheckBox.CheckedChanged += (o, e) => CalculateCost();
-
-
-            RepairButton = new DXButton
-            {
-                Label = { Text = "Repair" },
-                Location = new Point(ClientArea.Right - 80, GoldLabel.Location.Y + GoldLabel.Size.Height + 5),
-                ButtonType = ButtonType.SmallButton,
-                Parent = this,
-                Size = new Size(79, SmallButtonHeight),
-                Enabled = false,
-            };
-            RepairButton.MouseClick += (o, e) =>
-            {
-                if (GameScene.Game.Observer) return;
-
-                List<CellLinkInfo> links = new List<CellLinkInfo>();
-
-                foreach (DXItemCell cell in Grid.Grid)
-                {
-                    if (cell.Link == null) continue;
-
-                    links.Add(new CellLinkInfo { Count = cell.LinkedCount, GridType = cell.Link.GridType, Slot = cell.Link.Slot });
-
-                    cell.Link.Locked = true;
-                    cell.Link = null;
-                }
-
-                CEnvir.Enqueue(new C.NPCRepair { Links = links, Special = SpecialCheckBox.Checked, GuildFunds = GuildCheckBox.Checked });
-
-                GuildCheckBox.Checked = false;
-            };
-        }
-
-        #region Methods
-        private void CalculateCost()
-        {
-            int sum = 0;
-
-            int count = 0;
-            foreach (DXItemCell cell in Grid.Grid)
-            {
-                if (cell.Link?.Item == null) continue;
-
-                sum += cell.Link.Item.RepairCost(SpecialCheckBox.Checked);
-                count++;
-            }
-
-            if (GuildCheckBox.Checked)
-            {
-                GoldLabel.ForeColour = sum > GameScene.Game.GuildBox.GuildInfo.GuildFunds ? Color.Red : Color.White;
-            }
-            else
-            {
-                GoldLabel.ForeColour = sum > MapObject.User.Gold ? Color.Red : Color.White;
-            }
-
-            GoldLabel.Text = sum.ToString("#,##0");
-
-            RepairButton.Enabled = sum <= MapObject.User.Gold && count > 0;
-        }
-        #endregion
-
-        #region IDisposable
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-
-            if (disposing)
-            {
-                if (Grid != null)
-                {
-                    if (!Grid.IsDisposed)
-                        Grid.Dispose();
-
-                    Grid = null;
-                }
-
-                if (GoldLabel != null)
-                {
-                    if (!GoldLabel.IsDisposed)
-                        GoldLabel.Dispose();
-
-                    GoldLabel = null;
-                }
-
-                if (RepairButton != null)
-                {
-                    if (!RepairButton.IsDisposed)
-                        RepairButton.Dispose();
-
-                    RepairButton = null;
-                }
-
-                if (GuildStorageButton != null)
-                {
-                    if (!GuildStorageButton.IsDisposed)
-                        GuildStorageButton.Dispose();
-
-                    GuildStorageButton = null;
-                }
-                
-                if (SpecialCheckBox != null)
-                {
-                    if (!SpecialCheckBox.IsDisposed)
-                        SpecialCheckBox.Dispose();
-
-                    SpecialCheckBox = null;
-                }
-
-                if (GuildCheckBox != null)
-                {
-                    if (!GuildCheckBox.IsDisposed)
-                        GuildCheckBox.Dispose();
-
-                    GuildCheckBox = null;
-                }
-
-            }
-
-        }
-
-        #endregion
-    }
-
     public sealed class NPCRefineDialog : DXWindow
     {
         #region Properties
@@ -1661,9 +1337,6 @@ namespace Client.Scenes.Views
             {
                 case RefineType.None:
                     SubmitButton.Enabled = true;
-                    break;
-                case RefineType.Durability:
-                    DurabilityCheckBox.Checked = false;
                     break;
                 case RefineType.DC:
                     DCCheckBox.Checked = false;
@@ -1698,9 +1371,6 @@ namespace Client.Scenes.Views
             {
                 case RefineType.None:
                     SubmitButton.Enabled = false;
-                    break;
-                case RefineType.Durability:
-                    DurabilityCheckBox.Checked = true;
                     break;
                 case RefineType.DC:
                     DCCheckBox.Checked = true;
@@ -1772,7 +1442,7 @@ namespace Client.Scenes.Views
         
         public DXItemGrid BlackIronGrid, AccessoryGrid, SpecialGrid;
 
-        public DXCheckBox DurabilityCheckBox, DCCheckBox, SPCheckBox, FireCheckBox, IceCheckBox, LightningCheckBox, WindCheckBox, HolyCheckBox, DarkCheckBox, PhantomCheckBox;
+        public DXCheckBox DCCheckBox, SPCheckBox, FireCheckBox, IceCheckBox, LightningCheckBox, WindCheckBox, HolyCheckBox, DarkCheckBox, PhantomCheckBox;
         public DXButton SubmitButton;
 
         public DXComboBox RefineQualityBox;
@@ -2067,14 +1737,6 @@ namespace Client.Scenes.Views
                         SpecialGrid.Dispose();
 
                     SpecialGrid = null;
-                }
-
-                if (DurabilityCheckBox != null)
-                {
-                    if (!DurabilityCheckBox.IsDisposed)
-                        DurabilityCheckBox.Dispose();
-
-                    DurabilityCheckBox = null;
                 }
 
                 if (DCCheckBox != null)
@@ -2419,9 +2081,6 @@ namespace Client.Scenes.Views
 
             switch (Refine.Type)
             {
-                case RefineType.Durability:
-                    RefineTypeLabel.Text = "Durability";
-                    break;
                 case RefineType.DC:
                     RefineTypeLabel.Text = "DC";
                     break;

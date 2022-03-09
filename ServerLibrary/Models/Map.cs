@@ -507,25 +507,6 @@ namespace Server.Models
 
                         player.TakeItem(movement.NeedItem, 1);
                     }
-
-                    switch (movement.Effect)
-                    {
-                        case MovementEffect.SpecialRepair:
-                            player.SpecialRepair(EquipmentSlot.Weapon);
-                            player.SpecialRepair(EquipmentSlot.Shield);
-                            player.SpecialRepair(EquipmentSlot.Helmet);
-                            player.SpecialRepair(EquipmentSlot.Armour);
-                            player.SpecialRepair(EquipmentSlot.Necklace);
-                            player.SpecialRepair(EquipmentSlot.BraceletL);
-                            player.SpecialRepair(EquipmentSlot.BraceletR);
-                            player.SpecialRepair(EquipmentSlot.RingL);
-                            player.SpecialRepair(EquipmentSlot.RingR);
-                            player.SpecialRepair(EquipmentSlot.Shoes);
-
-                            player.RefreshStats();
-                            break;
-                    }
-
                 }
 
                 return cell.GetMovement(ob);

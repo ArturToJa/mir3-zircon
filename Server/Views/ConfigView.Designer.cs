@@ -204,7 +204,6 @@
             this.MaxLuckEdit = new DevExpress.XtraEditors.TextEdit();
             this.labelControl60 = new DevExpress.XtraEditors.LabelControl();
             this.labelControl59 = new DevExpress.XtraEditors.LabelControl();
-            this.SpecialRepairDelayEdit = new DevExpress.XtraEditors.TimeSpanEdit();
             this.TorchRateEdit = new DevExpress.XtraEditors.TextEdit();
             this.labelControl54 = new DevExpress.XtraEditors.LabelControl();
             this.DropLayersEdit = new DevExpress.XtraEditors.TextEdit();
@@ -308,7 +307,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.MaxCurseEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LuckRateEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxLuckEdit.Properties)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SpecialRepairDelayEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.TorchRateEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DropLayersEdit.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DropDistanceEdit.Properties)).BeginInit();

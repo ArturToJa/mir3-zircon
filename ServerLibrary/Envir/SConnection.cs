@@ -520,12 +520,6 @@ namespace Server.Envir
 
             Player.NPCSell(p.Links);
         }
-        public void Process(C.NPCRepair p)
-        {
-            if (Stage != GameStage.Game) return;
-
-            Player.NPCRepair(p);
-        }
         public void Process(C.NPCRefinementStone p)
         {
             if (Stage != GameStage.Game) return;

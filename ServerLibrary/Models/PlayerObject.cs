@@ -344,10 +344,10 @@ namespace Server.Models
 
             TorchTime = SEnvir.Now.AddSeconds(10);
 
-            DamageItem(GridType.Equipment, (int)EquipmentSlot.Torch, Config.TorchRate);
+            //DamageItem(GridType.Equipment, (int)EquipmentSlot.Torch, Config.TorchRate);
 
             UserItem torch = Equipment[(int)EquipmentSlot.Torch];
-            if (torch == null || torch.CurrentDurability != 0 || torch.Info.Durability <= 0) return;
+            if (torch == null || torch.SetValue != 0 || torch.Info.SetValue <= 0) return;
 
             RemoveItem(torch);
             Equipment[(int)EquipmentSlot.Torch] = null;
@@ -2433,7 +2433,7 @@ namespace Server.Models
 
             foreach (UserItem item in Equipment)
             {
-                if (item == null || (item.CurrentDurability == 0 && item.Info.Durability > 0)) continue;
+                if (item == null) continue;
 
                 if (item.Info.Set != null)
                 {
@@ -5799,13 +5799,8 @@ namespace Server.Models
                             if (!UseOilOfConservation()) return;
                             RefreshStats();
                             break;
-                        case 6: //WarGod
-                            work = SpecialRepair(EquipmentSlot.Weapon);
-
-                            work = SpecialRepair(EquipmentSlot.Shield) || work;
-
-                            if (!work) return;
-                            RefreshStats();
+                        case 6: //WarGod // none currently
+                            
                             break;
                         case 7: //Potion of Forgetfulness
                             if (Character.SpentPoints == 0) return;
@@ -5868,41 +5863,12 @@ namespace Server.Models
 
                             RefreshStats();
                             break;
-                        case 11: //Superior Repair Oil
+                        case 11: //Superior Repair Oil // none currently
 
-                            work = SpecialRepair(EquipmentSlot.Weapon);
-                            work = SpecialRepair(EquipmentSlot.Shield);
-
-                            work = SpecialRepair(EquipmentSlot.Helmet) || work;
-                            work = SpecialRepair(EquipmentSlot.Armour) || work;
-                            work = SpecialRepair(EquipmentSlot.Necklace) || work;
-                            work = SpecialRepair(EquipmentSlot.BraceletL) || work;
-                            work = SpecialRepair(EquipmentSlot.BraceletR) || work;
-                            work = SpecialRepair(EquipmentSlot.RingL) || work;
-                            work = SpecialRepair(EquipmentSlot.RingR) || work;
-                            work = SpecialRepair(EquipmentSlot.Shoes) || work;
-
-                            if (!work) return;
-                            RefreshStats();
                             break;
-                        case 12: //Accessory Repair Oil
-                            work = SpecialRepair(EquipmentSlot.Necklace);
-                            work = SpecialRepair(EquipmentSlot.BraceletL) || work;
-                            work = SpecialRepair(EquipmentSlot.BraceletR) || work;
-                            work = SpecialRepair(EquipmentSlot.RingL) || work;
-                            work = SpecialRepair(EquipmentSlot.RingR) || work;
-
-                            if (!work) return;
-                            RefreshStats();
+                        case 12: //Accessory Repair Oil // none currently
                             break;
-                        case 13: //Armour Repair Oil
-
-                            work = SpecialRepair(EquipmentSlot.Helmet);
-                            work = SpecialRepair(EquipmentSlot.Armour) || work;
-                            work = SpecialRepair(EquipmentSlot.Shoes) || work;
-
-                            if (!work) return;
-                            RefreshStats();
+                        case 13: //Armour Repair Oil // none currently
                             break;
                         case 14: //ElixirOfPurification
                             work = false;
@@ -5934,7 +5900,7 @@ namespace Server.Models
                             if (!work)
                             {
                                 if (SEnvir.Now.AddSeconds(3) > UseItemTime)
-                                    UseItemTime = UseItemTime.AddMilliseconds(item.Info.Durability);
+                                    UseItemTime = UseItemTime.AddMilliseconds(item.Info.SetValue);
 
                                 AutoPotionCheckTime = UseItemTime.AddMilliseconds(500);
                                 return;
@@ -6159,7 +6125,7 @@ namespace Server.Models
                                 if (armourInfo != null)
                                 {
                                     gainItem = SEnvir.CreateDropItem(armourInfo, 2);
-                                    gainItem.CurrentDurability = gainItem.MaxDurability;
+                                    gainItem.SetValue = gainItem.SetValue;
                                 }
                             }
 
@@ -6477,9 +6443,9 @@ namespace Server.Models
                     }
 
                     if (item.Info.Effect != ItemEffect.ElixirOfPurification || UseItemTime < SEnvir.Now)
-                        UseItemTime = SEnvir.Now.AddMilliseconds(item.Info.Durability);
+                        UseItemTime = SEnvir.Now.AddMilliseconds(item.Info.SetValue);
                     else
-                        UseItemTime = UseItemTime.AddMilliseconds(item.Info.Durability);
+                        UseItemTime = UseItemTime.AddMilliseconds(item.Info.SetValue);
 
                     AutoPotionCheckTime = UseItemTime.AddMilliseconds(500);
                     break;
@@ -6507,7 +6473,7 @@ namespace Server.Models
 
                     if (SEnvir.Now < UseItemTime || Horse != HorseType.None) return;
 
-                    if (SEnvir.Random.Next(100) >= item.CurrentDurability)
+                    if (SEnvir.Random.Next(100) >= item.SetValue)
                     {
                         Connection.ReceiveChat(Connection.Language.LearnBookFailed, MessageType.System);
 
@@ -7802,65 +7768,17 @@ namespace Server.Models
             return true;
         }
 
-        public bool DamageItem(GridType grid, int slot, int rate = 1, bool delayStats = false)
-        {
-            UserItem item;
-            switch (grid)
-            {
-                case GridType.Inventory:
-                    item = Inventory[slot];
-                    break;
-                case GridType.Equipment:
-                    item = Equipment[slot];
-                    break;
-                default:
-                    return false;
-            }
-
-            if (item == null || item.Info.Durability == 0 || item.CurrentDurability == 0) return false;
-
-            if ((item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-
-            switch (item.Info.ItemType)
-            {
-                case ItemType.Nothing:
-                case ItemType.Consumable:
-                case ItemType.Poison:
-                case ItemType.Amulet:
-                case ItemType.Scroll:
-                    return false;
-                case ItemType.Weapon:
-                    if (SEnvir.Random.Next(Stats[Stat.Strength]) > 0) return false;
-                    break;
-                default:
-                    if (SEnvir.Random.Next(3) == 0 && SEnvir.Random.Next(Stats[Stat.Strength]) > 0) return false;
-                    break;
-            }
-
-            item.CurrentDurability = Math.Max(0, item.CurrentDurability - rate);
-
-            Enqueue(new S.ItemDurability
-            {
-                GridType = grid,
-                Slot = slot,
-                CurrentDurability = item.CurrentDurability,
-            });
-
-            if (item.CurrentDurability == 0)
-            {
-                SendShapeUpdate();
-                RefreshStats();
-                return true;
-            }
-            return false;
-        }
         public void DamageDarkStone(int rate = 1)
         {
-            DamageItem(GridType.Equipment, (int)EquipmentSlot.Amulet, rate);
-
             UserItem stone = Equipment[(int)EquipmentSlot.Amulet];
+            if (stone == null) return; 
 
-            if (stone == null || stone.CurrentDurability != 0 || stone.Info.Durability <= 0) return;
+            if(stone.SetValue > 0)
+            {
+                stone.SetValue--;
+            }
+
+            if (stone.SetValue != 0 || stone.Info.SetValue <= 0) return;
 
             RemoveItem(stone);
             Equipment[(int)EquipmentSlot.Amulet] = null;
@@ -8035,23 +7953,6 @@ namespace Server.Models
                 weapon.StatsChanged();
                 result.NewStats[Stat.Strength]++;
             }
-
-            return true;
-        }
-
-        public bool SpecialRepair(EquipmentSlot slot)
-        {
-            UserItem item = Equipment[(int)slot];
-
-            if (item == null) return false;
-
-            if (item.CurrentDurability >= item.MaxDurability || !item.Info.CanRepair) return false;
-
-            if ((item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-
-            item.CurrentDurability = item.MaxDurability;
-
-            Enqueue(new S.NPCRepair { Links = new List<CellLinkInfo> { new CellLinkInfo { GridType = GridType.Equipment, Slot = (int)slot, Count = 1 } }, Special = true, Success = true, SpecialRepairDelay = TimeSpan.Zero });
 
             return true;
         }
@@ -10166,204 +10067,6 @@ namespace Server.Models
             }
         }
 
-        public void NPCRepair(C.NPCRepair p)
-        {
-            S.NPCRepair result = new S.NPCRepair { Links = p.Links, Special = p.Special, SpecialRepairDelay = Config.SpecialRepairDelay };
-            Enqueue(result);
-
-            if (Dead || NPC == null || NPCPage == null || NPCPage.DialogType != NPCDialogType.Repair) return;
-
-            if (!ParseLinks(result.Links, 0, 100)) return;
-
-            long cost = 0;
-            int count = 0;
-
-            foreach (CellLinkInfo link in p.Links)
-            {
-                UserItem[] array;
-                switch (link.GridType)
-                {
-                    case GridType.Inventory:
-                        array = Inventory;
-                        break;
-                    case GridType.Equipment:
-                        array = Equipment;
-                        break;
-                    case GridType.Storage:
-                        array = Storage;
-                        break;
-                    case GridType.GuildStorage:
-                        if (Character.Account.GuildMember == null) return;
-                        if ((Character.Account.GuildMember.Permission & GuildPermission.Storage) != GuildPermission.Storage) return;
-
-                        array = Character.Account.GuildMember.Guild.Storage;
-                        break;
-                    case GridType.CompanionInventory:
-                        if (Companion == null) return;
-
-                        array = Companion.Inventory;
-                        break;
-                    default:
-                        return;
-                }
-
-                if (link.Slot < 0 || link.Slot >= array.Length) return;
-                UserItem item = array[link.Slot];
-
-                if (item == null || !item.Info.CanRepair || item.Info.Durability == 0) return;
-                if ((item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return;
-
-                switch (item.Info.ItemType)
-                {
-                    case ItemType.Weapon:
-                    case ItemType.Armour:
-                    case ItemType.Helmet:
-                    case ItemType.Necklace:
-                    case ItemType.Bracelet:
-                    case ItemType.Ring:
-                    case ItemType.Shoes:
-                    case ItemType.Shield:
-                        break;
-                    default:
-                        Connection.ReceiveChat(string.Format(Connection.Language.RepairFail, item.Info.ItemName), MessageType.System);
-
-                        foreach (SConnection con in Connection.Observers)
-                            con.ReceiveChat(string.Format(con.Language.RepairFail, item.Info.ItemName), MessageType.System);
-                        return;
-                }
-
-                if (item.CurrentDurability >= item.MaxDurability)
-                {
-                    Connection.ReceiveChat(string.Format(Connection.Language.RepairFailRepaired, item.Info.ItemName), MessageType.System);
-
-                    foreach (SConnection con in Connection.Observers)
-                        con.ReceiveChat(string.Format(con.Language.RepairFailRepaired, item.Info.ItemName), MessageType.System);
-                    return;
-                }
-                if (NPCPage.Types.FirstOrDefault(x => x.ItemType == item.Info.ItemType) == null)
-                {
-                    Connection.ReceiveChat(string.Format(Connection.Language.RepairFailLocation, item.Info.ItemName), MessageType.System);
-
-                    foreach (SConnection con in Connection.Observers)
-                        con.ReceiveChat(string.Format(con.Language.RepairFailLocation, item.Info.ItemName), MessageType.System);
-                    return;
-                }
-                if (p.Special && SEnvir.Now < item.SpecialRepairCoolDown)
-                {
-                    Connection.ReceiveChat(string.Format(Connection.Language.RepairFailCooldown, item.Info.ItemName, Functions.ToString(item.SpecialRepairCoolDown - SEnvir.Now, false)), MessageType.System);
-
-                    foreach (SConnection con in Connection.Observers)
-                        con.ReceiveChat(string.Format(con.Language.RepairFailCooldown, item.Info.ItemName, Functions.ToString(item.SpecialRepairCoolDown - SEnvir.Now, false)), MessageType.System);
-                    return;
-                }
-
-
-                count++;
-                cost += array[link.Slot].RepairCost(p.Special);
-            }
-
-
-            if (p.GuildFunds)
-            {
-                if (Character.Account.GuildMember == null)
-                {
-                    Connection.ReceiveChat(Connection.Language.NPCRepairGuild, MessageType.System);
-                    return;
-                }
-                if ((Character.Account.GuildMember.Permission & GuildPermission.FundsRepair) != GuildPermission.FundsRepair)
-                {
-                    Connection.ReceiveChat(Connection.Language.NPCRepairPermission, MessageType.System);
-                    return;
-                }
-
-                if (cost > Character.Account.GuildMember.Guild.GuildFunds)
-                {
-                    Connection.ReceiveChat(string.Format(Connection.Language.NPCRepairGuildCost, Character.Account.GuildMember.Guild.GuildFunds - cost), MessageType.System);
-                    return;
-                }
-            }
-            else
-            {
-                if (cost > Gold)
-                {
-                    Connection.ReceiveChat(string.Format(Connection.Language.NPCRepairCost, Gold - cost), MessageType.System);
-
-                    foreach (SConnection con in Connection.Observers)
-                        con.ReceiveChat(string.Format(con.Language.NPCRepairCost, Gold - cost), MessageType.System);
-                    return;
-                }
-            }
-
-            bool refresh = false;
-            foreach (CellLinkInfo link in p.Links)
-            {
-                UserItem[] array = null;
-
-                switch (link.GridType)
-                {
-                    case GridType.Inventory:
-                        array = Inventory;
-                        break;
-                    case GridType.Equipment:
-                        array = Equipment;
-                        break;
-                    case GridType.Storage:
-                        array = Storage;
-                        break;
-                    case GridType.GuildStorage:
-                        array = Character.Account.GuildMember.Guild.Storage;
-                        break;
-                    case GridType.CompanionInventory:
-                        array = Companion.Inventory;
-                        break;
-                }
-
-                UserItem item = array[link.Slot];
-
-                if (item.CurrentDurability == 0 && link.GridType == GridType.Equipment)
-                    refresh = true;
-
-                if (p.Special)
-                {
-                    item.CurrentDurability = item.MaxDurability;
-
-                    if (item.Info.ItemType != ItemType.Weapon)
-                        item.SpecialRepairCoolDown = SEnvir.Now + Config.SpecialRepairDelay;
-                }
-                else
-                {
-                    item.MaxDurability = Math.Max(0, item.MaxDurability - (item.MaxDurability - item.CurrentDurability) / Globals.DuraLossRate);
-                    item.CurrentDurability = item.MaxDurability;
-                }
-            }
-
-            Connection.ReceiveChat(string.Format(p.Special ? Connection.Language.NPCRepairSpecialResult : Connection.Language.NPCRepairResult, count, cost), MessageType.System);
-
-            foreach (SConnection con in Connection.Observers)
-                con.ReceiveChat(string.Format(p.Special ? con.Language.NPCRepairSpecialResult : con.Language.NPCRepairResult, count, cost), MessageType.System);
-
-            result.Success = true;
-
-            if (p.GuildFunds)
-            {
-                Character.Account.GuildMember.Guild.GuildFunds -= cost;
-                Character.Account.GuildMember.Guild.DailyGrowth -= cost;
-
-                foreach (GuildMemberInfo member in Character.Account.GuildMember.Guild.Members)
-                {
-                    member.Account.Connection?.Player?.Enqueue(new S.GuildFundsChanged { Change = -cost, ObserverPacket = false });
-                    member.Account.Connection?.ReceiveChat(string.Format(member.Account.Connection.Language.NPCRepairGuildResult, Name, cost, count), MessageType.System);
-                }
-            }
-            else
-            {
-                Gold -= cost;
-                GoldChanged();
-            }
-
-            if (refresh)
-                RefreshStats();
-        }
         public void NPCRefinementStone(C.NPCRefinementStone p)
         {
             S.ItemsChanged result = new S.ItemsChanged
@@ -10442,7 +10145,7 @@ namespace Server.Models
 
                 if (item == null || item.Info.Effect != ItemEffect.IronOre) return;
 
-                ironPurity += item.CurrentDurability;
+                ironPurity += item.SetValue;
             }
             foreach (CellLinkInfo link in p.SilverOres)
             {
@@ -10469,7 +10172,7 @@ namespace Server.Models
 
                 if (item == null || item.Info.Effect != ItemEffect.SilverOre) return;
 
-                silverPurity += item.CurrentDurability;
+                silverPurity += item.SetValue;
             }
             foreach (CellLinkInfo link in p.DiamondOres)
             {
@@ -10496,7 +10199,7 @@ namespace Server.Models
 
                 if (item == null || item.Info.Effect != ItemEffect.Diamond) return;
 
-                diamondPurity += item.CurrentDurability;
+                diamondPurity += item.SetValue;
             }
             foreach (CellLinkInfo link in p.GoldOres)
             {
@@ -10523,7 +10226,7 @@ namespace Server.Models
 
                 if (item == null || item.Info.Effect != ItemEffect.GoldOre) return;
 
-                goldPurity += item.CurrentDurability;
+                goldPurity += item.SetValue;
             }
             foreach (CellLinkInfo link in p.Crystal)
             {
@@ -10750,7 +10453,6 @@ namespace Server.Models
 
             switch (p.RefineType)
             {
-                case RefineType.Durability:
                 case RefineType.DC:
                 case RefineType.SpellPower:
                 case RefineType.Fire:
@@ -10826,7 +10528,7 @@ namespace Server.Models
 
                 if ((item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return;
 
-                ore += item.CurrentDurability;
+                ore += item.SetValue;
             }
 
             foreach (CellLinkInfo link in p.Items)
@@ -11093,9 +10795,6 @@ namespace Server.Models
             {
                 switch (info.Type)
                 {
-                    case RefineType.Durability:
-                        weapon.MaxDurability += 2000;
-                        break;
                     case RefineType.DC:
                         weapon.AddStat(Stat.MaxDC, 1, StatSource.Refine);
                         break;
@@ -15374,10 +15073,8 @@ namespace Server.Models
             {
                 UserItem weap = Equipment[(int)EquipmentSlot.Weapon];
 
-                if (weap != null && weap.Info.Effect == ItemEffect.PickAxe && (weap.CurrentDurability > 0 || weap.Info.Durability > 0))
+                if (weap != null && weap.Info.Effect == ItemEffect.PickAxe)
                 {
-                    DamageItem(GridType.Equipment, (int)EquipmentSlot.Weapon, 4);
-
                     foreach (MineInfo info in CurrentMap.Info.Mining)
                     {
                         if (SEnvir.Random.Next(info.Chance) > 0) continue;
@@ -15800,7 +15497,6 @@ namespace Server.Models
 
             CheckBrown(ob);
 
-            DamageItem(GridType.Equipment, (int)EquipmentSlot.Weapon, SEnvir.Random.Next(2) + 1);
             if (hasDanceOfSallows && ob.Level < Level)
             {
                 magic = magics.FirstOrDefault(x => x.Info.Magic == MagicType.DanceOfSwallow);
@@ -16524,26 +16220,6 @@ namespace Server.Models
 
                 //if (StruckTime.AddMilliseconds(300) > ActionTime) ActionTime = StruckTime.AddMilliseconds(300);
                 Broadcast(new S.ObjectStruck { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, AttackerID = attacker.ObjectID, Element = element });
-
-                bool update = false;
-                for (int i = 0; i < Equipment.Length; i++)
-                {
-                    switch ((EquipmentSlot)i)
-                    {
-                        case EquipmentSlot.Amulet:
-                        case EquipmentSlot.Poison:
-                        case EquipmentSlot.Torch:
-                            continue;
-                    }
-
-                    update = DamageItem(GridType.Equipment, i, SEnvir.Random.Next(2) + 1, true) || update;
-                }
-
-                if (update)
-                {
-                    SendShapeUpdate();
-                    RefreshStats();
-                }
             }
 
 
@@ -17320,24 +16996,6 @@ namespace Server.Models
             }
             else
             {
-                if (Stats[Stat.PKPoint] >= Config.RedPoint)
-                {
-                    bool update = false;
-                    for (int i = 0; i < Equipment.Length; i++)
-                    {
-                        UserItem item = Equipment[i];
-                        if (item == null) continue;
-
-                        update = DamageItem(GridType.Equipment, i, item.Info.Durability / 10) || update;
-                    }
-
-                    if (update)
-                    {
-                        SendShapeUpdate();
-                        RefreshStats();
-                    }
-                }
-
                 Connection.ReceiveChat(Connection.Language.Died, MessageType.System);
 
                 foreach (SConnection con in Connection.Observers)
@@ -19669,7 +19327,7 @@ namespace Server.Models
 
             }
 
-            int chance = 100 - (oretargetItem.CurrentDurability / 1000);
+            int chance = 100 - (oretargetItem.SetValue / 1000);
             int success = 30;
             if (targetItem.Info.Rarity != Rarity.Common)
             {

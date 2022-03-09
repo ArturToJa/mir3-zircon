@@ -67,7 +67,6 @@ namespace Client.Envir
         public static bool ShowDamageNumbers { get; set; } = true;
         public static bool EscapeCloseAll { get; set; } = false;
         public static bool ShiftOpenChat { get; set; } = true;
-        public static bool SpecialRepair { get; set; } = true;
         public static bool RightClickDeTarget { get; set; } = true;
 
         public static bool MonsterBoxExpanded { get; set; } = true;

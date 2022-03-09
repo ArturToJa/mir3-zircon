@@ -1512,8 +1512,7 @@ namespace Server.Envir
             freshItem.Colour = item.Colour;
 
             freshItem.Info = item.Info;
-            freshItem.CurrentDurability = item.CurrentDurability;
-            freshItem.MaxDurability = item.MaxDurability;
+            freshItem.SetValue = item.SetValue;
 
             freshItem.Flags = item.Flags;
 
@@ -1548,8 +1547,7 @@ namespace Server.Envir
             item.Colour = Color.FromArgb(Random.Next(256), Random.Next(256), Random.Next(256));
 
             item.Info = info;
-            item.CurrentDurability = info.Durability;
-            item.MaxDurability = info.Durability;
+            item.SetValue = info.SetValue;
 
             return item;
         }
@@ -1574,7 +1572,6 @@ namespace Server.Envir
             UserItem item = UserItemList.CreateNewObject();
 
             item.Info = info;
-            item.MaxDurability = info.Durability;
 
             item.Colour = Color.FromArgb(Random.Next(256), Random.Next(256), Random.Next(256));
 
@@ -1623,19 +1620,19 @@ namespace Server.Envir
                 case ItemType.Bracelet:
                 case ItemType.Ring:
                 case ItemType.Shoes:
-                    item.CurrentDurability = Math.Min(Random.Next(info.Durability) + 1000, item.MaxDurability);
+                    item.SetValue = item.SetValue;
                     break;
                 case ItemType.Meat:
-                    item.CurrentDurability = Random.Next(info.Durability * 2) + 2000;
+                    item.SetValue = Random.Next(info.SetValue * 2) + 2000;
                     break;
                 case ItemType.Ore:
-                    item.CurrentDurability = Random.Next(info.Durability * 3) + 3000;
+                    item.SetValue = Random.Next(info.SetValue * 3) + 3000;
                     break;
                 case ItemType.Book:
-                    item.CurrentDurability = Random.Next(96) + 5; //0~95 + 5
+                    item.SetValue = Random.Next(96) + 5; //0~95 + 5
                     break;
                 default:
-                    item.CurrentDurability = info.Durability;
+                    item.SetValue = info.SetValue;
                     break;
             }
 

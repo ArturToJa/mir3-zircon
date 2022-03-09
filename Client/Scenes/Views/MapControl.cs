@@ -859,7 +859,7 @@ namespace Client.Scenes.Views
             {
                 ClientUserItem weap = GameScene.Game.Equipment[(int)EquipmentSlot.Weapon];
 
-                if (MapInfo.CanMine && weap != null && (weap.CurrentDurability > 0 || weap.Info.Durability == 0) && weap.Info.Effect == ItemEffect.PickAxe &&
+                if (MapInfo.CanMine && weap != null && weap.Info.Effect == ItemEffect.PickAxe &&
                     MiningPoint.X >= 0 && MiningPoint.Y >= 0 && MiningPoint.X < Width && MiningPoint.Y < Height && Cells[MiningPoint.Y][MiningPoint.X].Flag &&
                     Functions.Distance(MiningPoint, MapObject.User.CurrentLocation) == 1  && User.Horse == HorseType.None)
                 {

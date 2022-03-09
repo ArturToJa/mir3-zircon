@@ -127,7 +127,6 @@ namespace Library
         Equipment,
         Belt,
         Sell,
-        Repair,
         Storage,
         AutoPotion,
         RefineBlackIronOre,
@@ -424,7 +423,6 @@ namespace Library
     {
         None,
         BuySell,
-        Repair,
         Refine,
         RefineRetrieve,
         CompanionManage,
@@ -1055,7 +1053,6 @@ namespace Library
     public enum RefineType : byte
     {
         None,
-        Durability,
         DC,
         SpellPower,
         Fire,
@@ -1213,7 +1210,6 @@ namespace Library
     {
         None = 0,
 
-        SpecialRepair = 1,
     }
 
     public enum SpellKey : byte

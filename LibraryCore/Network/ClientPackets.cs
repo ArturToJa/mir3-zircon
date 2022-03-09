@@ -217,13 +217,6 @@ namespace Library.Network.ClientPackets
 
     }
 
-    public sealed class NPCRepair : Packet
-    {
-        public List<CellLinkInfo> Links { get; set; }
-        public bool Special { get; set; }
-        public bool GuildFunds { get; set; }
-    }
-
     public sealed class NPCRefine : Packet
     {
         public RefineType RefineType { get; set; }

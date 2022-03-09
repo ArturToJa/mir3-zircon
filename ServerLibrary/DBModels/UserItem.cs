@@ -25,35 +25,20 @@ namespace Server.DBModels
         }
         private ItemInfo _Info;
         
-        public int CurrentDurability
+        public int SetValue
         {
-            get { return _CurrentDurability; }
+            get { return _SetValue; }
             set
             {
-                if (_CurrentDurability == value) return;
+                if (_SetValue == value) return;
 
-                var oldValue = _CurrentDurability;
-                _CurrentDurability = value;
+                var oldValue = _SetValue;
+                _SetValue = value;
 
-                OnChanged(oldValue, value, "CurrentDurability");
+                OnChanged(oldValue, value, "SetValue");
             }
         }
-        private int _CurrentDurability;
-
-        public int MaxDurability
-        {
-            get { return _MaxDurability; }
-            set
-            {
-                if (_MaxDurability == value) return;
-
-                var oldValue = _MaxDurability;
-                _MaxDurability = value;
-
-                OnChanged(oldValue, value, "MaxDurability");
-            }
-        }
-        private int _MaxDurability;
+        private int _SetValue;
 
         public long Count
         {
@@ -129,21 +114,6 @@ namespace Server.DBModels
             }
         }
         private Color _Colour;
-
-        public DateTime SpecialRepairCoolDown
-        {
-            get { return _specialRepairCoolDown; }
-            set
-            {
-                if (_specialRepairCoolDown == value) return;
-
-                var oldValue = _specialRepairCoolDown;
-                _specialRepairCoolDown = value;
-
-                OnChanged(oldValue, value, "SpecialRepairCoolDown");
-            }
-        }
-        private DateTime _specialRepairCoolDown;
 
         public DateTime ResetCoolDown
         {
@@ -508,8 +478,7 @@ namespace Server.DBModels
 
                 InfoIndex = Info.Index,
 
-                CurrentDurability = CurrentDurability,
-                MaxDurability = MaxDurability,
+                SetValue = SetValue,
 
                 Count = Count,
                 
@@ -520,7 +489,6 @@ namespace Server.DBModels
 
                 Colour = Colour,
 
-                SpecialRepairCoolDown = SpecialRepairCoolDown > SEnvir.Now ? SpecialRepairCoolDown - SEnvir.Now : TimeSpan.Zero,
                 ResetCoolDown = ResetCoolDown > SEnvir.Now ? ResetCoolDown - SEnvir.Now : TimeSpan.Zero,
 
                 AddedStats = new Stats(Stats),
@@ -538,17 +506,6 @@ namespace Server.DBModels
 
             decimal p = Info.Price;
 
-            if (Info.Durability > 0)
-            {
-                decimal r = Info.Price / 2M / Info.Durability;
-
-                p = MaxDurability * r;
-
-                r = MaxDurability > 0 ? CurrentDurability / (decimal)MaxDurability : 0;
-
-                p = Math.Floor(p / 2M + p / 2M * r + Info.Price / 2M);
-            }
-
             p = p * (Stats.Count * 0.1M + 1M);
 
             if (Info.Stats[Stat.SaleBonus20] > 0 && Info.Stats[Stat.SaleBonus20] <= count)
@@ -561,17 +518,6 @@ namespace Server.DBModels
                 p *= 1.05M;
 
             return (long)(p * count * Info.SellRate);
-        }
-        public long RepairCost(bool special)
-        {
-            if (Info.Durability == 0 || CurrentDurability >= MaxDurability) return 0;
-
-            int rate = special ? 2 : 1;
-
-            decimal p = Math.Floor(MaxDurability * (Info.Price / 2M / Info.Durability) + Info.Price / 2M);
-            p = p * (Stats.Count * 0.1M + 1M);
-
-            return (long)(p * Count - Price(Count)) * rate;
         }
         public bool CanFragment()
         {

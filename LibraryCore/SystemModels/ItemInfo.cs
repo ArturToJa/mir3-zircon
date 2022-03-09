@@ -140,20 +140,20 @@ namespace Library.SystemModels
         }
         private int _Image;
 
-        public int Durability
+        public int SetValue
         {
-            get { return _Durability; }
+            get { return _SetValue; }
             set
             {
-                if (_Durability == value) return;
+                if (_SetValue == value) return;
 
-                var oldValue = _Durability;
-                _Durability = value;
+                var oldValue = _SetValue;
+                _SetValue = value;
 
-                OnChanged(oldValue, value, "Durability");
+                OnChanged(oldValue, value, "SetValue");
             }
         }
-        private int _Durability;
+        private int _SetValue;
 
         public int Price
         {
