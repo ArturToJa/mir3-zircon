@@ -423,6 +423,7 @@ namespace Library
     {
         None,
         BuySell,
+        Temporary,
         Refine,
         RefineRetrieve,
         CompanionManage,

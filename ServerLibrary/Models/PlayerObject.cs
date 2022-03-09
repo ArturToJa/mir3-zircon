@@ -2276,22 +2276,6 @@ namespace Server.Models
             Experience += amount;
             Enqueue(new S.GainedExperience { Amount = amount });
 
-            UserItem weapon = Equipment[(int)EquipmentSlot.Weapon];
-
-            if (weapon != null && weapon.Info.Effect != ItemEffect.PickAxe && (weapon.Flags & UserItemFlags.Refinable) != UserItemFlags.Refinable && (weapon.Flags & UserItemFlags.NonRefinable) != UserItemFlags.NonRefinable && weapon.Level < Globals.WeaponExperienceList.Count && rateEffected)
-            {
-                weapon.Experience += amount / 10;
-
-                if (weapon.Experience >= Globals.WeaponExperienceList[weapon.Level])
-                {
-                    weapon.Experience = 0;
-                    weapon.Level++;
-
-                    if (weapon.Level < Globals.WeaponExperienceList.Count)
-                        weapon.Flags |= UserItemFlags.Refinable;
-                }
-            }
-
             if (huntGold)
             {
                 BuffInfo buff = Buffs.First(x => x.Type == BuffType.HuntGold);

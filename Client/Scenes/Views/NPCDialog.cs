@@ -1310,6 +1310,52 @@ namespace Client.Scenes.Views
 
         #endregion
     }
+
+    public sealed class NPCUpgradeItemDialog : DXWindow
+    {
+        #region Properties
+
+        public DXItemGrid ItemToUpgradeGrid, SacrificeItemGrid, SpecialGrid;
+        public DXButton SubmitButton;
+
+        public DXLabel RequiredItem;
+        public DXLabel RequiredSpecial;
+        public DXLabel GoldCost;
+
+        public override void OnIsVisibleChanged(bool oValue, bool nValue)
+        {
+            base.OnIsVisibleChanged(oValue, nValue);
+
+            if (GameScene.Game.InventoryBox == null) return;
+
+            if (IsVisible)
+                GameScene.Game.InventoryBox.Visible = true;
+
+            if (!IsVisible)
+            {
+                ItemToUpgradeGrid.ClearLinks();
+                SacrificeItemGrid.ClearLinks();
+                SpecialGrid.ClearLinks();
+            }
+        }
+
+
+        public override WindowType Type => WindowType.None;
+        public override bool CustomSize => false;
+        public override bool AutomaticVisiblity => false;
+
+        #endregion
+
+        public NPCUpgradeItemDialog()
+        {
+            TitleLabel.Text = "Refine";
+
+
+
+            SetClientSize(new Size(491, 130));
+        }
+    }
+
     public sealed class NPCRefineDialog : DXWindow
     {
         #region Properties

@@ -416,7 +416,7 @@ namespace Server.DBModels
 
             Count = 1;
             Slot = -1;
-            Level = 1;
+            Level = 0;
         }
         protected override void OnLoaded()
         {

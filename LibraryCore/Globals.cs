@@ -235,6 +235,77 @@ namespace Library
             new ExperienceData(1000, 1000000)
         };
 
+        public struct EquipmentUpgradeCost
+        {
+            public int NumberOfItems;
+            public float GoldMultiplier;
+            public bool SpecialItem;
+        }
+
+        public static List<EquipmentUpgradeCost> EquipmentUpgradeList = new List<EquipmentUpgradeCost>
+        {
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 0,
+                GoldMultiplier = 1,
+                SpecialItem = false
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 0,
+                GoldMultiplier = 2,
+                SpecialItem = false
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 0,
+                GoldMultiplier = 3,
+                SpecialItem = false
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 1,
+                GoldMultiplier = 5,
+                SpecialItem = false
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 1,
+                GoldMultiplier = 7,
+                SpecialItem = false
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 1,
+                GoldMultiplier = 10,
+                SpecialItem = true
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 1,
+                GoldMultiplier = 13,
+                SpecialItem = true
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 2,
+                GoldMultiplier = 16,
+                SpecialItem = true
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 2,
+                GoldMultiplier = 20,
+                SpecialItem = true
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 2,
+                GoldMultiplier = 25,
+                SpecialItem = true
+            },
+        };
+
         public static List<decimal> WeaponExperienceList = new List<decimal>
         {
             0, //0
