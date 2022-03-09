@@ -88,6 +88,7 @@ namespace Server.Views
             builder.Append((info?.RequiredAmount.ToString() ?? "Required Amount") + ", ");
             builder.Append((info?.Image.ToString("00000") ?? "Image") + ", ");
             builder.Append((info?.Weight.ToString() ?? "Weight") + ", ");
+            builder.Append((info?.SetValue.ToString() ?? "Durability") + ", ");
             builder.Append((info?.Rarity.ToString() ?? "Rarity") + ", ");
 
             builder.Append((info == null ? "AC" : string.Format("{0}-{1}", info.Stats[Stat.MinAC], info.Stats[Stat.MaxAC])) + ", ");

@@ -393,7 +393,7 @@
             // 
             // colDurability
             // 
-            this.colDurability.FieldName = "Durability";
+            this.colDurability.FieldName = "SetValue";
             this.colDurability.Name = "colDurability";
             this.colDurability.Visible = true;
             this.colDurability.VisibleIndex = 10;
