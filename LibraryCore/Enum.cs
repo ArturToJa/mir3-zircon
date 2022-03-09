@@ -1339,6 +1339,8 @@ namespace Library
 
         ExpChicken = 208,
 
+        DemonicLunatic = 209,
+
         Sacrafice = 210,
     }
 

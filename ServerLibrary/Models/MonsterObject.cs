@@ -638,6 +638,18 @@ namespace Server.Models
                     {
                         MonsterInfo = monsterInfo,
                     };
+                case 133:
+                    return new DemonicLunatic
+                    {
+                        MonsterInfo = monsterInfo,
+                        MonsterSpawnInfo = SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.DemonicLunatic),
+                        count = 9
+                    };
+                case 134:
+                    return new DemonicLunaticMirror
+                    {
+                        MonsterInfo = monsterInfo,
+                    };
                 default:
                     return new MonsterObject { MonsterInfo = monsterInfo };
             }
