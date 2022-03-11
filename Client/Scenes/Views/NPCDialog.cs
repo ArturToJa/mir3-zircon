@@ -67,6 +67,10 @@ namespace Client.Scenes.Views
             if (GameScene.Game.NPCRefinementStoneBox != null && !IsVisible)
                 GameScene.Game.NPCRefinementStoneBox.Visible = false;
 
+            
+            if (GameScene.Game.NPCUpgradeBox != null && !IsVisible)
+                GameScene.Game.NPCUpgradeBox.Visible = false;
+
             if (GameScene.Game.NPCRefineBox != null && !IsVisible)
                 GameScene.Game.NPCRefineBox.Visible = false;
 
@@ -212,8 +216,8 @@ namespace Client.Scenes.Views
                     GameScene.Game.NPCRefinementStoneBox.Location = new Point(Size.Width - GameScene.Game.NPCRefinementStoneBox.Size.Width, Size.Height);
                     break;
                 case NPCDialogType.Refine:
-                    GameScene.Game.NPCRefineBox.Visible = true;
-                    GameScene.Game.NPCRefineBox.Location = new Point(Size.Width - GameScene.Game.NPCRefineBox.Size.Width, Size.Height);
+                    GameScene.Game.NPCUpgradeBox.Visible = true;
+                    GameScene.Game.NPCUpgradeBox.Location = new Point(Size.Width - GameScene.Game.NPCUpgradeBox.Size.Width, Size.Height);
                     break;
                 case NPCDialogType.MasterRefine:
                     GameScene.Game.NPCMasterRefineBox.Visible = true;
@@ -1322,6 +1326,9 @@ namespace Client.Scenes.Views
         public DXLabel RequiredSpecial;
         public DXLabel GoldCost;
 
+        private int sacrificeItems = 0;
+        private bool specialItems = false;
+
         public override void OnIsVisibleChanged(bool oValue, bool nValue)
         {
             base.OnIsVisibleChanged(oValue, nValue);
@@ -1336,6 +1343,8 @@ namespace Client.Scenes.Views
                 ItemToUpgradeGrid.ClearLinks();
                 SacrificeItemGrid.ClearLinks();
                 SpecialGrid.ClearLinks();
+                sacrificeItems = 0;
+                specialItems = false;
             }
         }
 
@@ -1350,10 +1359,212 @@ namespace Client.Scenes.Views
         {
             TitleLabel.Text = "Refine";
 
-
-
             SetClientSize(new Size(491, 130));
+            DXLabel label = new DXLabel
+            {
+                Text = "Item to upgrade",
+                Location = ClientArea.Location,
+                Parent = this,
+                Font = new Font(Config.FontName, CEnvir.FontSize(8F), FontStyle.Underline)
+            };
+
+            ItemToUpgradeGrid = new DXItemGrid
+            {
+                GridSize = new Size(1, 1),
+                Parent = this,
+                GridType = GridType.EquipmentUpgradeTarget,
+                Linked = true,
+                Location = new Point(label.Location.X + 5, label.Location.Y + label.Size.Height + 5)
+            };
+
+            RequiredItem = new DXLabel
+            {
+                Text = "Items to sacrifice",
+                Location = new Point(label.Location.X, ItemToUpgradeGrid.Location.Y + ItemToUpgradeGrid.Size.Height + 10),
+                Parent = this,
+                Font = new Font(Config.FontName, CEnvir.FontSize(8F), FontStyle.Underline)
+            };
+
+            SacrificeItemGrid = new DXItemGrid
+            {
+                GridSize = new Size(3, 1),
+                Parent = this,
+                GridType = GridType.EquipmentUpgradeItems,
+                Linked = true,
+                Location = new Point(RequiredItem.Location.X + 5, RequiredItem.Location.Y + RequiredItem.Size.Height + 5)
+            };
+
+            RequiredSpecial = new DXLabel
+            {
+                Text = "Special",
+                Location = new Point(SacrificeItemGrid.Location.X + SacrificeItemGrid.Size.Width + DXItemCell.CellWidth - 7, RequiredItem.Location.Y),
+                Parent = this,
+                Font = new Font(Config.FontName, CEnvir.FontSize(8F), FontStyle.Underline)
+            };
+
+            SpecialGrid = new DXItemGrid
+            {
+                GridSize = new Size(1, 1),
+                Parent = this,
+                GridType = GridType.EquipmentUpgradeSpecial,
+                Linked = true,
+                Location = new Point(RequiredSpecial.Location.X + 5, RequiredSpecial.Location.Y + RequiredSpecial.Size.Height + 5)
+            };
+            foreach (DXItemCell cell in ItemToUpgradeGrid.Grid)
+            {
+                cell.LinkChanged += ItemToUpgradeCell_LinkChanged;
+            }
+            foreach (DXItemCell cell in SacrificeItemGrid.Grid)
+            {
+                cell.LinkChanged += SacrificeItemCell_LinkChanged;
+            }
+            foreach (DXItemCell cell in SpecialGrid.Grid)
+            {
+                cell.LinkChanged += SpecialCell_LinkChanged;
+            }
+
+
+            GoldCost = new DXLabel
+            {
+                Parent = this,
+                Text = "0",
+                Font = new Font(Config.FontName, CEnvir.FontSize(8F), FontStyle.Underline)
+            };
+            GoldCost.Location = new Point(ClientArea.Right - GoldCost.Size.Width - 160, ItemToUpgradeGrid.Location.Y);
+
+            label = new DXLabel
+            {
+                Parent = this,
+                Text = "Gold Cost:",
+            };
+            label.Location = new Point(GoldCost.Location.X - label.Size.Width - 5, GoldCost.Location.Y + (GoldCost.Size.Height - label.Size.Height) / 2);
+
+            SubmitButton = new DXButton
+            {
+                Label = { Text = "Submit" },
+                Size = new Size(80, SmallButtonHeight),
+                Parent = this,
+                ButtonType = ButtonType.SmallButton,
+                Enabled = false,
+            };
+            SubmitButton.Location = new Point(ClientArea.Right - SubmitButton.Size.Width, ClientArea.Bottom - SubmitButton.Size.Height);
+            SubmitButton.MouseClick += (o, e) =>
+            {
+                if (GameScene.Game.Observer) return;
+
+                if (ItemToUpgradeGrid.Grid[0].Link == null) return;
+                CellLinkInfo itemInfo = new CellLinkInfo { Count = ItemToUpgradeGrid.Grid[0].LinkedCount, GridType = ItemToUpgradeGrid.Grid[0].Link.GridType, Slot = ItemToUpgradeGrid.Grid[0].Link.Slot };
+                ItemToUpgradeGrid.Grid[0].Link.Locked = true;
+                ItemToUpgradeGrid.Grid[0].Link = null;
+
+                List<CellLinkInfo> sacrificeItems = new List<CellLinkInfo>();
+                foreach (DXItemCell cell in SacrificeItemGrid.Grid)
+                {
+                    if (cell.Link == null) continue;
+
+                    sacrificeItems.Add(new CellLinkInfo { Count = cell.LinkedCount, GridType = cell.Link.GridType, Slot = cell.Link.Slot });
+
+                    cell.Link.Locked = true;
+                    cell.Link = null;
+                }
+
+                CellLinkInfo special = null;
+                if (SpecialGrid.Grid[0].Link != null)
+                {
+                    special = new CellLinkInfo { Count = SpecialGrid.Grid[0].LinkedCount, GridType = SpecialGrid.Grid[0].Link.GridType, Slot = SpecialGrid.Grid[0].Link.Slot };
+                    SpecialGrid.Grid[0].Link.Locked = true;
+                    SpecialGrid.Grid[0].Link = null;
+                }
+
+                CEnvir.Enqueue(new C.NPCItemUpgrade { Item = itemInfo, SacrificeItems = sacrificeItems, SpecialItem = special});
+            };
         }
+
+        #region Methods
+        private void ItemToUpgradeCell_LinkChanged(object sender, EventArgs e)
+        {
+            ClientUserItem item = null;
+            string sacrifice = "Items to sacrifice";
+            string special = "Special";
+            int goldCost = 0;
+            foreach (DXItemCell cell in ItemToUpgradeGrid.Grid)
+            {
+                if (cell.Link?.Item == null) continue;
+                item = cell.Link.Item;
+            }
+            if(item != null)
+            {
+                goldCost = (int)((float)item.Info.Price * Globals.EquipmentUpgradeList[item.Level].GoldMultiplier);
+                int specialItemIndex = Globals.EquipmentUpgradeList[item.Level].SpecialItem;
+                if (specialItemIndex != -1)
+                {
+                    special = Globals.UpgradeSpecialItems[specialItemIndex];
+                }
+                else
+                {
+                    special = "None";
+                }
+
+                if (Globals.EquipmentUpgradeList[item.Level].NumberOfItems > 0)
+                {
+                    sacrifice = Globals.UpgradeSacrificeItems[item.Info.SetValue - 1] + String.Format(": required {0}", Globals.EquipmentUpgradeList[item.Level].NumberOfItems);
+                }
+                else
+                {
+                    sacrifice = "None";
+                }
+            }
+
+            RequiredSpecial.Text = special;
+            RequiredItem.Text = sacrifice;
+            GoldCost.Text = goldCost.ToString("#,##0");
+            CheckUnlockButton();
+        }
+
+        private void SacrificeItemCell_LinkChanged(object sender, EventArgs e)
+        {
+            sacrificeItems = 0;
+            foreach (DXItemCell cell in SacrificeItemGrid.Grid)
+            {
+                if (cell.Link?.Item == null) continue;
+
+                sacrificeItems++;
+            }
+            CheckUnlockButton();
+        }
+
+        private void SpecialCell_LinkChanged(object sender, EventArgs e)
+        {
+            specialItems = false;
+            foreach (DXItemCell cell in SpecialGrid.Grid)
+            {
+                if (cell.Link?.Item == null) continue;
+
+                specialItems = true;
+            }
+            CheckUnlockButton();
+        }
+
+        private void CheckUnlockButton()
+        {
+            ClientUserItem item = null;
+            foreach (DXItemCell cell in ItemToUpgradeGrid.Grid)
+            {
+                if (cell.Link?.Item == null) continue;
+                item = cell.Link.Item;
+            }
+            if(item != null)
+            {
+                Globals.EquipmentUpgradeCost cost = Globals.EquipmentUpgradeList[item.Level];
+                SubmitButton.Enabled = (cost.NumberOfItems == sacrificeItems) && (cost.SpecialItem != -1 ? specialItems : true);
+            }
+            else
+            {
+                SubmitButton.Enabled = false;
+            }
+        }
+
+        #endregion
     }
 
     public sealed class NPCRefineDialog : DXWindow
@@ -1521,8 +1732,6 @@ namespace Client.Scenes.Views
         public NPCRefineDialog()
         {
             TitleLabel.Text = "Refine";
-
-
 
             SetClientSize(new Size(491, 130));
 

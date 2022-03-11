@@ -526,22 +526,25 @@ namespace Server.Envir
 
             Player.NPCRefinementStone(p);
         }
+
+        public void Process(C.NPCItemUpgrade p)
+        {
+            if (Stage != GameStage.Game) return;
+            Player.NPCItemUpgrade(p);
+        }
         public void Process(C.NPCRefine p)
         {
             if (Stage != GameStage.Game) return;
-
             Player.NPCRefine(p);
         }
         public void Process(C.NPCRefineRetrieve p)
         {
             if (Stage != GameStage.Game) return;
-
             Player.NPCRefineRetrieve(p.Index);
         }
         public void Process(C.NPCMasterRefine p)
         {
             if (Stage != GameStage.Game) return;
-
             Player.NPCMasterRefine(p);
         }
         public void Process(C.NPCMasterRefineEvaluate p)

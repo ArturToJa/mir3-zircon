@@ -2796,7 +2796,7 @@ namespace Client.Envir
             UnlockItemFromCell(p.Gem);
         }
 
-        public void Process(S.NPCLevelUpScroll p)
+        public void Process(S.NPCReleaseItems p)
         {
             foreach (CellLinkInfo cellLinkInfo in p.Links)
             {

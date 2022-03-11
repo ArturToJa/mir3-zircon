@@ -590,6 +590,15 @@ namespace Library.Network.ServerPackets
         public List<CellLinkInfo> GoldOres { get; set; }
         public List<CellLinkInfo> Crystal { get; set; }
     }
+
+    public sealed class NPCItemUpgrade : Packet
+    {
+        public CellLinkInfo Item { get; set; }
+        public List<CellLinkInfo> SacrificeItems { get; set; }
+        public CellLinkInfo SpecialItem { get; set; }
+        public bool Success { get; set; }
+    }
+
     public sealed class NPCRefine : Packet
     {
         public RefineType RefineType { get; set; }
@@ -632,7 +641,7 @@ namespace Library.Network.ServerPackets
         public CellLinkInfo Gem { get; set; }
     }
 
-    public sealed class NPCLevelUpScroll : Packet
+    public sealed class NPCReleaseItems : Packet
     {
         public List<CellLinkInfo> Links { get; set; }
     }

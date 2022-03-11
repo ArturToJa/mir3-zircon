@@ -10009,7 +10009,7 @@ namespace Server.Models
 
         public void NPCLevelUpScroll(C.NPCLevelUpScroll p)
         {
-            Enqueue(new S.NPCLevelUpScroll { Links = p.Links});
+            Enqueue(new S.NPCReleaseItems { Links = p.Links});
 
             if (Dead || NPC == null || NPCPage == null || NPCPage.DialogType != NPCDialogType.LevelUpScroll) return;
             if (!ParseLinks(p.Links, 0, 100)) return;
@@ -10408,6 +10408,191 @@ namespace Server.Models
             UserItem stone = SEnvir.CreateFreshItem(check);
             GainItem(stone);
         }
+
+        public void NPCItemUpgrade(C.NPCItemUpgrade p)
+        {
+            S.NPCReleaseItems result = new S.NPCReleaseItems
+            {
+                Links = new List<CellLinkInfo>(p.SacrificeItems)
+            };
+            result.Links.Add(p.Item);
+            if(p.SpecialItem != null)
+            {
+                result.Links.Add(p.SpecialItem);
+            }
+            Enqueue(result);
+            if (Dead || NPC == null || NPCPage == null || NPCPage.DialogType != NPCDialogType.Refine) return;
+
+            if (!ParseLinks(p.Item)) return;
+            if (!ParseLinks(p.SacrificeItems, 0, 3)) return;
+            if (p.SpecialItem != null)
+                if (!ParseLinks(p.SpecialItem)) return;
+
+            UserItem[] targetArray = null;
+            UserItem targetItem = FindUserItem(p.Item, out targetArray);
+            if (targetItem == null || p.Item.Count > targetItem.Count) return;
+            if (targetItem.Level >= Globals.EquipmentUpgradeList.Count) return;
+            if (targetItem.Info.SetValue <= 1) return;
+
+            switch (targetItem.Info.ItemType)
+            {
+                case ItemType.Weapon:
+                case ItemType.Armour:
+                case ItemType.Helmet:
+                case ItemType.Shoes:
+                case ItemType.Necklace:
+                case ItemType.Bracelet:
+                case ItemType.Ring:
+                case ItemType.Shield:
+                    break;
+                default:
+                    return;
+            }
+
+            long UpgradeCost = (long)(Globals.EquipmentUpgradeList[targetItem.Level].GoldMultiplier * (float)targetItem.Info.Price);
+            if (Gold < UpgradeCost)
+            {
+                Connection.ReceiveChat(Connection.Language.NPCRefinementGold, MessageType.System);
+
+                foreach (SConnection con in Connection.Observers)
+                    con.ReceiveChat(con.Language.NPCRefinementGold, MessageType.System);
+                return;
+            }
+
+            int numberOfItems = Globals.EquipmentUpgradeList[targetItem.Level].NumberOfItems;
+            int requiredSetValue = targetItem.Info.SetValue - 1;
+            int collectedItems = 0;
+
+            foreach (CellLinkInfo link in p.SacrificeItems)
+            {
+                UserItem[] sacrificeArray = null;
+                UserItem sacrificeItem = FindUserItem(link, out sacrificeArray);
+                if(sacrificeArray == null || link.Count > sacrificeItem.Count) continue;
+                if (sacrificeItem.Info.SetValue != requiredSetValue) continue;
+
+                switch (targetItem.Info.ItemType)
+                {
+                    case ItemType.Weapon:
+                    case ItemType.Armour:
+                    case ItemType.Helmet:
+                    case ItemType.Shoes:
+                    case ItemType.Necklace:
+                    case ItemType.Bracelet:
+                    case ItemType.Ring:
+                    case ItemType.Shield:
+                        collectedItems++;
+                        break;
+                    default:
+                        continue;
+                }
+            }
+
+            if (collectedItems != numberOfItems) return;
+            UserItem[] specialArray = null;
+            UserItem specialItem = null;
+
+            if (Globals.EquipmentUpgradeList[targetItem.Level].SpecialItem > -1)
+            {
+                if (p.SpecialItem == null) return;
+                specialItem = FindUserItem(p.SpecialItem, out specialArray);
+                if (specialItem == null || p.SpecialItem.Count > specialItem.Count) return;
+                if (specialItem.Info.SetValue != Globals.EquipmentUpgradeList[targetItem.Level].SpecialItem) return;
+
+                switch (specialItem.Info.ItemType)
+                {
+                    case ItemType.Nothing:
+                        break;
+                    default:
+                        return;
+                }
+            }
+
+            S.ItemsChanged itemsResult = new S.ItemsChanged { Links = new List<CellLinkInfo>(), Success = true };
+            S.ItemStatsChanged targetResult = new S.ItemStatsChanged { GridType = p.Item.GridType, Slot = p.Item.Slot, NewStats = new Stats() };
+            Enqueue(itemsResult);
+            Enqueue(targetResult);
+
+            targetItem.Level++;
+            Enqueue(new S.ItemExperience { Target = p.Item, Experience = targetItem.Experience, Level = targetItem.Level, Flags = targetItem.Flags });
+
+            Gold -= UpgradeCost;
+            GoldChanged();
+
+            foreach (KeyValuePair<Stat, int> statPair in targetItem.Info.Stats.Values)
+            {
+                switch(statPair.Key)
+                {
+                    case Stat.Health:
+                    case Stat.Mana:
+                    case Stat.Luck:
+                    case Stat.Accuracy:
+                    case Stat.Agility:
+                    case Stat.AttackSpeed:
+                    case Stat.BagWeight:
+                    case Stat.HandWeight:
+                    case Stat.WearWeight:
+                    case Stat.MinAC:
+                    case Stat.MinDC:
+                    case Stat.MinMC:
+                    case Stat.MinMR:
+                    case Stat.MinSC:
+                    case Stat.MaxSC:
+                    case Stat.MaxMC:
+                    case Stat.MaxAC:
+                    case Stat.MaxDC:
+                    case Stat.MaxMR:
+                    case Stat.DCPercent:
+                    case Stat.ACPercent:
+                    case Stat.MRPercent:
+                    case Stat.MCPercent:
+                    case Stat.SCPercent:
+                    case Stat.LifeSteal:
+                        int statNow = statPair.Value * targetItem.Level / 10;
+                        int statBefore = statPair.Value * (targetItem.Level - 1) / 10;
+                        int statDelta = statNow - statBefore;
+                        targetItem.AddStat(statPair.Key, statDelta, StatSource.Refine);
+                        targetResult.NewStats[statPair.Key] += statDelta;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (specialItem != null)
+            {
+                itemsResult.Links.Add(p.SpecialItem);
+                if (specialItem.Count == p.SpecialItem.Count)
+                {
+                    RemoveItem(specialItem);
+                    specialArray[p.SpecialItem.Slot] = null;
+                    specialItem.Delete();
+                }
+                else
+                    specialItem.Count -= p.SpecialItem.Count;
+            }
+
+            foreach (CellLinkInfo link in p.SacrificeItems)
+            {
+                UserItem[] sacrificeArray = null;
+                UserItem sacrificeItem = FindUserItem(link, out sacrificeArray);
+                if (sacrificeItem != null)
+                {
+                    itemsResult.Links.Add(link);
+                    if (sacrificeItem.Count == link.Count)
+                    {
+                        RemoveItem(sacrificeItem);
+                        sacrificeArray[link.Slot] = null;
+                        sacrificeItem.Delete();
+                    }
+                    else
+                        sacrificeItem.Count -= link.Count;
+                }
+            }
+
+            targetItem.StatsChanged();
+            RefreshStats();
+        }
+
         public void NPCRefine(C.NPCRefine p)
         {
             S.NPCRefine result = new S.NPCRefine
@@ -10453,8 +10638,6 @@ namespace Server.Models
                     Character.Account.ExpiryDate = SEnvir.Now.AddYears(10);
                     return;
             }
-
-
 
             if (Dead || NPC == null || NPCPage == null || NPCPage.DialogType != NPCDialogType.Refine) return;
 

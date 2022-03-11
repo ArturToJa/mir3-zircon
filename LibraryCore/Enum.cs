@@ -170,6 +170,9 @@ namespace Library
         EquipmentUpgradeGemTarget,
         EquipmentUpgradeGemItems,
         LevelUpScrolls,
+        EquipmentUpgradeTarget,
+        EquipmentUpgradeItems,
+        EquipmentUpgradeSpecial
     }
 
     public enum BuffType

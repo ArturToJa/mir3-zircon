@@ -159,6 +159,7 @@ namespace Client.Scenes
         public NPCSellDialog NPCSellBox;
         public NPCRefinementStoneDialog NPCRefinementStoneBox;
         public NPCRefineDialog NPCRefineBox;
+        public NPCUpgradeItemDialog NPCUpgradeBox;
         public NPCRefineRetrieveDialog NPCRefineRetrieveBox;
         public NPCQuestDialog NPCQuestBox;
         public NPCAdoptCompanionDialog NPCAdoptCompanionBox;
@@ -525,6 +526,13 @@ namespace Client.Scenes
                 Parent = this,
                 Visible = false,
             };
+
+            NPCUpgradeBox = new NPCUpgradeItemDialog
+            {
+                Parent = this,
+                Visible = false
+            };
+
             NPCRefineBox = new NPCRefineDialog
             {
                 Parent = this,
@@ -4037,6 +4045,14 @@ namespace Client.Scenes
                         NPCRefinementStoneBox.Dispose();
 
                     NPCRefinementStoneBox = null;
+                }
+                
+                if (NPCUpgradeBox != null)
+                {
+                    if (!NPCUpgradeBox.IsDisposed)
+                        NPCUpgradeBox.Dispose();
+
+                    NPCUpgradeBox = null;
                 }
 
                 if (NPCRefineBox != null)

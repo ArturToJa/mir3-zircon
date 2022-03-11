@@ -1438,6 +1438,72 @@ namespace Client.Controls
                 case GridType.LevelUpScrolls:
                     if (Item.Info.Effect != ItemEffect.LevelUpScroll) return false;
                     break;
+                case GridType.EquipmentUpgradeTarget:
+                    if (GridType != GridType.Inventory && GridType != GridType.Equipment && GridType != GridType.CompanionInventory && GridType != GridType.Storage) return false;
+                    if (Item.Info.SetValue <= 1) return false;
+
+                    switch (Item.Info.ItemType)
+                    {
+                        case ItemType.Necklace:
+                        case ItemType.Bracelet:
+                        case ItemType.Ring:
+                        case ItemType.Shoes:
+                        case ItemType.Armour:
+                        case ItemType.Weapon:
+                        case ItemType.Helmet:
+                        case ItemType.Shield:
+                            break;
+                        default:
+                            return false;
+                    }
+
+                    if ((Item.Level >= Globals.EquipmentUpgradeList.Count)) return false;
+                    break;
+                case GridType.EquipmentUpgradeItems:
+                    if (GridType != GridType.Inventory && GridType != GridType.Equipment && GridType != GridType.CompanionInventory && GridType != GridType.Storage) return false;
+                    switch (Item.Info.ItemType)
+                    {
+                        case ItemType.Necklace:
+                        case ItemType.Bracelet:
+                        case ItemType.Ring:
+                        case ItemType.Shoes:
+                        case ItemType.Armour:
+                        case ItemType.Weapon:
+                        case ItemType.Helmet:
+                        case ItemType.Shield:
+                            break;
+                        default:
+                            return false;
+                    }
+
+                    if (GameScene.Game.NPCUpgradeBox == null) return false;
+                    ClientUserItem item = GameScene.Game.NPCUpgradeBox.ItemToUpgradeGrid.Grid[0].Item;
+                    if(item == null) return false;
+                    int countItems = 0;
+                    foreach(DXItemCell cell in GameScene.Game.NPCUpgradeBox.SacrificeItemGrid.Grid)
+                    {
+                        if(cell.Item == null) continue;
+                        countItems++;
+                    }
+                    if(Globals.EquipmentUpgradeList[item.Level].NumberOfItems <= countItems) return false;
+                    if (Item.Info.SetValue != item.Info.SetValue - 1) return false;
+                    break;
+                case GridType.EquipmentUpgradeSpecial:
+                    if (GridType != GridType.Inventory && GridType != GridType.Equipment && GridType != GridType.CompanionInventory && GridType != GridType.Storage) return false;
+
+                    switch (Item.Info.ItemType)
+                    {
+                        case ItemType.Nothing:
+                            break;
+                        default:
+                            return false;
+                    }
+
+                    if (GameScene.Game.NPCUpgradeBox == null) return false;
+                    item = GameScene.Game.NPCUpgradeBox.ItemToUpgradeGrid.Grid[0].Item;
+                    if (item == null) return false;
+                    if (Globals.EquipmentUpgradeList[item.Level].SpecialItem != Item.Info.SetValue) return false;
+                    break;
             }
 
             return true;
@@ -1911,6 +1977,21 @@ namespace Client.Controls
                                 else if (!MoveItem(GameScene.Game.NPCUpgradeGemBox.Grid))
                                     GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to upgrade item.", MessageType.System);
 
+                                return;
+                            }
+
+                            if (GameScene.Game.NPCUpgradeBox.IsVisible)
+                            {
+                                if(GameScene.Game.NPCUpgradeBox.ItemToUpgradeGrid.Grid[0].Link == null)
+                                {
+                                    if(!MoveItem(GameScene.Game.NPCUpgradeBox.ItemToUpgradeGrid))
+                                        GameScene.Game.ReceiveChat($"Unable to Upgrade {Item.Info.ItemName}.", MessageType.System);
+                                }
+                                else
+                                {
+                                    if(!MoveItem(GameScene.Game.NPCUpgradeBox.SpecialGrid) && !MoveItem(GameScene.Game.NPCUpgradeBox.SacrificeItemGrid))
+                                        GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to refine.", MessageType.System);
+                                }
                                 return;
                             }
 

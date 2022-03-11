@@ -217,6 +217,13 @@ namespace Library.Network.ClientPackets
 
     }
 
+    public sealed class NPCItemUpgrade : Packet
+    {
+        public CellLinkInfo Item { get; set; }
+        public List<CellLinkInfo> SacrificeItems { get; set; }
+        public CellLinkInfo SpecialItem { get; set; }
+    }
+
     public sealed class NPCRefine : Packet
     {
         public RefineType RefineType { get; set; }

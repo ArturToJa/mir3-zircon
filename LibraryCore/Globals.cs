@@ -239,7 +239,7 @@ namespace Library
         {
             public int NumberOfItems;
             public float GoldMultiplier;
-            public bool SpecialItem;
+            public int SpecialItem;
         }
 
         public static List<EquipmentUpgradeCost> EquipmentUpgradeList = new List<EquipmentUpgradeCost>
@@ -247,63 +247,83 @@ namespace Library
             new EquipmentUpgradeCost
             {
                 NumberOfItems = 0,
-                GoldMultiplier = 1,
-                SpecialItem = false
-            },
-            new EquipmentUpgradeCost
-            {
-                NumberOfItems = 0,
-                GoldMultiplier = 2,
-                SpecialItem = false
-            },
-            new EquipmentUpgradeCost
-            {
-                NumberOfItems = 0,
-                GoldMultiplier = 3,
-                SpecialItem = false
-            },
-            new EquipmentUpgradeCost
-            {
-                NumberOfItems = 1,
                 GoldMultiplier = 5,
-                SpecialItem = false
+                SpecialItem = -1
             },
             new EquipmentUpgradeCost
             {
-                NumberOfItems = 1,
-                GoldMultiplier = 7,
-                SpecialItem = false
-            },
-            new EquipmentUpgradeCost
-            {
-                NumberOfItems = 1,
+                NumberOfItems = 0,
                 GoldMultiplier = 10,
-                SpecialItem = true
+                SpecialItem = -1
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 0,
+                GoldMultiplier = 15,
+                SpecialItem = 1
             },
             new EquipmentUpgradeCost
             {
                 NumberOfItems = 1,
-                GoldMultiplier = 13,
-                SpecialItem = true
-            },
-            new EquipmentUpgradeCost
-            {
-                NumberOfItems = 2,
-                GoldMultiplier = 16,
-                SpecialItem = true
-            },
-            new EquipmentUpgradeCost
-            {
-                NumberOfItems = 2,
-                GoldMultiplier = 20,
-                SpecialItem = true
-            },
-            new EquipmentUpgradeCost
-            {
-                NumberOfItems = 2,
                 GoldMultiplier = 25,
-                SpecialItem = true
+                SpecialItem = -1
             },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 1,
+                GoldMultiplier = 35,
+                SpecialItem = -1
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 1,
+                GoldMultiplier = 50,
+                SpecialItem = 1
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 1,
+                GoldMultiplier = 65,
+                SpecialItem = 2
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 2,
+                GoldMultiplier = 80,
+                SpecialItem = 2
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 2,
+                GoldMultiplier = 100,
+                SpecialItem = 3
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 3,
+                GoldMultiplier = 125,
+                SpecialItem = 3
+            },
+        };
+
+        public static List<string> UpgradeSacrificeItems = new List<string>
+        {
+            "Demonic Items",
+            "Striker Items",
+            "Angelic Items",
+            "Hazardous Items",
+            "Vintage Items",
+            "Gods Items",
+            "Mystical Items",
+            "Kings Items",
+        };
+
+        public static List<string> UpgradeSpecialItems = new List<string>
+        {
+            "null",
+            "Iron Ore",
+            "Black Iron Ore",
+            "Forged Steel"
         };
 
         public static List<decimal> WeaponExperienceList = new List<decimal>
