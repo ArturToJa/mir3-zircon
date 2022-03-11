@@ -151,7 +151,7 @@ namespace Client.Scenes.Views
             TitleLabel.Text = string.Empty;
             HasFooter = false;
             Movable = false;
-            SetClientSize(new Size(491, 180));
+            SetClientSize(new Size(491, 220));
 
             PageText = new DXLabel
             {
@@ -1507,7 +1507,7 @@ namespace Client.Scenes.Views
 
                 if (Globals.EquipmentUpgradeList[item.Level].NumberOfItems > 0)
                 {
-                    sacrifice = Globals.UpgradeSacrificeItems[item.Info.SetValue - 1] + String.Format(": required {0}", Globals.EquipmentUpgradeList[item.Level].NumberOfItems);
+                    sacrifice = Globals.UpgradeSacrificeItems[item.Info.SetValue - 2] + String.Format(": required {0}", Globals.EquipmentUpgradeList[item.Level].NumberOfItems);
                 }
                 else
                 {
