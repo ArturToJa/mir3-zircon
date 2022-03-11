@@ -185,6 +185,7 @@ namespace Client.Scenes.Views
 
             GameScene.Game.NPCGoodsBox.Visible = false;
             GameScene.Game.NPCSellBox.Visible = false;
+            GameScene.Game.NPCUpgradeBox.Visible = false;
             GameScene.Game.NPCRefineBox.Visible = false;
             GameScene.Game.NPCRefinementStoneBox.Visible = false;
             GameScene.Game.NPCRefineRetrieveBox.Visible = false;

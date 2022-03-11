@@ -3459,6 +3459,9 @@ namespace Client.Scenes
             NPCBox.CloseButton.Enabled = !Observer;
             NPCGoodsBox.CloseButton.Enabled = !Observer;
             NPCRefineBox.CloseButton.Enabled = !Observer;
+            NPCUpgradeBox.CloseButton.Enabled = !Observer;
+            NPCUpgradeGemBox.CloseButton.Enabled = !Observer;
+            NPCLevelUpBox.CloseButton.Enabled = !Observer;
             NPCSellBox.CloseButton.Enabled = !Observer;
             NPCRefineRetrieveBox.CloseButton.Enabled = !Observer;
         }

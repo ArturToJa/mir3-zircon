@@ -2105,6 +2105,21 @@ namespace Client.Controls
                                 return;
                             }
 
+                            if(GameScene.Game.NPCUpgradeBox.IsVisible)
+                            {
+                                if (GameScene.Game.NPCUpgradeBox.ItemToUpgradeGrid.Grid[0].Link == null)
+                                {
+                                    if (!MoveItem(GameScene.Game.NPCUpgradeBox.ItemToUpgradeGrid))
+                                        GameScene.Game.ReceiveChat($"Unable to Upgrade {Item.Info.ItemName}.", MessageType.System);
+                                }
+                                else
+                                {
+                                    if (!MoveItem(GameScene.Game.NPCUpgradeBox.SpecialGrid) && !MoveItem(GameScene.Game.NPCUpgradeBox.SacrificeItemGrid))
+                                        GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to refine.", MessageType.System);
+                                }
+                                return;
+                            }
+
                             if (GameScene.Game.NPCRefineBox.IsVisible)
                             {
                                 switch (Item.Info.ItemType)
