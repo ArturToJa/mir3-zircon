@@ -1359,7 +1359,7 @@ namespace Client.Scenes.Views
         {
             TitleLabel.Text = "Refine";
 
-            SetClientSize(new Size(491, 130));
+            SetClientSize(new Size(300, 130));
             DXLabel label = new DXLabel
             {
                 Text = "Item to upgrade",
@@ -1430,7 +1430,7 @@ namespace Client.Scenes.Views
                 Text = "0",
                 Font = new Font(Config.FontName, CEnvir.FontSize(8F), FontStyle.Underline)
             };
-            GoldCost.Location = new Point(ClientArea.Right - GoldCost.Size.Width - 160, ItemToUpgradeGrid.Location.Y);
+            GoldCost.Location = new Point(ClientArea.Right - GoldCost.Size.Width - 60, ItemToUpgradeGrid.Location.Y);
 
             label = new DXLabel
             {
