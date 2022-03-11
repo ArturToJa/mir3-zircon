@@ -10025,7 +10025,7 @@ namespace Server.Models
                 UserItem[] fromArray = null;
                 UserItem item = FindUserItem(link, out fromArray);
 
-                if (item == null || link.Count > item.Count || (item.Flags & UserItemFlags.Locked) == UserItemFlags.Locked) continue;
+                if (item == null || link.Count > item.Count) continue;
                 if (item.Info.Effect != ItemEffect.LevelUpScroll) continue;
                 
                 result.Links.Add(link);
