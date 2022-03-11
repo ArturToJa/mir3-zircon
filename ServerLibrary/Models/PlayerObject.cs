@@ -10547,6 +10547,10 @@ namespace Server.Models
                     case Stat.MCPercent:
                     case Stat.SCPercent:
                     case Stat.LifeSteal:
+                    case Stat.Comfort:
+                    case Stat.ParalysisChance:
+                    case Stat.CriticalChance:
+                    case Stat.CriticalDamage:
                         int statNow = statPair.Value * targetItem.Level / 10;
                         int statBefore = statPair.Value * (targetItem.Level - 1) / 10;
                         int statDelta = statNow - statBefore;
