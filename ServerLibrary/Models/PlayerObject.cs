@@ -378,7 +378,7 @@ namespace Server.Models
             rate /= 100F;
 
             if (CurrentHP < Stats[Stat.Health] || CurrentMP < Stats[Stat.Mana])
-                LevelMagic(magic);
+                //LevelMagic(magic);
 
             if (CurrentHP < Stats[Stat.Health])
             {
@@ -1166,7 +1166,11 @@ namespace Server.Models
 
                 Connection.ReceiveChat($"/{text}", MessageType.WhisperOut);
 
-                if (SEnvir.Now < Character.Account.ChatBanExpiry) return;
+                if (SEnvir.Now < Character.Account.ChatBanExpiry)
+                {
+                    Connection.ReceiveChat($"You have been chatbanned. Your chatban expires: " + Character.Account.ChatBanExpiry.ToString("dddd, dd MMMM yyyy"), MessageType.System);
+                    return;
+                }
 
                 con.ReceiveChat($"{Name}=> {text.Remove(0, parts[0].Length)}", Character.Account.TempAdmin ? MessageType.GMWhisperIn : MessageType.WhisperIn);
             }
@@ -1180,7 +1184,14 @@ namespace Server.Models
                 {
                     if (SEnvir.IsBlocking(Character.Account, member.Character.Account)) continue;
 
-                    if (member != this && SEnvir.Now < Character.Account.ChatBanExpiry) continue;
+                    if (member != this)
+                    { 
+                        if(SEnvir.Now < Character.Account.ChatBanExpiry)
+                        {
+                            Connection.ReceiveChat($"You have been chatbanned. Your chatban expires: " + Character.Account.ChatBanExpiry.ToString("dddd, dd MMMM yyyy"), MessageType.System);
+                        }
+                        continue;
+                    }
 
                     member.Connection.ReceiveChat(text, MessageType.Group);
                 }
@@ -1256,7 +1267,11 @@ namespace Server.Models
 
                 foreach (PlayerObject player in CurrentMap.Players)
                 {
-                    if (player != this && SEnvir.Now < Character.Account.ChatBanExpiry) continue;
+                    if (player != this && SEnvir.Now < Character.Account.ChatBanExpiry)
+                    {
+                        Connection.ReceiveChat($"You have been chatbanned. Your chatban expires: " + Character.Account.ChatBanExpiry.ToString("dddd, dd MMMM yyyy"), MessageType.System);
+                        continue;
+                    }
 
                     if (!SEnvir.IsBlocking(Character.Account, player.Character.Account))
                         player.Connection.ReceiveChat(text, MessageType.Shout);
@@ -2037,7 +2052,11 @@ namespace Server.Models
                 {
                     if (!Functions.InRange(CurrentLocation, player.CurrentLocation, Config.MaxViewRange)) continue;
 
-                    if (player != this && SEnvir.Now < Character.Account.ChatBanExpiry) continue;
+                    if (player != this && SEnvir.Now < Character.Account.ChatBanExpiry)
+                    {
+                        Connection.ReceiveChat($"You have been chatbanned. Your chatban expires: " + Character.Account.ChatBanExpiry.ToString("dddd, dd MMMM yyyy"), MessageType.System);
+                        continue;
+                    }
 
                     if (!SEnvir.IsBlocking(Character.Account, player.Character.Account))
                         player.Connection.ReceiveChat(text, MessageType.Normal, ObjectID);
@@ -2091,7 +2110,11 @@ namespace Server.Models
 
                 con.ReceiveChat($"/{text}", MessageType.WhisperOut);
 
-                if (SEnvir.Now < con.Account.LastCharacter.Account.ChatBanExpiry) return;
+                if (SEnvir.Now < con.Account.LastCharacter.Account.ChatBanExpiry)
+                {
+                    con.ReceiveChat($"You have been chatbanned. Your chatban expires: " + con.Account.LastCharacter.ChatBanExpiry.ToString("dddd, dd MMMM yyyy"), MessageType.System);
+                    return;
+                }
 
                 target.ReceiveChat($"{con.Account.LastCharacter.CharacterName}=> {text.Remove(0, parts[0].Length)}", Character.Account.TempAdmin ? MessageType.GMWhisperIn : MessageType.WhisperIn);
             }
@@ -3042,8 +3065,8 @@ namespace Server.Models
 
             UserMagic magic;
 
-            if (Magics.TryGetValue(MagicType.WillowDance, out magic) && Level >= magic.Info.NeedLevel1)
-                LevelMagic(magic);
+/*            if (Magics.TryGetValue(MagicType.WillowDance, out magic) && Level >= magic.Info.NeedLevel1)
+                LevelMagic(magic);*/
 
             //Todo Poison Cloud
         }
@@ -5727,8 +5750,8 @@ namespace Server.Models
                                 health += health * magic.GetPower() / 100;
                                 mana += mana * magic.GetPower() / 100;
 
-                                if (CurrentHP < Stats[Stat.Health] || CurrentMP < Stats[Stat.Mana])
-                                    LevelMagic(magic);
+/*                                if (CurrentHP < Stats[Stat.Health] || CurrentMP < Stats[Stat.Mana])
+                                    LevelMagic(magic);*/
                             }
 
                             if (Magics.TryGetValue(MagicType.AdvancedPotionMastery, out magic) && Level >= magic.Info.NeedLevel1)
@@ -5736,8 +5759,8 @@ namespace Server.Models
                                 health += health * magic.GetPower() / 100;
                                 mana += mana * magic.GetPower() / 100;
 
-                                if (CurrentHP < Stats[Stat.Health] || CurrentMP < Stats[Stat.Mana])
-                                    LevelMagic(magic);
+/*                                if (CurrentHP < Stats[Stat.Health] || CurrentMP < Stats[Stat.Mana])
+                                    LevelMagic(magic);*/
                             }
 
                             ChangeHP(health);
@@ -15689,8 +15712,8 @@ namespace Server.Models
                 });
             }
 
-            if (Buffs.Any(x => x.Type == BuffType.Might) && Magics.TryGetValue(MagicType.Might, out magic))
-                LevelMagic(magic);
+/*            if (Buffs.Any(x => x.Type == BuffType.Might) && Magics.TryGetValue(MagicType.Might, out magic))
+                LevelMagic(magic);*/
 
             decimal lifestealAmount = damage * Stats[Stat.LifeSteal] / 100M;
 
@@ -15774,8 +15797,8 @@ namespace Server.Models
                 });
             }
 
-            foreach (UserMagic mag in magics)
-                LevelMagic(mag);
+            /*foreach (UserMagic mag in magics)
+                LevelMagic(mag);*/
 
             if (ob.Dead && ob.Race == ObjectType.Monster && ob.CurrentHP < 0)
             {
@@ -16283,17 +16306,17 @@ namespace Server.Models
 
             CheckBrown(ob);
 
-            foreach (UserMagic magic in magics)
-                LevelMagic(magic);
+            /*foreach (UserMagic magic in magics)
+                LevelMagic(magic);*/
 
-            UserMagic temp;
+/*            UserMagic temp;
             if (Buffs.Any(x => x.Type == BuffType.Renounce) && Magics.TryGetValue(MagicType.Renounce, out temp))
             {
                 LevelMagic(temp);
             }
 
             if (Magics.TryGetValue(MagicType.AdvancedRenounce, out temp))
-                LevelMagic(temp);
+                LevelMagic(temp);*/
 
 
             return damage;
@@ -16308,8 +16331,8 @@ namespace Server.Models
             {
                 if (SEnvir.Random.Next(attacker.Race == ObjectType.Player ? 200 : 100) <= Stats[Stat.EvasionChance])// 4 + magic.Level * 2)
                 {
-                    if (Buffs.Any(x => x.Type == BuffType.Evasion) && Magics.TryGetValue(MagicType.Evasion, out magic))
-                        LevelMagic(magic);
+/*                    if (Buffs.Any(x => x.Type == BuffType.Evasion) && Magics.TryGetValue(MagicType.Evasion, out magic))
+                        LevelMagic(magic);*/
 
                     DisplayMiss = true;
                     return 0;
@@ -16440,8 +16463,8 @@ namespace Server.Models
             {
                 attacker.Attacked(this, power * Stats[Stat.ReflectDamage] / 100, Element.None, false);
 
-                if (Buffs.Any(x => x.Type == BuffType.ReflectDamage) && Magics.TryGetValue(MagicType.ReflectDamage, out magic))
-                    LevelMagic(magic);
+/*                if (Buffs.Any(x => x.Type == BuffType.ReflectDamage) && Magics.TryGetValue(MagicType.ReflectDamage, out magic))
+                    LevelMagic(magic);*/
             }
 
 
@@ -16454,11 +16477,11 @@ namespace Server.Models
                 Broadcast(new S.ObjectEffect { ObjectID = attacker.ObjectID, Effect = Effect.ThunderBolt });
                 ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(300), ActionType.DelayedAttackDamage, attacker, attacker.Race == ObjectType.Player ? damagePvP : damagePvE, Element.Lightning, false, false, true, true));
 
-                if (Buffs.Any(x => x.Type == BuffType.JudgementOfHeaven) && Magics.TryGetValue(MagicType.JudgementOfHeaven, out magic))
-                    LevelMagic(magic);
+/*                if (Buffs.Any(x => x.Type == BuffType.JudgementOfHeaven) && Magics.TryGetValue(MagicType.JudgementOfHeaven, out magic))
+                    LevelMagic(magic);*/
             }
 
-            if (Buffs.Any(x => x.Type == BuffType.Defiance) && Magics.TryGetValue(MagicType.Defiance, out magic))
+/*            if (Buffs.Any(x => x.Type == BuffType.Defiance) && Magics.TryGetValue(MagicType.Defiance, out magic))
                 LevelMagic(magic);
 
             if (Buffs.Any(x => x.Type == BuffType.RagingWind) && Magics.TryGetValue(MagicType.RagingWind, out magic))
@@ -16468,7 +16491,7 @@ namespace Server.Models
                 LevelMagic(magic);
 
             if (Magics.TryGetValue(MagicType.AdventOfDevil, out magic) && element != Element.None)
-                LevelMagic(magic);
+                LevelMagic(magic);*/
 
             return power;
         }
@@ -16878,9 +16901,9 @@ namespace Server.Models
 
         public override int Pushed(MirDirection direction, int distance)
         {
-            UserMagic magic;
-            if (Buffs.Any(x => x.Type == BuffType.Endurance) && Magics.TryGetValue(MagicType.Endurance, out magic))
-                LevelMagic(magic);
+            //UserMagic magic;
+/*            if (Buffs.Any(x => x.Type == BuffType.Endurance) && Magics.TryGetValue(MagicType.Endurance, out magic))
+                LevelMagic(magic);*/
 
             RemoveMount();
 
@@ -16897,9 +16920,9 @@ namespace Server.Models
 
             if (Buffs.Any(x => x.Type == BuffType.Endurance))
             {
-                UserMagic magic;
+/*                UserMagic magic;
                 if (Magics.TryGetValue(MagicType.Endurance, out magic))
-                    LevelMagic(magic);
+                    LevelMagic(magic);*/
 
                 return false;
             }
@@ -17486,7 +17509,7 @@ namespace Server.Models
                     {
                         if (target == null) target = ob;
 
-                        LevelMagic(magic);
+                        //LevelMagic(magic);
                         continue;
                     }
 
@@ -17530,7 +17553,7 @@ namespace Server.Models
 
                         if (ob.Pushed(Direction, 1) == 1)
                         {
-                            LevelMagic(magic);
+                            //LevelMagic(magic);
                             continue;
                         }
 
@@ -17543,7 +17566,7 @@ namespace Server.Models
                 //pushed 2nd space, Now need to push the first mob
                 //Should be 100% success to push stackedMob as it wasn't level nor is there a wall or mob in the way.
                 stackedMob.Pushed(Direction, 1); //put this here to avoid the level / chance check
-                LevelMagic(magic);
+                //LevelMagic(magic);
                 //need to check first cell again
                 Point location = Functions.Move(CurrentLocation, Direction, d);
                 cell = CurrentMap.Cells[location.X, location.Y];
@@ -17574,7 +17597,7 @@ namespace Server.Models
 
                     if (ob.Pushed(Direction, 1) == 1)
                     {
-                        LevelMagic(magic);
+                        //LevelMagic(magic);
                         continue;
                     }
 
@@ -17613,7 +17636,7 @@ namespace Server.Models
                     assault.Cooldown = SEnvir.Now.AddMilliseconds(assault.Info.Delay);
                     Enqueue(new S.MagicCooldown { InfoIndex = assault.Info.Index, Delay = assault.Info.Delay });
                     type = assault.Info.Magic;
-                    LevelMagic(assault);
+                    //LevelMagic(assault);
                 }
             }
 
@@ -17695,7 +17718,7 @@ namespace Server.Models
             magic.Cooldown = SEnvir.Now.AddMilliseconds(delay);
             Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = delay });
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
 
         public void BeckonEnd(UserMagic magic, MapObject ob)
@@ -17769,7 +17792,7 @@ namespace Server.Models
             magic.Cooldown = SEnvir.Now.AddMilliseconds(delay);
             Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = delay });
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void MassBeckonEnd(UserMagic magic)
         {
@@ -17796,7 +17819,7 @@ namespace Server.Models
                     TickCount = 1,
                 });
 
-                LevelMagic(magic);
+                //LevelMagic(magic);
             }
         }
 
@@ -17815,7 +17838,7 @@ namespace Server.Models
 
             BuffAdd(BuffType.Defiance, TimeSpan.FromSeconds(60 + magic.Level * 30), buffStats, false, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
 
         public void MightEnd(UserMagic magic)
@@ -17835,14 +17858,14 @@ namespace Server.Models
 
             BuffAdd(BuffType.Might, TimeSpan.FromSeconds(60 + magic.Level * 30), buffStats, false, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
 
         public void EnduranceEnd(UserMagic magic)
         {
             BuffAdd(BuffType.Endurance, TimeSpan.FromSeconds(10 + magic.Level * 5), null, false, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
 
 
@@ -17855,7 +17878,7 @@ namespace Server.Models
 
             BuffAdd(BuffType.ReflectDamage, TimeSpan.FromSeconds(15 + magic.Level * 10), buffStats, false, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
 
         public void FetterEnd(UserMagic magic, Cell cell)
@@ -17884,7 +17907,7 @@ namespace Server.Models
                         break;
                 }
 
-                LevelMagic(magic);
+                //LevelMagic(magic);
 
             }
 
@@ -17907,7 +17930,7 @@ namespace Server.Models
 
                 if (ob.Pushed(direction, magic.GetPower()) <= 0) continue;
 
-                LevelMagic(magic);
+                //LevelMagic(magic);
                 break;
             }
         }
@@ -17920,11 +17943,11 @@ namespace Server.Models
             if (SEnvir.Random.Next(4 - magic.Level) > 0)
             {
 
-                if (SEnvir.Random.Next(2) == 0) LevelMagic(magic);
+                /*if (SEnvir.Random.Next(2) == 0) LevelMagic(magic);*/
                 return;
             }
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
 
             if (ob.PetOwner == this)
             {
@@ -18012,7 +18035,7 @@ namespace Server.Models
 
             ob.SetHP(0);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         private void TeleportationEnd(UserMagic magic)
         {
@@ -18041,7 +18064,7 @@ namespace Server.Models
             }*/
 
             Teleport(CurrentMap, CurrentMap.GetRandomLocation());
-            LevelMagic(magic);
+            //LevelMagic(magic);
 
         }
         private void FireWallEnd(UserMagic magic, Cell cell, int power)
@@ -18074,7 +18097,7 @@ namespace Server.Models
 
             ob.Spawn(cell.Map, cell.Location);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
 
         public void GeoManipulationEnd(UserMagic magic, Point location)
@@ -18107,7 +18130,7 @@ namespace Server.Models
                 Enqueue(new S.ItemUseDelay { Delay = SEnvir.Now - UseItemTime });
             }*/
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
 
             int delay = magic.Info.Delay;
             if (SEnvir.Now <= PvPTime.AddSeconds(30))
@@ -18128,7 +18151,7 @@ namespace Server.Models
 
             BuffAdd(BuffType.MagicShield, TimeSpan.FromSeconds(30 + magic.Level * 20 + GetMC() / 2 + Stats[Stat.PhantomAttack] * 2), buffStats, true, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void FrostBiteEnd(UserMagic magic)
         {
@@ -18142,7 +18165,7 @@ namespace Server.Models
 
             BuffAdd(BuffType.FrostBite, TimeSpan.FromSeconds(3 + magic.Level * 3), buffStats, false, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
 
         public void RenounceEnd(UserMagic magic)
@@ -18162,7 +18185,7 @@ namespace Server.Models
             Enqueue(new S.BuffChanged() { Index = buff.Index, Stats = new Stats(buff.Stats) });
 
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void JudgementOfHeavenEnd(UserMagic magic)
         {
@@ -18173,7 +18196,7 @@ namespace Server.Models
 
             BuffAdd(BuffType.JudgementOfHeaven, TimeSpan.FromSeconds(30 + magic.Level * 30), buffStats, false, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
 
         private void ChainLightningEnd(List<UserMagic> magics, Cell cell, int extra)
@@ -18219,7 +18242,7 @@ namespace Server.Models
 
             ob.Spawn(cell.Map, cell.Location);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
 
         #endregion
@@ -18239,7 +18262,7 @@ namespace Server.Models
                 bonus = empowered.GetPower();
                 cap += (1 + empowered.Level) * 30;
 
-                LevelMagic(empowered);
+                //LevelMagic(empowered);
             }
 
             Stats buffStats = new Stats
@@ -18249,7 +18272,7 @@ namespace Server.Models
             };
 
             ob.BuffAdd(BuffType.Heal, TimeSpan.FromSeconds(buffStats[Stat.Healing] / buffStats[Stat.HealingCap]), buffStats, false, false, TimeSpan.FromSeconds(1));
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void PoisonDustEnd(List<UserMagic> magics, MapObject ob, PoisonType type)
         {
@@ -18274,8 +18297,8 @@ namespace Server.Models
                 TickFrequency = TimeSpan.FromSeconds(2),
             });
 
-            foreach (UserMagic mag in magics)
-                LevelMagic(mag);
+/*            foreach (UserMagic mag in magics)
+                LevelMagic(mag);*/
         }
         public void InvisibilityEnd(UserMagic magic, MapObject ob)
         {
@@ -18288,7 +18311,7 @@ namespace Server.Models
 
             ob.BuffAdd(BuffType.Invisibility, TimeSpan.FromSeconds((magic.GetPower() + GetSC() + Stats[Stat.PhantomAttack] * 2)), buffStats, true, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void LifeStealEnd(UserMagic magic, MapObject ob)
         {
@@ -18301,7 +18324,7 @@ namespace Server.Models
 
             ob.BuffAdd(BuffType.LifeSteal, TimeSpan.FromSeconds(magic.GetPower() + GetSC() + Stats[Stat.DarkAttack] * 2), buffStats, true, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void StrengthOfFaithEnd(UserMagic magic)
         {
@@ -18313,7 +18336,7 @@ namespace Server.Models
 
             BuffAdd(BuffType.StrengthOfFaith, TimeSpan.FromSeconds(magic.GetPower()), buffStats, true, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void TransparencyEnd(UserMagic magic, MapObject ob, Point location)
         {
@@ -18336,7 +18359,7 @@ namespace Server.Models
 
             ob.BuffAdd(BuffType.Transparency, TimeSpan.FromSeconds(Math.Min(SEnvir.Now <= PvPTime.AddSeconds(30) ? 20 : 3600, magic.GetPower() + GetSC() / 2 + Stats[Stat.PhantomAttack] * 2)), buffStats, true, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void CelestialLightEnd(UserMagic magic)
         {
@@ -18349,7 +18372,7 @@ namespace Server.Models
 
             BuffAdd(BuffType.CelestialLight, TimeSpan.FromSeconds(magic.GetPower()), buffStats, true, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void MagicResistanceEnd(UserMagic magic, MapObject ob, Stats stats)
         {
@@ -18413,7 +18436,7 @@ namespace Server.Models
 
             ob.BuffAdd(BuffType.MagicResistance, TimeSpan.FromSeconds(magic.GetPower() + GetSC() * 2), buffStats, true, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void ResilienceEnd(UserMagic magic, MapObject ob)
         {
@@ -18426,7 +18449,7 @@ namespace Server.Models
 
             ob.BuffAdd(BuffType.Resilience, TimeSpan.FromSeconds((magic.GetPower() + GetSC() * 2)), buffStats, true, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void ElementalSuperiorityEnd(UserMagic magic, MapObject ob, Stats stats)
         {
@@ -18491,7 +18514,7 @@ namespace Server.Models
 
             ob.BuffAdd(BuffType.ElementalSuperiority, TimeSpan.FromSeconds(magic.GetPower() + GetSC() * 2), buffStats, true, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void BloodLustEnd(UserMagic magic, MapObject ob)
         {
@@ -18504,7 +18527,7 @@ namespace Server.Models
 
             ob.BuffAdd(BuffType.BloodLust, TimeSpan.FromSeconds((magic.GetPower() + GetSC() * 2)), buffStats, true, false, TimeSpan.Zero);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         public void PurificationEnd(List<UserMagic> magics, MapObject ob)
         {
@@ -18515,9 +18538,9 @@ namespace Server.Models
 
             int result = Purify(ob);
 
-            for (int i = 0; i < result; i++)
+/*            for (int i = 0; i < result; i++)
                 foreach (UserMagic m in magics)
-                    LevelMagic(m);
+                    LevelMagic(m);*/
         }
         public void DemonExplosionEnd(UserMagic magic, Stats stats)
         {
@@ -18566,7 +18589,7 @@ namespace Server.Models
 
             pet.ChangeHP(health);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
 
         public void ResurrectionEnd(UserMagic magic, MapObject ob)
@@ -18583,7 +18606,7 @@ namespace Server.Models
 
             Broadcast(new S.ObjectRevive { ObjectID = ob.ObjectID, Location = ob.CurrentLocation, Effect = false });
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
 
             magic.Cooldown = SEnvir.Now.AddSeconds(20);
             Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = 20000 });
@@ -18605,8 +18628,8 @@ namespace Server.Models
                 TickFrequency = TimeSpan.FromSeconds(1),
             });
 
-            foreach (UserMagic mag in magics)
-                LevelMagic(mag);
+/*            foreach (UserMagic mag in magics)
+                LevelMagic(mag);*/
         }
         public void TrapOctagonEnd(UserMagic magic, Map map, Point location)
         {
@@ -18663,7 +18686,7 @@ namespace Server.Models
                 if (shockTime <= monster.ShockTime) continue;
 
                 monster.ShockTime = SEnvir.Now.AddSeconds(duration);
-                LevelMagic(magic);
+                //LevelMagic(magic);
             }
         }
 
@@ -18681,7 +18704,7 @@ namespace Server.Models
                 if (ob.Pushed(direction, magic.GetPower()) <= 0) continue;
 
                 Attack(ob, new List<UserMagic> { magic }, true, 0);
-                LevelMagic(magic);
+                //LevelMagic(magic);
                 break;
             }
         }
@@ -18726,7 +18749,7 @@ namespace Server.Models
 
             ob.SetHP(ob.Stats[Stat.Health]);
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
         #endregion
 
@@ -18755,7 +18778,7 @@ namespace Server.Models
                 ob.Spawn(CurrentMap, cell.Location);
             }
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
 
         }
 
@@ -18779,8 +18802,8 @@ namespace Server.Models
             ob.BuffAdd(BuffType.Cloak, TimeSpan.MaxValue, buffStats, true, false, TimeSpan.FromSeconds(2));
 
 
-            LevelMagic(magic);
-            LevelMagic(pledgeofBlood);
+            //LevelMagic(magic);
+            //LevelMagic(pledgeofBlood);
             if (!forceGhost)
             {
                 UserMagic ghostWalk = Magics.ContainsKey(MagicType.GhostWalk) ? Magics[MagicType.GhostWalk] : null;
@@ -18790,7 +18813,7 @@ namespace Server.Models
 
                 if (SEnvir.Random.Next(2 + rate) >= rate) return;
 
-                LevelMagic(ghostWalk);
+                //LevelMagic(ghostWalk);
             }
             ob.BuffAdd(BuffType.GhostWalk, TimeSpan.MaxValue, null, true, false, TimeSpan.Zero);
 
@@ -18838,8 +18861,8 @@ namespace Server.Models
                     TickFrequency = TimeSpan.FromSeconds(1),
                 });
 
-            LevelMagic(magic);
-            LevelMagic(touch);
+/*            LevelMagic(magic);
+            LevelMagic(touch);*/
         }
         public void AbyssEnd(UserMagic magic, MapObject ob)
         {
@@ -18864,7 +18887,7 @@ namespace Server.Models
             if (ob.Race == ObjectType.Monster)
                 ((MonsterObject)ob).Target = null;
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
 
         public void HellFireEnd(UserMagic magic, MapObject ob)
@@ -18887,7 +18910,7 @@ namespace Server.Models
                 TickFrequency = TimeSpan.FromSeconds(2),
             });
 
-            LevelMagic(magic);
+            //LevelMagic(magic);
         }
 
         public void TheNewBeginningEnd(UserMagic magic, MapObject ob)

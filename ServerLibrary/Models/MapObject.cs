@@ -476,8 +476,8 @@ namespace Server.Models
 
                         player = (PlayerObject)this;
 
-                        if (!player.Magics.TryGetValue(MagicType.DarkConversion, out magic)) break;
-                        player.LevelMagic(magic);
+                        //if (!player.Magics.TryGetValue(MagicType.DarkConversion, out magic)) break;
+                        //player.LevelMagic(magic);
                         break;
                     case BuffType.PKPoint:
                         buff.TickTime -= ticks;
@@ -548,7 +548,7 @@ namespace Server.Models
                                 player = (PlayerObject)this;
 
                                 if (!player.Magics.TryGetValue(MagicType.DragonRepulse, out magic)) break;
-                                player.LevelMagic(magic);
+                                //player.LevelMagic(magic);
 
                                 for (int c = cells.Count - 1; c >= 0; c--)
                                 {
@@ -610,7 +610,7 @@ namespace Server.Models
                                 player = (PlayerObject)this;
 
                                 if (!player.Magics.TryGetValue(MagicType.FrostBite, out magic)) break;
-                                player.LevelMagic(magic);
+/*                                player.LevelMagic(magic);*/
 
                                 foreach (MapObject ob in GetTargets(CurrentMap, CurrentLocation, 3))
                                 {
