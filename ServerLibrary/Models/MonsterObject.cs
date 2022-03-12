@@ -1702,8 +1702,8 @@ namespace Server.Models
                 ChangeHP(heal);
             }
 
-            foreach (UserMagic magic in Magics)
-                PetOwner?.LevelMagic(magic);
+/*            foreach (UserMagic magic in Magics)
+                PetOwner?.LevelMagic(magic);*/
 
             if (PoisonType == PoisonType.None || SEnvir.Random.Next(PoisonRate) > 0) return damage;
 
