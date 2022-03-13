@@ -80,7 +80,7 @@ namespace Client.Models
 
             SetFrame(new ObjectAction(MirAction.Standing, MirDirection.Up, CurrentLocation));
 
-            GameScene.Game.MapControl.AddObject(this);
+            GameScene.Game.MapControl.AddObject(ObjectID, this);
 
             UpdateQuests();
         }

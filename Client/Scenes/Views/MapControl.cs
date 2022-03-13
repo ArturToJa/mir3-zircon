@@ -159,7 +159,8 @@ namespace Client.Scenes.Views
         public int Width, Height;
 
         public List<DXControl> MapInfoObjects = new List<DXControl>();
-        public List<MapObject> Objects = new List<MapObject>();
+        public Dictionary<uint, MapObject> Objects = new Dictionary<uint, MapObject>();
+        public List<MapObject> ObjectsList = new List<MapObject>();
         public List<MirEffect> Effects = new List<MirEffect>();
         public List<Models.Particles.ParticleEmitter> ParticleEffects = new List<Models.Particles.ParticleEmitter>();
 
@@ -209,7 +210,7 @@ namespace Client.Scenes.Views
             if (MapObject.MouseObject != null) // && MapObject.MouseObject != MapObject.TargetObject)
                 MapObject.MouseObject.DrawBlend();
 
-            foreach (MapObject ob in Objects)
+            foreach (MapObject ob in ObjectsList)
             {
                 if (ob.Dead) continue;
 
@@ -249,7 +250,7 @@ namespace Client.Scenes.Views
 
 
 
-            foreach (MapObject ob in Objects)
+            foreach (MapObject ob in ObjectsList)
             {
                 ob.DrawChat();
                 ob.DrawPoison();
@@ -257,7 +258,7 @@ namespace Client.Scenes.Views
             }
 
             if (Config.ShowDamageNumbers)
-                foreach (MapObject ob in Objects)
+                foreach (MapObject ob in ObjectsList)
                     ob.DrawDamage();
 
             if (MapLocation.X >= 0 && MapLocation.X < Width && MapLocation.Y >= 0 && MapLocation.Y < Height)
@@ -491,7 +492,7 @@ namespace Client.Scenes.Views
                 CEnvir.SaveException(ex);
             }
 
-            foreach (MapObject ob in Objects)
+            foreach (MapObject ob in ObjectsList)
                 if (ob.CurrentLocation.X < Width && ob.CurrentLocation.Y < Height)
                     Cells[ob.CurrentLocation.Y][ob.CurrentLocation.X].AddObject(ob);
         }
@@ -1058,9 +1059,10 @@ namespace Client.Scenes.Views
             return (MirDirection)(angle / 45F);
         }
 
-        public void AddObject(MapObject ob)
+        public void AddObject(uint ID, MapObject ob)
         {
-            Objects.Add(ob);
+            Objects.Add(ID, ob);
+            ObjectsList.Add(ob);
 
 
             if (ob.CurrentLocation.X < Width && ob.CurrentLocation.Y < Height)
@@ -1068,9 +1070,10 @@ namespace Client.Scenes.Views
 
         }
 
-        public void RemoveObject(MapObject ob)
+        public void RemoveObject(uint ID, MapObject ob)
         {
-            Objects.Remove(ob);
+            Objects.Remove(ID);
+            ObjectsList.Remove(ob);
 
             if (ob.CurrentLocation.X < Width && ob.CurrentLocation.Y < Height)
                 Cells[ob.CurrentLocation.Y][ob.CurrentLocation.X].RemoveObject(ob);
@@ -1195,6 +1198,8 @@ namespace Client.Scenes.Views
                 MapInfoObjects.Clear();
                 MapInfoObjects = null;
 
+                ObjectsList.Clear();
+                ObjectsList = null;
                 Objects.Clear();
                 Objects = null;
 
@@ -1377,7 +1382,7 @@ namespace Client.Scenes.Views
                 }
 
 
-                foreach (MapObject ob in GameScene.Game.MapControl.Objects)
+                foreach (MapObject ob in GameScene.Game.MapControl.ObjectsList)
                 {
                     if (ob.Light > 0 && (!ob.Dead || ob == MapObject.User || ob.Race == ObjectType.Spell))
                     {

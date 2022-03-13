@@ -287,7 +287,7 @@ namespace Client.Models
 
             SetFrame(new ObjectAction(!Dead ? MirAction.Standing : MirAction.Dead, MirDirection.Up, CurrentLocation));
 
-            GameScene.Game.MapControl.AddObject(this);
+            GameScene.Game.MapControl.AddObject(ObjectID, this);
         }
 
         public void UpdateLibraries()

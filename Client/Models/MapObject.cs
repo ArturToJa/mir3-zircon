@@ -2403,9 +2403,9 @@ namespace Client.Models
                     AttackTargets = new List<MapObject>();
                     foreach (uint target in targets)
                     {
-                        MapObject attackTarget = GameScene.Game.MapControl.Objects.FirstOrDefault(x => x.ObjectID == target);
-                        if (attackTarget == null) continue;
-                        AttackTargets.Add(attackTarget);
+                        MapObject monster = null;
+                        if (!GameScene.Game.MapControl.Objects.TryGetValue(target, out monster)) continue;
+                        AttackTargets.Add(monster);
                     }
                     break;
                 /*case MirAction.Struck:
@@ -2667,8 +2667,8 @@ namespace Client.Models
                     AttackTargets = new List<MapObject>();
                     foreach (uint target in targets)
                     {
-                        MapObject attackTarget = GameScene.Game.MapControl.Objects.FirstOrDefault(x => x.ObjectID == target);
-                        if (attackTarget == null) continue;
+                        MapObject attackTarget = null;
+                        if (!GameScene.Game.MapControl.Objects.TryGetValue(target, out attackTarget)) continue;
                         AttackTargets.Add(attackTarget);
                     }
                     MagicLocations = (List<Point>)action.Extra[2];
@@ -4505,7 +4505,7 @@ namespace Client.Models
 
         public virtual void Remove()
         {
-            GameScene.Game.MapControl.RemoveObject(this);
+            GameScene.Game.MapControl.RemoveObject(ObjectID, this);
 
             MagicShieldEnd();
             CelestialLightEnd();

@@ -55,7 +55,7 @@ namespace Client.Models
             }
 
 
-            GameScene.Game.MapControl.AddObject(this);
+            GameScene.Game.MapControl.AddObject(ObjectID, this);
         }
 
         public void UpdateLibraries()

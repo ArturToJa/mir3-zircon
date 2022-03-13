@@ -382,7 +382,7 @@ namespace Client.Models
             }
             GameScene.Game.AutoPotionBox.UpdateLinks();
 
-            GameScene.Game.MapControl.AddObject(this);
+            GameScene.Game.MapControl.AddObject(ObjectID, this);
 
         }
         public override void LocationChanged()

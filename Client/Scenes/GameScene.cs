@@ -278,14 +278,25 @@ namespace Client.Scenes
         {
             if (MapControl?.Objects == null || NPCQuestBox == null) return;
 
-            foreach (MapObject ob in MapControl.Objects)
+            MapObject ob = null;
+            if (!Game.MapControl.Objects.TryGetValue(NPCID, out ob)) return;
+            NPCObject npc = ob as NPCObject;
+            if (npc == null)
+            {
+                NPCQuestBox.NPCInfo = null;
+                return;
+            }
+
+            NPCQuestBox.NPCInfo = npc.NPCInfo;
+
+/*            foreach (MapObject ob in MapControl.Objects)
             {
                 if (ob.Race != ObjectType.NPC || ob.ObjectID != NPCID) continue;
 
                 NPCQuestBox.NPCInfo = ((NPCObject) ob).NPCInfo;
                 return;
             }
-            NPCQuestBox.NPCInfo = null;
+            NPCQuestBox.NPCInfo = null;*/
         }
 
         #endregion
@@ -919,7 +930,7 @@ namespace Client.Scenes
 
             MapControl.ProcessInput();
 
-            foreach (MapObject ob in MapControl.Objects)
+            foreach (MapObject ob in MapControl.ObjectsList)
                 ob.Process();
 
             for (int i = MapControl.Effects.Count - 1; i >= 0; i--)
@@ -3830,7 +3841,7 @@ namespace Client.Scenes
                 MiniMapBox.Update(info);
             }
 
-            foreach (MapObject ob in MapControl.Objects)
+            foreach (MapObject ob in MapControl.ObjectsList)
                 ob.UpdateQuests();
 
             foreach (ClientObjectData data in DataDictionary.Values)
