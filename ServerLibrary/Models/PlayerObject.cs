@@ -2112,7 +2112,7 @@ namespace Server.Models
 
                 if (SEnvir.Now < con.Account.LastCharacter.Account.ChatBanExpiry)
                 {
-                    con.ReceiveChat($"You have been chatbanned. Your chatban expires: " + con.Account.LastCharacter.ChatBanExpiry.ToString("dddd, dd MMMM yyyy"), MessageType.System);
+                    con.ReceiveChat($"You have been chatbanned. Your chatban expires: " + con.Account.LastCharacter.Account.ChatBanExpiry.ToString("dddd, dd MMMM yyyy"), MessageType.System);
                     return;
                 }
 
