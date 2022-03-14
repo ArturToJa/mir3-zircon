@@ -427,7 +427,8 @@ namespace Library
         WeaponCraft,
         AccessoryRefine,
         UpgradeGem,
-        LevelUpScroll
+        LevelUpScroll,
+        NoticeBoard,
     }
 
     public enum MagicSchool

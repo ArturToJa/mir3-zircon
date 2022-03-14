@@ -210,6 +210,15 @@ namespace Client.Scenes.Views
                     GameScene.Game.NPCLevelUpBox.Visible = true;
                     GameScene.Game.NPCLevelUpBox.Location = new Point(Size.Width - GameScene.Game.NPCLevelUpBox.Size.Width, Size.Height);
                     break;
+                case NPCDialogType.NoticeBoard:
+                    PageText.Text = "\nExp Event: " + info.ExpEventNumber.ToString() + "\nBoss Event: " + info.BossEventNumber.ToString();
+
+                    height = DXLabel.GetHeight(PageText, ClientArea.Width).Height;
+                    if (height > ClientArea.Height)
+                        SetClientSize(new Size(ClientArea.Width, height));
+
+                    ProcessText();
+                    break;
             }
         }
         

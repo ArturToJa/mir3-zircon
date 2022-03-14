@@ -705,7 +705,6 @@ namespace Server.Models
 
             AddAllObjects();
 
-
             if (Level == 0)
                 NewCharacter();
 
@@ -733,10 +732,8 @@ namespace Server.Models
 
             Enqueue(new S.MailList { Mail = Character.Account.Mail.Select(x => x.ToClientInfo()).ToList() });
 
-
 /*            if (Character.Account.Characters.Max(x => x.Level) > Level && Character.Rebirth == 0)
                 BuffAdd(BuffType.Veteran, TimeSpan.MaxValue, new Stats { [Stat.ExperienceRate] = 50 }, false, false, TimeSpan.Zero);*/
-
 
             Enqueue(new S.GameGoldChanged { GameGold = Character.Account.GameGold, ObserverPacket = false });
 
@@ -763,7 +760,6 @@ namespace Server.Models
             ApplyObserverBuff();
 
             PauseBuffs();
-
 
             if (SEnvir.TopRankings.Contains(Character))
                 BuffAdd(BuffType.Ranking, TimeSpan.MaxValue, null, true, false, TimeSpan.Zero);
@@ -808,7 +804,6 @@ namespace Server.Models
                 con.Enqueue(ob.GetInfoPacket(this));
             }
 
-
             List<ClientRefineInfo> refines = new List<ClientRefineInfo>();
 
             foreach (RefineInfo info in Character.Refines)
@@ -850,8 +845,9 @@ namespace Server.Models
             }
 
             if (NPCPage != null)
-                con.Enqueue(new S.NPCResponse { ObjectID = NPC.ObjectID, Index = NPCPage.Index });
-
+            {
+                con.Enqueue(new S.NPCResponse { ObjectID = NPC.ObjectID, Index = NPCPage.Index, ExpEventNumber = SEnvir.ExpEventLimit - SEnvir.ExpEventCount, BossEventNumber = SEnvir.BossEventLimit - SEnvir.BossEventCount });
+            }
 
             UpdateReviveTimers(con);
 

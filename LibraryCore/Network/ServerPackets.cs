@@ -565,7 +565,8 @@ namespace Library.Network.ServerPackets
     {
         public uint ObjectID { get; set; }
         public int Index { get; set; }
-        public List<ClientRefineInfo> Extra { get; set; }
+        public long ExpEventNumber { get; set; }
+        public long BossEventNumber { get; set; }
 
         public NPCPage Page;
 

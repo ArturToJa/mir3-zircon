@@ -329,7 +329,65 @@ namespace Server.Envir
         public static HashSet<CharacterInfo> TopRankings;
 
         public static long ConDelay, SaveDelay;
+        public static long ExpEventCount = 0, BossEventCount = 0;
+        public static long ExpEventLimit = 100;
+        public static long BossEventLimit = 1000;
+        public static DateTime ExpTime = Time.Now;
+        public static DateTime BossTime = Time.Now;
+
         #endregion
+
+        public static void StartExpEvent(int duration)
+        {
+            if (SEnvir.Events.Exists(x => x.CurrentMap.Info.FileName.StartsWith("12_"))) return;
+
+            foreach (MapInfo info in SEnvir.MapInfoList.Binding)
+            {
+                if (!info.FileName.StartsWith("12_")) continue;
+                Map Map = SEnvir.GetMap(info, null, 0);
+                SpawnInfo spawn = SEnvir.Spawns.FirstOrDefault(x => x.CurrentMap == Map);
+                if (spawn == null) continue;
+                SEnvir.Events.Add(new EventObject(spawn, null, 0, SEnvir.Now.AddSeconds(duration)));
+            }
+
+            foreach (SConnection con in SEnvir.Connections)
+            {
+                switch (con.Stage)
+                {
+                    case GameStage.Game:
+                    case GameStage.Observer:
+                        TimeSpan time = TimeSpan.FromSeconds(duration);
+                        con.ReceiveChat("Exp event started, you have " + time.ToString(@"hh\:mm\:ss") + " to gain as many levels as possible.", MessageType.Announcement);
+                        break;
+                    default: continue;
+                }
+            }
+        }
+
+        public static void ProcessEventMobDeath(bool IsBoss)
+        {
+            if (IsBoss)
+            {
+                BossEventCount++;
+                if (BossEventCount >= BossEventLimit)
+                {
+                    BossEventCount = 0;
+                    BossEventLimit *= (long)(10080.0 / (Now - BossTime).TotalMinutes);
+                    BossTime = Now;
+                }
+            }
+            else
+            {
+                ExpEventCount++;
+                if (ExpEventCount >= ExpEventLimit)
+                {
+                    ExpEventCount = 0;
+                    ExpEventLimit *= (long)(10080.0 / (Now - ExpTime).TotalMinutes);
+                    ExpTime = Now;
+                    StartExpEvent(900);
+                }
+            }
+        }
 
         public static void StartServer()
         {

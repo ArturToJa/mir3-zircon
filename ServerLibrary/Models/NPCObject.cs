@@ -53,7 +53,7 @@ namespace Server.Models
                 ob.NPC = this;
                 ob.NPCPage = page;
 
-                ob.Enqueue(new S.NPCResponse { ObjectID = ObjectID, Index = page.Index });
+                ob.Enqueue(new S.NPCResponse { ObjectID = ObjectID, Index = page.Index, ExpEventNumber = SEnvir.ExpEventLimit - SEnvir.ExpEventCount, BossEventNumber = SEnvir.BossEventLimit - SEnvir.BossEventCount });
                 break;
             }
         }

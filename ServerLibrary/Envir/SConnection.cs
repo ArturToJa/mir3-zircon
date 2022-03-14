@@ -775,29 +775,7 @@ namespace Server.Envir
         {
             if (Stage != GameStage.Game) return;
             if (!Account.TempAdmin) return;
-            if (SEnvir.Events.Exists(x => x.CurrentMap.Info.FileName.StartsWith("12_"))) return;
-
-            foreach (MapInfo info in SEnvir.MapInfoList.Binding)
-            {
-                if (!info.FileName.StartsWith("12_")) continue;
-                Map Map = SEnvir.GetMap(info, null, 0);
-                SpawnInfo spawn = SEnvir.Spawns.FirstOrDefault(x => x.CurrentMap == Map);
-                if (spawn == null) continue;
-                SEnvir.Events.Add(new EventObject(spawn, null, 0, SEnvir.Now.AddSeconds(p.Duration)));
-            }
-
-            foreach (SConnection con in SEnvir.Connections)
-            {
-                switch (con.Stage)
-                {
-                    case GameStage.Game:
-                    case GameStage.Observer:
-                        TimeSpan time = TimeSpan.FromSeconds(p.Duration);
-                        con.ReceiveChat("Exp event started, you have " + time.ToString(@"hh\:mm\:ss") + " to gain as many levels as possible.", MessageType.Announcement);
-                        break;
-                    default: continue;
-                }
-            }
+            SEnvir.StartExpEvent(p.Duration);
         }
 
         public void Process(C.MarketPlaceHistory p)

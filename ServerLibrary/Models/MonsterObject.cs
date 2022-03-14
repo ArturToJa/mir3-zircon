@@ -2409,8 +2409,8 @@ namespace Server.Models
         public override void Die()
         {
             base.Die();
-
-
+            SEnvir.ProcessEventMobDeath(MonsterInfo.IsBoss);
+            
             YieldReward();
 
             Master?.MinionList.Remove(this);
