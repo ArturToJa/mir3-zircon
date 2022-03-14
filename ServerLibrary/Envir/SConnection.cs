@@ -520,38 +520,11 @@ namespace Server.Envir
 
             Player.NPCSell(p.Links);
         }
-        public void Process(C.NPCRefinementStone p)
-        {
-            if (Stage != GameStage.Game) return;
-
-            Player.NPCRefinementStone(p);
-        }
 
         public void Process(C.NPCItemUpgrade p)
         {
             if (Stage != GameStage.Game) return;
             Player.NPCItemUpgrade(p);
-        }
-        public void Process(C.NPCRefine p)
-        {
-            if (Stage != GameStage.Game) return;
-            Player.NPCRefine(p);
-        }
-        public void Process(C.NPCRefineRetrieve p)
-        {
-            if (Stage != GameStage.Game) return;
-            Player.NPCRefineRetrieve(p.Index);
-        }
-        public void Process(C.NPCMasterRefine p)
-        {
-            if (Stage != GameStage.Game) return;
-            Player.NPCMasterRefine(p);
-        }
-        public void Process(C.NPCMasterRefineEvaluate p)
-        {
-            if (Stage != GameStage.Game) return;
-
-            Player.NPCMasterRefineEvaluate(p);
         }
         public void Process(C.NPCClose p)
         {
@@ -570,18 +543,6 @@ namespace Server.Envir
             if (Stage != GameStage.Game) return;
 
             Player.NPCFragment(p.Links);
-        }
-        public void Process(C.NPCAccessoryLevelUp p)
-        {
-            if (Stage != GameStage.Game) return;
-
-            Player.NPCAccessoryLevelUp(p);
-        }
-        public void Process(C.NPCAccessoryUpgrade p)
-        {
-            if (Stage != GameStage.Game) return;
-
-            Player.NPCAccessoryUpgrade(p);
         }
 
         public void Process(C.NPCUpgradeGem p)
@@ -1339,25 +1300,12 @@ namespace Server.Envir
             Player.JoinStarterGuild();
 
         }
-        public void Process(C.NPCAccessoryReset p)
-        {
-            if (Stage != GameStage.Game) return;
-
-            Player.NPCAccessoryReset(p);
-        }
 
         public void Process(C.NPCWeaponCraft p)
         {
             if (Stage != GameStage.Game) return;
 
             Player.NPCWeaponCraft(p);
-        }
-
-        public void Process(C.NPCAccessoryRefine p)
-        {
-            if (Stage != GameStage.Game) return;
-
-            Player.NPCAccessoryRefine(p);
         }
 
         public void Process(C.JoinInstance p)

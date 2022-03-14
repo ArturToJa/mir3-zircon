@@ -1020,18 +1020,25 @@ namespace Client.Controls
 
                         switch (toGrid.GridType)
                         {
-                            case GridType.RefineSpecial:
-                            case GridType.RefinementStoneCrystal:
+                            case GridType.WeaponCraftTemplate:
                                 cell.LinkedCount = 1;
                                 break;
-                            case GridType.MasterRefineFragment1:
-                            case GridType.MasterRefineFragment2:
-                                cell.LinkedCount = 10;
-                                break;
-                            case GridType.MasterRefineSpecial:
+                            case GridType.WeaponCraftYellow:
                                 cell.LinkedCount = 1;
                                 break;
-                            case GridType.MasterRefineStone:
+                            case GridType.WeaponCraftBlue:
+                                cell.LinkedCount = 1;
+                                break;
+                            case GridType.WeaponCraftRed:
+                                cell.LinkedCount = 1;
+                                break;
+                            case GridType.WeaponCraftPurple:
+                                cell.LinkedCount = 1;
+                                break;
+                            case GridType.WeaponCraftGreen:
+                                cell.LinkedCount = 1;
+                                break;
+                            case GridType.WeaponCraftGrey:
                                 cell.LinkedCount = 1;
                                 break;
                             default:
@@ -1053,27 +1060,6 @@ namespace Client.Controls
                                 }
 
                                 cell.LinkedCount = Item.Count;
-                                break;
-                            case GridType.WeaponCraftTemplate:
-                                cell.LinkedCount = 1;
-                                break;
-                            case GridType.WeaponCraftYellow:
-                                cell.LinkedCount = 1;
-                                break;
-                            case GridType.WeaponCraftBlue:
-                                cell.LinkedCount = 1;
-                                break;
-                            case GridType.WeaponCraftRed:
-                                cell.LinkedCount = 1;
-                                break;
-                            case GridType.WeaponCraftPurple:
-                                cell.LinkedCount = 1;
-                                break;
-                            case GridType.WeaponCraftGreen:
-                                cell.LinkedCount = 1;
-                                break;
-                            case GridType.WeaponCraftGrey:
-                                cell.LinkedCount = 1;
                                 break;
                         }
 
@@ -1164,39 +1150,6 @@ namespace Client.Controls
                     if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
                     if (Item.Info.Effect != ItemEffect.Crystal || (Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
                     break;
-
-                case GridType.RefineBlackIronOre:
-                    if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-                    if (Item.Info.Effect != ItemEffect.BlackIronOre || (Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-                    break;
-
-                case GridType.RefineAccessory:
-                    if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-                    if ((Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-
-                    switch (Item.Info.ItemType)
-                    {
-                        case ItemType.Necklace:
-                        case ItemType.Bracelet:
-                        case ItemType.Ring:
-                            break;
-                        default:
-                            return false;
-                    }
-                    break;
-                case GridType.RefineSpecial:
-                    if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-                    if ((Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-
-                    switch (Item.Info.ItemType)
-                    {
-                        case ItemType.RefineSpecial:
-                            if (Item.Info.Shape != 1) return false; //weapon refine ?
-                            break;
-                        default:
-                            return false;
-                    }
-                    break;
                 case GridType.ItemFragment:
                     if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
                     if ((Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
@@ -1234,110 +1187,6 @@ namespace Client.Controls
                     if (GridType != GridType.Inventory) return false;
                     if (Item.Info.ItemType != ItemType.Ring) return false;
                     break;
-                case GridType.AccessoryRefineUpgradeTarget:
-                    if ((Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-
-                    if (GridType != GridType.Inventory && GridType != GridType.Equipment && GridType != GridType.CompanionInventory && GridType != GridType.Storage) return false;
-
-                    switch (Item.Info.ItemType)
-                    {
-                        case ItemType.Necklace:
-                        case ItemType.Bracelet:
-                        case ItemType.Ring:
-                            break;
-                        default:
-                            return false;
-                    }
-                    if ((Item.Flags & UserItemFlags.Refinable) != UserItemFlags.Refinable) return false;
-                    break;
-                case GridType.AccessoryRefineLevelTarget:
-                    if ((Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-
-                    if (GridType != GridType.Inventory && GridType != GridType.Equipment && GridType != GridType.CompanionInventory && GridType != GridType.Storage) return false;
-
-                    switch (Item.Info.ItemType)
-                    {
-                        case ItemType.Necklace:
-                        case ItemType.Bracelet:
-                        case ItemType.Ring:
-                            break;
-                        default:
-                            return false;
-                    }
-
-                    if ((Item.Flags & UserItemFlags.Refinable) == UserItemFlags.Refinable) return false;
-
-                    if (Item.Level >= Globals.AccessoryExperienceList.Count) return false;
-
-                    break;
-                case GridType.AccessoryRefineLevelItems:
-                    if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-                    if ((Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-
-                    if ((Item.Flags & UserItemFlags.Locked) == UserItemFlags.Locked) return false;
-
-                    if (GridType != GridType.Inventory && GridType != GridType.CompanionInventory && GridType != GridType.Storage) return false;
-
-                    switch (Item.Info.ItemType)
-                    {
-                        case ItemType.Necklace:
-                        case ItemType.Bracelet:
-                        case ItemType.Ring:
-                            break;
-                        default:
-                            return false;
-                    }
-
-                    if (GameScene.Game.NPCAccessoryLevelBox.TargetCell.Grid[0].Link?.Item?.Info != Item.Info) return false;
-                    if ((Item.Flags & UserItemFlags.Bound) == UserItemFlags.Bound && (GameScene.Game.NPCAccessoryLevelBox.TargetCell.Grid[0].Link.Item.Flags & UserItemFlags.Bound) != UserItemFlags.Bound) return false;
-
-                    break;
-                case GridType.AccessoryReset:
-                    if ((Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-
-                    if (GridType != GridType.Inventory && GridType != GridType.Equipment && GridType != GridType.CompanionInventory && GridType != GridType.Storage) return false;
-
-                    switch (Item.Info.ItemType)
-                    {
-                        case ItemType.Necklace:
-                        case ItemType.Bracelet:
-                        case ItemType.Ring:
-                            break;
-                        default:
-                            return false;
-                    }
-
-                    if (Item.Level >= Globals.AccessoryExperienceList.Count) return false;
-                    break;
-                case GridType.MasterRefineFragment1:
-                    if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-                    if (Item.Info.Effect != ItemEffect.Fragment1 || (Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-                    break;
-                case GridType.MasterRefineFragment2:
-                    if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-                    if (Item.Info.Effect != ItemEffect.Fragment2 || (Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-                    break;
-                case GridType.MasterRefineFragment3:
-                    if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-                    if (Item.Info.Effect != ItemEffect.Fragment3 || (Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-                    break;
-                case GridType.MasterRefineStone:
-                    if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-                    if (Item.Info.Effect != ItemEffect.RefinementStone || (Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-                    break;
-                case GridType.MasterRefineSpecial:
-                    if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-                    if ((Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-
-                    switch (Item.Info.ItemType)
-                    {
-                        case ItemType.RefineSpecial:
-                            if (Item.Info.Shape != 5) return false; //weapon refine ?
-                            break;
-                        default:
-                            return false;
-                    }
-                    break;
                 case GridType.WeaponCraftTemplate:
                     if (Item.Info.ItemType != ItemType.Weapon && Item.Info.Effect != ItemEffect.WeaponTemplate) return false;
                     break;
@@ -1362,54 +1211,6 @@ namespace Client.Controls
                 case GridType.RefineCorundumOre:
                     if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
                     if (Item.Info.Effect != ItemEffect.Corundum || (Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-                    break;
-                case GridType.AccessoryRefineCombTarget:
-                    if ((Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-
-                    if (GridType != GridType.Inventory && GridType != GridType.Equipment && GridType != GridType.CompanionInventory && GridType != GridType.Storage) return false;
-
-                    switch (Item.Info.ItemType)
-                    {
-                        case ItemType.Necklace:
-                        case ItemType.Bracelet:
-                        case ItemType.Ring:
-                            break;
-                        default:
-                            return false;
-                    }
-
-                    if ((Item.Flags & UserItemFlags.Refinable) == UserItemFlags.Refinable) return false;
-
-                    if (Item.Level > 1) return false;
-
-                    break;
-                case GridType.AccessoryRefineCombItems:
-                    if ((Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage) return false;
-                    if ((Item.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return false;
-
-                    if ((Item.Flags & UserItemFlags.Locked) == UserItemFlags.Locked) return false;
-                    if (Item.Level > 1) return false;
-
-                    if (GridType != GridType.Inventory && GridType != GridType.CompanionInventory && GridType != GridType.Storage) return false;
-
-                    switch (Item.Info.ItemType)
-                    {
-                        case ItemType.Necklace:
-                        case ItemType.Bracelet:
-                        case ItemType.Ring:
-                            break;
-                        default:
-                            return false;
-                    }
-
-                    if (GameScene.Game.NPCAccessoryRefineBox.TargetCell.Grid[0].Link?.Item?.Info != Item.Info) return false;
-                    if ((Item.Flags & UserItemFlags.Bound) == UserItemFlags.Bound && (GameScene.Game.NPCAccessoryRefineBox.TargetCell.Grid[0].Link.Item.Flags & UserItemFlags.Bound) != UserItemFlags.Bound) return false;
-                    if (GameScene.Game.NPCAccessoryRefineBox.TargetCell.Grid[0].Link?.Item?.AddedStats.Count != Item.AddedStats.Count) return false; //if material has different amount of added stats to target dont refine
-
-                    if (Item.AddedStats.Count >= 1) //if target has added stats loop through to check material has same stats
-                    {
-                        if (!Item.AddedStats.Compare(GameScene.Game.NPCAccessoryRefineBox.TargetCell.Grid[0].Link?.Item?.AddedStats)) return false;
-                    }
                     break;
                 case GridType.EquipmentUpgradeGemTarget:
                     if (GridType != GridType.Inventory && GridType != GridType.Equipment && GridType != GridType.CompanionInventory && GridType != GridType.Storage) return false;
@@ -1832,62 +1633,6 @@ namespace Client.Controls
                                     GameScene.Game.ReceiveChat($"Unable to Sell {Item.Info.ItemName} here.", MessageType.System);
                                 return;
                             }
-
-                            if (GameScene.Game.NPCMasterRefineBox.IsVisible)
-                            {
-                                switch (Item.Info.Effect)
-                                {
-                                    case ItemEffect.Fragment1:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.Fragment1Grid))
-                                            return;
-                                        break;
-                                    case ItemEffect.Fragment2:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.Fragment2Grid))
-                                            return;
-                                        break;
-                                    case ItemEffect.Fragment3:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.Fragment3Grid))
-                                            return;
-                                        break;
-                                    case ItemEffect.RefinementStone:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.RefinementStoneGrid))
-                                            return;
-                                        break;
-                                }
-
-                                switch (Item.Info.ItemType)
-                                {
-                                    case ItemType.RefineSpecial:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.SpecialGrid))
-                                            return;
-                                        break;
-                                }
-                                GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to refine.", MessageType.System);
-                                return;
-                            }
-                            if (GameScene.Game.NPCRefinementStoneBox.IsVisible)
-                            {
-                                switch (Item.Info.Effect)
-                                {
-                                    case ItemEffect.IronOre:
-                                        MoveItem(GameScene.Game.NPCRefinementStoneBox.IronOreGrid);
-                                        return;
-                                    case ItemEffect.SilverOre:
-                                        MoveItem(GameScene.Game.NPCRefinementStoneBox.SilverOreGrid);
-                                        return;
-                                    case ItemEffect.Diamond:
-                                        MoveItem(GameScene.Game.NPCRefinementStoneBox.DiamondGrid);
-                                        return;
-                                    case ItemEffect.GoldOre:
-                                        MoveItem(GameScene.Game.NPCRefinementStoneBox.GoldOreGrid);
-                                        return;
-                                    case ItemEffect.Crystal:
-                                        MoveItem(GameScene.Game.NPCRefinementStoneBox.CrystalGrid);
-                                        return;
-                                }
-                                GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to refine.", MessageType.System);
-                                return;
-                            }
                             if (GameScene.Game.NPCWeaponCraftBox.IsVisible)
                             {
                                 switch (Item.Info.Effect)
@@ -1934,39 +1679,6 @@ namespace Client.Controls
                                 return;
                             }
 
-                            if (GameScene.Game.NPCAccessoryLevelBox.IsVisible)
-                            {
-                                if (GameScene.Game.NPCAccessoryLevelBox.TargetCell.Grid[0].Link == null)
-                                {
-                                    if (!MoveItem(GameScene.Game.NPCAccessoryLevelBox.TargetCell))
-                                        GameScene.Game.ReceiveChat($"Unable to Level {Item.Info.ItemName}.", MessageType.System);
-                                }
-                                else if (!MoveItem(GameScene.Game.NPCAccessoryLevelBox.Grid))
-                                    GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to level.", MessageType.System);
-
-                                return;
-                            }
-
-
-                            if (GameScene.Game.NPCAccessoryUpgradeBox.IsVisible)
-                            {
-
-                                if (!Item.CanAccessoryUpgrade())
-                                    GameScene.Game.ReceiveChat($"Unable to Upgrade {Item.Info.ItemName}.", MessageType.System);
-                                else
-                                    MoveItem(GameScene.Game.NPCAccessoryUpgradeBox.TargetCell);
-
-                                return;
-                            }
-
-                            if (GameScene.Game.NPCAccessoryResetBox.IsVisible)
-                            {
-                                if (!MoveItem(GameScene.Game.NPCAccessoryResetBox.AccessoryGrid))
-                                    GameScene.Game.ReceiveChat($"Unable to Reset {Item.Info.ItemName}.", MessageType.System);
-                                
-
-                                return;
-                            }
                             if (GameScene.Game.NPCUpgradeGemBox.IsVisible)
                             {
                                 if (GameScene.Game.NPCUpgradeGemBox.TargetCell.Grid[0].Link == null)
@@ -1991,57 +1703,6 @@ namespace Client.Controls
                                 {
                                     if(!MoveItem(GameScene.Game.NPCUpgradeBox.SpecialGrid) && !MoveItem(GameScene.Game.NPCUpgradeBox.SacrificeItemGrid))
                                         GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to refine.", MessageType.System);
-                                }
-                                return;
-                            }
-
-                            if (GameScene.Game.NPCRefineBox.IsVisible)
-                            {
-                                switch (Item.Info.ItemType)
-                                {
-                                    case ItemType.Ore:
-                                        if (Item.Info.Effect != ItemEffect.BlackIronOre)
-                                            GameScene.Game.ReceiveChat($"Only Black Iron Ore can be used.", MessageType.System);
-                                        else
-                                            MoveItem(GameScene.Game.NPCRefineBox.BlackIronGrid);
-                                        return;
-                                    case ItemType.Necklace:
-                                    case ItemType.Bracelet:
-                                    case ItemType.Ring:
-                                        MoveItem(GameScene.Game.NPCRefineBox.AccessoryGrid);
-                                        return;
-                                    case ItemType.RefineSpecial:
-                                        MoveItem(GameScene.Game.NPCRefineBox.SpecialGrid);
-                                        return;
-                                }
-                                GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to refine.", MessageType.System);
-                                return;
-                            }
-
-                            if (GameScene.Game.NPCAccessoryRefineBox.IsVisible)
-                            {
-                                if (Item.Level > 1)
-                                {
-                                    GameScene.Game.ReceiveChat($"Unable to refine {Item.Info.ItemName} because it has been levelled.", MessageType.System);
-                                }
-                                else
-                                {
-                                    if (Item.Info.ItemType == ItemType.Ore)
-                                    {
-                                        if (!MoveItem(GameScene.Game.NPCAccessoryRefineBox.OreTargetCell))
-                                            GameScene.Game.ReceiveChat($"You cannot use {Item.Info.ItemName}, you must use Corundum Ore.", MessageType.System);
-                                    }
-                                    else
-                                    {
-                                        if (GameScene.Game.NPCAccessoryRefineBox.TargetCell.Grid[0].Link == null)
-                                        {
-
-                                            if (!MoveItem(GameScene.Game.NPCAccessoryRefineBox.TargetCell))
-                                                GameScene.Game.ReceiveChat($"Unable to refine {Item.Info.ItemName}.", MessageType.System);
-                                        }
-                                        else if (!MoveItem(GameScene.Game.NPCAccessoryRefineBox.Grid))
-                                            GameScene.Game.ReceiveChat($"{Item.Info.ItemName} doesnt have the same stats as the main accessory.", MessageType.System);
-                                    }
                                 }
                                 return;
                             }
@@ -2120,93 +1781,6 @@ namespace Client.Controls
                                 return;
                             }
 
-                            if (GameScene.Game.NPCRefineBox.IsVisible)
-                            {
-                                switch (Item.Info.ItemType)
-                                {
-                                    case ItemType.Ore:
-                                        if (Item.Info.Effect != ItemEffect.BlackIronOre)
-                                            GameScene.Game.ReceiveChat($"Only Black Iron Ore can be used.", MessageType.System);
-                                        else
-                                            MoveItem(GameScene.Game.NPCRefineBox.BlackIronGrid);
-                                        return;
-                                    case ItemType.Necklace:
-                                    case ItemType.Bracelet:
-                                    case ItemType.Ring:
-                                        MoveItem(GameScene.Game.NPCRefineBox.AccessoryGrid);
-                                        return;
-                                    case ItemType.RefineSpecial:
-                                        MoveItem(GameScene.Game.NPCRefineBox.SpecialGrid);
-                                        return;
-                                }
-                                GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to refine.", MessageType.System);
-                                return;
-                            }
-
-                            if (GameScene.Game.NPCMasterRefineBox.IsVisible)
-                            {
-                                switch (Item.Info.Effect)
-                                {
-                                    case ItemEffect.Fragment1:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.Fragment1Grid))
-                                            return;
-                                        break;
-                                    case ItemEffect.Fragment2:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.Fragment2Grid))
-                                            return;
-                                        break;
-                                    case ItemEffect.Fragment3:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.Fragment3Grid))
-                                            return;
-                                        break;
-                                    case ItemEffect.RefinementStone:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.RefinementStoneGrid))
-                                            return;
-                                        break;
-                                }
-
-                                switch (Item.Info.ItemType)
-                                {
-                                    case ItemType.RefineSpecial:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.SpecialGrid))
-                                            return;
-                                        break;
-                                }
-                                GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to refine.", MessageType.System);
-                                return;
-                            }
-
-                            if (GameScene.Game.NPCAccessoryLevelBox.IsVisible)
-                            {
-                                if (GameScene.Game.NPCAccessoryLevelBox.TargetCell.Grid[0].Link == null)
-                                {
-                                    if (!MoveItem(GameScene.Game.NPCAccessoryLevelBox.TargetCell))
-                                        GameScene.Game.ReceiveChat($"Unable to Level {Item.Info.ItemName}.", MessageType.System);
-                                }
-                                else if (!MoveItem(GameScene.Game.NPCAccessoryLevelBox.Grid))
-                                    GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to level.", MessageType.System);
-
-                                return;
-                            }
-
-                            if (GameScene.Game.NPCAccessoryUpgradeBox.IsVisible)
-                            {
-
-                                if (!Item.CanAccessoryUpgrade())
-                                    GameScene.Game.ReceiveChat($"Unable to Upgrade {Item.Info.ItemName}.", MessageType.System);
-                                else
-                                    MoveItem(GameScene.Game.NPCAccessoryUpgradeBox.TargetCell);
-
-                                return;
-                            }
-
-                            if (GameScene.Game.NPCAccessoryResetBox.IsVisible)
-                            {
-                                if (!MoveItem(GameScene.Game.NPCAccessoryResetBox.AccessoryGrid))
-                                    GameScene.Game.ReceiveChat($"Unable to Reset {Item.Info.ItemName}.", MessageType.System);
-
-                                return;
-                            }
                             if (GameScene.Game.NPCUpgradeGemBox.IsVisible)
                             {
                                 if (GameScene.Game.NPCUpgradeGemBox.TargetCell.Grid[0].Link == null)
@@ -2267,86 +1841,6 @@ namespace Client.Controls
                         case GridType.Storage:
                             if (Item == null) return;
 
-                            if (GameScene.Game.NPCMasterRefineBox.IsVisible)
-                            {
-                                switch (Item.Info.Effect)
-                                {
-                                    case ItemEffect.Fragment1:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.Fragment1Grid))
-                                            return;
-                                        break;
-                                    case ItemEffect.Fragment2:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.Fragment2Grid))
-                                            return;
-                                        break;
-                                    case ItemEffect.Fragment3:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.Fragment3Grid))
-                                            return;
-                                        break;
-                                    case ItemEffect.RefinementStone:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.RefinementStoneGrid))
-                                            return;
-                                        break;
-                                }
-
-                                switch (Item.Info.ItemType)
-                                {
-                                    case ItemType.RefineSpecial:
-                                        if (MoveItem(GameScene.Game.NPCMasterRefineBox.SpecialGrid))
-                                            return;
-                                        break;
-                                }
-                                GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to refine.", MessageType.System);
-                                return;
-                            }
-                            if (GameScene.Game.NPCRefineBox.Visible)
-                            {
-                                switch (Item.Info.ItemType)
-                                {
-                                    case ItemType.Ore:
-                                        if (Item.Info.Effect != ItemEffect.BlackIronOre)
-                                            GameScene.Game.ReceiveChat($"Only Black Iron Ore can be used.", MessageType.System);
-                                        else
-                                            MoveItem(GameScene.Game.NPCRefineBox.BlackIronGrid);
-                                        return;
-                                    case ItemType.Necklace:
-                                    case ItemType.Bracelet:
-                                    case ItemType.Ring:
-                                        MoveItem(GameScene.Game.NPCRefineBox.AccessoryGrid);
-                                        return;
-                                }
-                                GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to refine.", MessageType.System);
-                                return;
-                            }
-
-                            if (GameScene.Game.NPCAccessoryRefineBox.IsVisible)
-                            {
-                                if (Item.Level > 1)
-                                {
-                                    GameScene.Game.ReceiveChat($"Unable to refine {Item.Info.ItemName} because it has been levelled.", MessageType.System);
-                                }
-                                else
-                                {
-                                    if (Item.Info.ItemType == ItemType.Ore)
-                                    {
-                                        if (!MoveItem(GameScene.Game.NPCAccessoryRefineBox.OreTargetCell))
-                                            GameScene.Game.ReceiveChat($"You cannot use {Item.Info.ItemName}, you must use Corundum Ore.", MessageType.System);
-                                    }
-                                    else
-                                    {
-                                        if (GameScene.Game.NPCAccessoryRefineBox.TargetCell.Grid[0].Link == null)
-                                        {
-
-                                            if (!MoveItem(GameScene.Game.NPCAccessoryRefineBox.TargetCell))
-                                                GameScene.Game.ReceiveChat($"Unable to refine {Item.Info.ItemName}.", MessageType.System);
-                                        }
-                                        else if (!MoveItem(GameScene.Game.NPCAccessoryRefineBox.Grid))
-                                            GameScene.Game.ReceiveChat($"{Item.Info.ItemName} doesnt have the same stats as the main accessory.", MessageType.System);
-                                    }
-                                }
-                                return;
-                            }
-
                             if (GameScene.Game.MarketPlaceBox.ConsignTab.IsVisible)
                             {
                                 MoveItem(GameScene.Game.MarketPlaceBox.ConsignGrid);
@@ -2369,27 +1863,6 @@ namespace Client.Controls
                         case GridType.Equipment:
 
                             if (Item == null) return;
-
-                            if (GameScene.Game.NPCAccessoryLevelBox.IsVisible)
-                            {
-                                if (GameScene.Game.NPCAccessoryLevelBox.TargetCell.Grid[0].Link == null)
-                                {
-                                    if (!MoveItem(GameScene.Game.NPCAccessoryLevelBox.TargetCell))
-                                        GameScene.Game.ReceiveChat($"Unable to Level {Item.Info.ItemName}.", MessageType.System);
-                                }
-                                return;
-                            }
-
-                            if (GameScene.Game.NPCAccessoryUpgradeBox.IsVisible)
-                            {
-                                if (!Item.CanAccessoryUpgrade())
-                                    GameScene.Game.ReceiveChat($"Unable to Upgrade {Item.Info.ItemName}.", MessageType.System);
-                                else
-                                    MoveItem(GameScene.Game.NPCAccessoryUpgradeBox.TargetCell);
-
-                                return;
-                            }
-
 
                             if (Item != null && (Item.Flags & UserItemFlags.Marriage) == UserItemFlags.Marriage)
                             {

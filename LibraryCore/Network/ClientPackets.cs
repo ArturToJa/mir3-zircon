@@ -224,60 +224,8 @@ namespace Library.Network.ClientPackets
         public CellLinkInfo SpecialItem { get; set; }
     }
 
-    public sealed class NPCRefine : Packet
-    {
-        public RefineType RefineType { get; set; }
-        public RefineQuality RefineQuality { get; set; }
-        public List<CellLinkInfo> Ores { get; set; }
-        public List<CellLinkInfo> Items { get; set; }
-        public List<CellLinkInfo> Specials { get; set; }
-    }
-    public sealed class NPCMasterRefine : Packet
-    {
-        public RefineType RefineType { get; set; }
-        public List<CellLinkInfo> Fragment1s { get; set; }
-        public List<CellLinkInfo> Fragment2s { get; set; }
-        public List<CellLinkInfo> Fragment3s { get; set; }
-        public List<CellLinkInfo> Stones { get; set; }
-        public List<CellLinkInfo> Specials { get; set; }
-    }
-    public sealed class NPCMasterRefineEvaluate : Packet
-    {
-        public RefineType RefineType { get; set; }
-        public List<CellLinkInfo> Fragment1s { get; set; }
-        public List<CellLinkInfo> Fragment2s { get; set; }
-        public List<CellLinkInfo> Fragment3s { get; set; }
-        public List<CellLinkInfo> Stones { get; set; }
-        public List<CellLinkInfo> Specials { get; set; }
-    }
-    public sealed class NPCRefinementStone : Packet
-    {
-        public List<CellLinkInfo> IronOres { get; set; }
-        public List<CellLinkInfo> SilverOres { get; set; }
-        public List<CellLinkInfo> DiamondOres { get; set; }
-        public List<CellLinkInfo> GoldOres { get; set; }
-        public List<CellLinkInfo> Crystal { get; set; }
-        public long Gold { get; set; }
-    }
-
     public sealed class NPCClose : Packet
     {
-    }
-
-    public sealed class NPCRefineRetrieve : Packet
-    {
-        public int Index { get; set; }
-    }
-
-    public sealed class NPCAccessoryLevelUp : Packet
-    {
-        public CellLinkInfo Target { get; set; }
-        public List<CellLinkInfo> Links { get; set; }
-    }
-    public sealed class NPCAccessoryUpgrade : Packet
-    {
-        public CellLinkInfo Target { get; set; }
-        public RefineType RefineType { get; set; }
     }
 
     public sealed class NPCUpgradeGem : Packet
@@ -673,13 +621,7 @@ namespace Library.Network.ClientPackets
         public CellLinkInfo Green { get; set; }
         public CellLinkInfo Grey { get; set; }
     }
-    public sealed class NPCAccessoryRefine : Packet
-    {
-        public CellLinkInfo Target { get; set; }
-        public CellLinkInfo OreTarget { get; set; }
-        public List<CellLinkInfo> Links { get; set; }
-        public RefineType RefineType { get; set; }
-    }
+
     public sealed class JoinInstance : Packet
     {
         public int Index { get; set; }

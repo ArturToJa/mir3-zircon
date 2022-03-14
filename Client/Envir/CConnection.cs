@@ -203,7 +203,6 @@ namespace Client.Envir
                                       "Please follow the instructions sent to your E-Mail to activate.", "Account Creation");
                     break;
             }
-
         }
         public void Process(S.ChangePassword p)
         {
@@ -694,12 +693,10 @@ namespace Client.Envir
         {
             try
             {
-
                 SelectScene select = DXControl.ActiveScene as SelectScene;
                 if (select == null) return;
 
                 select.SelectBox.StartGameAttempted = false;
-
 
                 DXMessageBox box;
                 DateTime expiry;
@@ -819,14 +816,6 @@ namespace Client.Envir
             MapObject ob = null;
             if (!GameScene.Game.MapControl.Objects.TryGetValue(p.ObjectID, out ob)) return;
             ob.Remove();
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.Remove();
-                return;
-            }*/
-
         }
         public void Process(S.ObjectPlayer p)
         {
@@ -858,15 +847,6 @@ namespace Client.Envir
             if (spell == null) return;
             spell.Power = p.Power;
             spell.UpdateLibraries();
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                SpellObject spell = (SpellObject)ob;
-                spell.Power = p.Power;
-                spell.UpdateLibraries();
-                return;
-            }*/
         }
         public void Process(S.PlayerUpdate p)
         {
@@ -889,29 +869,6 @@ namespace Client.Envir
                 player.Light = Math.Max(p.Light, 3);
 
             player.UpdateLibraries();
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.Race != ObjectType.Player || ob.ObjectID != p.ObjectID) continue;
-
-                PlayerObject player = (PlayerObject)ob;
-
-                player.LibraryWeaponShape = p.Weapon;
-                player.ArmourShape = p.Armour;
-                player.ArmourColour = p.ArmourColour;
-                player.HelmetShape = p.Helmet;
-                player.HorseShape = p.HorseArmour;
-                player.ArmourImage = p.ArmourImage;
-                player.ShieldShape = p.Shield;
-                player.EmblemShape = p.EmblemShape;
-                player.WingsShape = p.WingsShape;
-
-                player.Light = p.Light;
-                if (player == MapObject.User)
-                    player.Light = Math.Max(p.Light, 3);
-
-                player.UpdateLibraries();
-                return;
-            }*/
         }
 
         public void Process(S.ObjectTurn p)
@@ -929,13 +886,6 @@ namespace Client.Envir
             MapObject ob = null;
             if (!GameScene.Game.MapControl.Objects.TryGetValue(p.ObjectID, out ob)) return;
             ob.ActionQueue.Add(new ObjectAction(MirAction.Standing, p.Direction, p.Location));
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.ActionQueue.Add(new ObjectAction(MirAction.Standing, p.Direction, p.Location));
-                return;
-            }*/
         }
         public void Process(S.ObjectHarvest p)
         {
@@ -951,14 +901,6 @@ namespace Client.Envir
             MapObject ob = null;
             if (!GameScene.Game.MapControl.Objects.TryGetValue(p.ObjectID, out ob)) return;
             ob.ActionQueue.Add(new ObjectAction(MirAction.Harvest, p.Direction, p.Location));
-
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.ActionQueue.Add(new ObjectAction(MirAction.Harvest, p.Direction, p.Location));
-                return;
-            }*/
         }
         public void Process(S.ObjectShow p)
         {
@@ -978,39 +920,12 @@ namespace Client.Envir
             }
 
             ob.ActionQueue.Add(new ObjectAction(MirAction.Show, p.Direction, p.Location));
-
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-                if (ob.Race == ObjectType.Monster)
-                {
-                    switch (((MonsterObject)ob).Image)
-                    {
-
-                        case MonsterImage.VoraciousGhost:
-                        case MonsterImage.DevouringGhost:
-                        case MonsterImage.CorpseRaisingGhost:
-                            ob.Dead = false;
-                            break;
-                    }
-                }
-
-                ob.ActionQueue.Add(new ObjectAction(MirAction.Show, p.Direction, p.Location));
-                return;
-            }*/
         }
         public void Process(S.ObjectHide p)
         {
             MapObject ob = null;
             if (!GameScene.Game.MapControl.Objects.TryGetValue(p.ObjectID, out ob)) return;
             ob.ActionQueue.Add(new ObjectAction(MirAction.Hide, p.Direction, p.Location));
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.ActionQueue.Add(new ObjectAction(MirAction.Hide, p.Direction, p.Location));
-                return;
-            }*/
         }
         public void Process(S.ObjectMove p)
         {
@@ -1027,39 +942,18 @@ namespace Client.Envir
             MapObject ob = null;
             if (!GameScene.Game.MapControl.Objects.TryGetValue(p.ObjectID, out ob)) return;
             ob.ActionQueue.Add(new ObjectAction(MirAction.Moving, p.Direction, p.Location, p.Distance, MagicType.None));
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.ActionQueue.Add(new ObjectAction(MirAction.Moving, p.Direction, p.Location, p.Distance, MagicType.None));
-                return;
-            }*/
         }
         public void Process(S.ObjectPushed p)
         {
             MapObject ob = null;
             if (!GameScene.Game.MapControl.Objects.TryGetValue(p.ObjectID, out ob)) return;
             ob.ActionQueue.Add(new ObjectAction(MirAction.Pushed, p.Direction, p.Location));
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.ActionQueue.Add(new ObjectAction(MirAction.Pushed, p.Direction, p.Location));
-                return;
-            }*/
         }
         public void Process(S.ObjectNameColour p)
         {
             MapObject ob = null;
             if (!GameScene.Game.MapControl.Objects.TryGetValue(p.ObjectID, out ob)) return;
             ob.NameColour = p.Colour;
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.NameColour = p.Colour;
-                return;
-            }*/
         }
         public void Process(S.ObjectMount p)
         {
@@ -1077,20 +971,6 @@ namespace Client.Envir
 
             if (player.Interupt)
                 player.FrameStart = DateTime.MinValue;
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                if (ob.Race != ObjectType.Player) return;
-
-                PlayerObject player = (PlayerObject)ob;
-
-                player.Horse = p.Horse;
-
-                if (player.Interupt)
-                    player.FrameStart = DateTime.MinValue;
-                return;
-            }*/
         }
         public void Process(S.MountFailed p)
         {
@@ -1108,41 +988,6 @@ namespace Client.Envir
             }
 
             ob.Struck(p.AttackerID, p.Element);
-
-/*
-            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                if (ob == MapObject.User) //{
-                {
-                    GameScene.Game.CanRun = false;
-                    //   MapObject.User.NextRunTime = CEnvir.Now.AddMilliseconds(600);
-                    //MapObject.User.NextActionTime = CEnvir.Now.AddMilliseconds(300);
-
-                    *//* if (MapObject.User.ServerTime > DateTime.MinValue) //fix desyncing attack timers and being struck
-                     {
-                         switch (MapObject.User.CurrentAction)
-                         {
-                             case MirAction.Attack:
-                             case MirAction.RangeAttack:
-                                 MapObject.User.AttackTime += TimeSpan.FromMilliseconds(300);
-                                 break;
-                             case MirAction.Spell:
-                                 MapObject.User.NextMagicTime += TimeSpan.FromMilliseconds(300);
-                                 break;
-                         }
-                     }*//*
-                }
-
-                //   Point loc = ob.ActionQueue.Count > 0 ? ob.ActionQueue[ob.ActionQueue.Count - 1].Location : ob.CurrentLocation;
-
-                // ob.ActionQueue.Add(new ObjectAction(MirAction.Struck, p.Direction, loc, p.AttackerID, p.Element));
-
-                ob.Struck(p.AttackerID, p.Element);
-
-                return;
-            }*/
         }
         public void Process(S.ObjectDash p)
         {
@@ -1156,19 +1001,6 @@ namespace Client.Envir
 
             for (int i = 1; i <= p.Distance; i++)
                 ob.ActionQueue.Add(new ObjectAction(MirAction.Moving, p.Direction, Functions.Move(p.Location, p.Direction, i - p.Distance), 1, p.Magic));
-
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.StanceTime = CEnvir.Now.AddSeconds(3);
-                ob.ActionQueue.Add(new ObjectAction(MirAction.Standing, p.Direction, Functions.Move(p.Location, p.Direction, -p.Distance)));
-
-                for (int i = 1; i <= p.Distance; i++)
-                    ob.ActionQueue.Add(new ObjectAction(MirAction.Moving, p.Direction, Functions.Move(p.Location, p.Direction, i - p.Distance), 1, p.Magic));
-
-                return;
-            }*/
         }
         public void Process(S.ObjectAttack p)
         {
@@ -1186,13 +1018,6 @@ namespace Client.Envir
             MapObject ob = null;
             if (!GameScene.Game.MapControl.Objects.TryGetValue(p.ObjectID, out ob)) return;
             ob.ActionQueue.Add(new ObjectAction(MirAction.Attack, p.Direction, p.Location, p.TargetID, p.AttackMagic, p.AttackElement));
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.ActionQueue.Add(new ObjectAction(MirAction.Attack, p.Direction, p.Location, p.TargetID, p.AttackMagic, p.AttackElement));
-                return;
-            }*/
         }
         public void Process(S.ObjectMining p)
         {
@@ -1210,13 +1035,6 @@ namespace Client.Envir
             MapObject ob = null;
             if (!GameScene.Game.MapControl.Objects.TryGetValue(p.ObjectID, out ob)) return;
             ob.ActionQueue.Add(new ObjectAction(MirAction.Mining, p.Direction, p.Location, p.Effect));
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.ActionQueue.Add(new ObjectAction(MirAction.Mining, p.Direction, p.Location, p.Effect));
-                return;
-            }*/
         }
         public void Process(S.ObjectRangeAttack p)
         {
@@ -1231,13 +1049,6 @@ namespace Client.Envir
             MapObject ob = null;
             if (!GameScene.Game.MapControl.Objects.TryGetValue(p.ObjectID, out ob)) return;
             ob.ActionQueue.Add(new ObjectAction(MirAction.RangeAttack, p.Direction, p.Location, p.Targets, p.AttackMagic, p.AttackElement));
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.ActionQueue.Add(new ObjectAction(MirAction.RangeAttack, p.Direction, p.Location, p.Targets, p.AttackMagic, p.AttackElement));
-                return;
-            }*/
         }
         public void Process(S.ObjectMagic p)
         {
@@ -1265,13 +1076,6 @@ namespace Client.Envir
             MapObject ob = null;
             if (!GameScene.Game.MapControl.Objects.TryGetValue(p.ObjectID, out ob)) return;
             ob.ActionQueue.Add(new ObjectAction(MirAction.Spell, p.Direction, p.CurrentLocation, p.Type, p.Targets, p.Locations, p.Cast));
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.ActionQueue.Add(new ObjectAction(MirAction.Spell, p.Direction, p.CurrentLocation, p.Type, p.Targets, p.Locations, p.Cast));
-                return;
-            }*/
         }
         public void Process(S.ObjectDied p)
         {
@@ -1282,19 +1086,6 @@ namespace Client.Envir
 
             if (ob == MapObject.User)
                 GameScene.Game.ReceiveChat(MessageAction.Revive);
-
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.Dead = true;
-                ob.ActionQueue.Add(new ObjectAction(MirAction.Die, p.Direction, p.Location));
-
-                if (ob == MapObject.User)
-                    GameScene.Game.ReceiveChat(MessageAction.Revive);
-
-                return;
-            }*/
         }
         public void Process(S.ObjectHarvested p)
         {
@@ -1303,17 +1094,6 @@ namespace Client.Envir
             ob.Skeleton = true;
 
             ob.ActionQueue.Add(new ObjectAction(MirAction.Dead, p.Direction, p.Location));
-
-/*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                ob.Skeleton = true;
-
-                ob.ActionQueue.Add(new ObjectAction(MirAction.Dead, p.Direction, p.Location));
-
-                return;
-            }*/
         }
         public void Process(S.ObjectEffect p)
         {
@@ -1489,184 +1269,6 @@ namespace Client.Envir
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-
-            /*foreach (MapObject ob in GameScene.Game.MapControl.Objects)
-            {
-                if (ob.ObjectID != p.ObjectID) continue;
-
-                switch (p.Effect)
-                {
-                    case Effect.TeleportOut:
-                        ob.Effects.Add(new MirEffect(110, 10, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 30, 60, Color.White)
-                        {
-                            MapTarget = ob.CurrentLocation,
-                            Blend = true,
-                            Reversed = true,
-                            BlendRate = 0.6F
-                        });
-
-                        DXSoundManager.Play(SoundIndex.TeleportOut);
-                        break;
-                    case Effect.TeleportIn:
-                        ob.Effects.Add(new MirEffect(110, 10, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 30, 60, Color.White)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-
-                        DXSoundManager.Play(SoundIndex.TeleportIn);
-                        break;
-                    case Effect.FullBloom:
-                        ob.Effects.Add(new MirEffect(1700, 4, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx4, 30, 60, Color.White)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-
-                        DXSoundManager.Play(SoundIndex.FullBloom);
-                        break;
-                    case Effect.WhiteLotus:
-                        ob.Effects.Add(new MirEffect(1600, 12, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx4, 30, 60, Color.White)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-
-                        DXSoundManager.Play(SoundIndex.WhiteLotus);
-                        break;
-                    case Effect.RedLotus:
-                        ob.Effects.Add(new MirEffect(1700, 12, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx4, 30, 60, Color.White)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-
-                        DXSoundManager.Play(SoundIndex.RedLotus);
-                        break;
-                    case Effect.SweetBrier:
-                        ob.Effects.Add(new MirEffect(1900, 10, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx4, 30, 60, Color.White)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-
-                        DXSoundManager.Play(SoundIndex.SweetBrier);
-                        break;
-                    case Effect.Karma:
-                        ob.Effects.Add(new MirEffect(1800, 10, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx4, 30, 60, Color.White)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-
-                        DXSoundManager.Play(SoundIndex.Karma);
-                        break;
-
-                    case Effect.Puppet:
-                        ob.Effects.Add(new MirEffect(820, 8, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx4, 30, 60, Globals.FireColour)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-                        break;
-                    case Effect.PuppetFire:
-                        ob.Effects.Add(new MirEffect(1546, 8, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx4, 30, 60, Globals.FireColour)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-                        break;
-                    case Effect.PuppetIce:
-                        ob.Effects.Add(new MirEffect(2700, 10, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx4, 30, 60, Globals.IceColour)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-                        break;
-                    case Effect.PuppetLightning:
-                        ob.Effects.Add(new MirEffect(2800, 10, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx4, 30, 60, Globals.LightningColour)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-                        break;
-                    case Effect.PuppetWind:
-                        ob.Effects.Add(new MirEffect(2900, 10, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx4, 30, 60, Globals.WindColour)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-                        break;
-                    #region Thunder Bolt & Thunder Strike
-
-                    case Effect.ThunderBolt:
-
-                        ob.Effects.Add(new MirEffect(1450, 3, TimeSpan.FromMilliseconds(150), LibraryFile.Magic, 150, 50, Globals.LightningColour)
-                        {
-                            Blend = true,
-                            Target = ob
-                        });
-
-                        DXSoundManager.Play(SoundIndex.LightningStrikeEnd);
-                        break;
-
-                    #endregion
-                    case Effect.DanceOfSwallow:
-                        ob.Effects.Add(new MirEffect(1300, 8, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx4, 20, 70, Globals.NoneColour) //Element style?
-                        {
-                            Blend = true,
-                            Target = ob,
-                        });
-
-                        DXSoundManager.Play(SoundIndex.DanceOfSwallowsEnd);
-                        break;
-                    case Effect.FlashOfLight:
-                        ob.Effects.Add(new MirEffect(2400, 5, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx4, 20, 70, Globals.NoneColour) //Element style?
-                        {
-                            Blend = true,
-                            Target = ob,
-                        });
-
-                        DXSoundManager.Play(SoundIndex.FlashOfLightEnd);
-                        break;
-                    case Effect.DemonExplosion:
-                        ob.Effects.Add(new MirEffect(3300, 10, TimeSpan.FromMilliseconds(100), LibraryFile.MonMagicEx8, 30, 60, Globals.PhantomColour)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-
-                        //DXSoundManager.Play(SoundIndex.FlashOfLightEnd);
-                        break;
-                    case Effect.FrostBiteEnd:
-                        ob.Effects.Add(new MirEffect(700, 7, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx5, 30, 60, Globals.IceColour)
-                        {
-                            Target = ob,
-                            Blend = true,
-                            BlendRate = 0.6F
-                        });
-
-                        DXSoundManager.Play(SoundIndex.FireStormEnd);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                return;
-            }*/
         }
         public void Process(S.MapEffect p)
         {
@@ -1855,7 +1457,6 @@ namespace Client.Envir
             }
         }
 
-
         public void Process(S.ManaChanged p)
         {
             MapObject ob = null;
@@ -1958,8 +1559,6 @@ namespace Client.Envir
 
         public void Process(S.ItemsGained p)
         {
-
-
             foreach (ClientUserItem item in p.Items)
             {
                 ItemInfo displayInfo = item.Info;
@@ -2042,7 +1641,6 @@ namespace Client.Envir
             fromCell.Locked = false;
 
             if (!p.Success) return;
-
 
             if (p.FromGrid != p.ToGrid)
             {
@@ -2164,13 +1762,11 @@ namespace Client.Envir
                     throw new ArgumentOutOfRangeException();
             }
 
-
             DXItemCell fromCell = grid[p.Link.Slot];
 
             fromCell.Locked = false;
 
             if (!p.Success) return;
-
 
             if (!fromCell.Item.Info.ShouldLinkInfo)
             {
@@ -2188,7 +1784,6 @@ namespace Client.Envir
                         CEnvir.Enqueue(new C.BeltLinkChanged { Slot = link.Slot, LinkIndex = link.LinkInfoIndex, LinkItemIndex = link.LinkItemIndex }); //Update server
                 }
             }
-
 
             if (p.Link.Count == 0)
                 fromCell.Item = null;
@@ -2227,13 +1822,10 @@ namespace Client.Envir
                         throw new ArgumentOutOfRangeException();
                 }
 
-
-
                 DXItemCell fromCell = grid[cellLinkInfo.Slot];
                 fromCell.Locked = false;
 
                 if (!p.Success) continue;
-
 
                 if (!fromCell.Item.Info.ShouldLinkInfo)
                 {
@@ -2251,7 +1843,6 @@ namespace Client.Envir
                             CEnvir.Enqueue(new C.BeltLinkChanged { Slot = link.Slot, LinkIndex = link.LinkInfoIndex, LinkItemIndex = link.LinkItemIndex }); //Update server
                     }
                 }
-
 
                 if (cellLinkInfo.Count == fromCell.Item.Count)
                     fromCell.Item = null;
@@ -2375,8 +1966,6 @@ namespace Client.Envir
         }
         public void Process(S.ItemSplit p)
         {
-
-
             DXItemCell fromCell;
 
             switch (p.Grid)
@@ -2430,7 +2019,6 @@ namespace Client.Envir
                 default: return;
             }
 
-
             ClientUserItem item = new ClientUserItem(fromCell.Item, p.Count) { Slot = p.NewSlot };// { Count = p.Count, Info = cell.Item.Info, GridSlot = p.NewSlot, AddedStats = new Stats(), };
 
             toCell.Item = item;
@@ -2442,8 +2030,6 @@ namespace Client.Envir
                 fromCell.Item.Count -= p.Count;
 
             fromCell.RefreshItem();
-
-
         }
         public void Process(S.ItemLock p)
         {
@@ -2513,14 +2099,11 @@ namespace Client.Envir
 
             if (cell.Item == null) return;
 
-            cell.Item.Experience = p.Experience;
             cell.Item.Level = p.Level;
             cell.Item.Flags = p.Flags;
 
             cell.RefreshItem();
         }
-
-
 
         public void Process(S.Chat p)
         {
@@ -2560,542 +2143,9 @@ namespace Client.Envir
         {
             GameScene.Game.NPCBox.Response(p);
         }
-        public void Process(S.NPCRefine p)
-        {
-            foreach (CellLinkInfo cellLinkInfo in p.Ores)
-            {
-                DXItemCell[] grid;
-
-                switch (cellLinkInfo.GridType)
-                {
-                    case GridType.Inventory:
-                        grid = GameScene.Game.InventoryBox.Grid.Grid;
-                        break;
-                    case GridType.Equipment:
-                        grid = GameScene.Game.CharacterBox.Grid;
-                        break;
-                    case GridType.Storage:
-                        grid = GameScene.Game.StorageBox.Grid.Grid;
-                        break;
-                    case GridType.PartsStorage:
-                        grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                        break;
-                    case GridType.CompanionInventory:
-                        grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                        break;
-                    case GridType.CompanionEquipment:
-                        grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-
-
-                DXItemCell fromCell = grid[cellLinkInfo.Slot];
-                fromCell.Locked = false;
-
-                if (!p.Success) continue;
-
-
-                if (!fromCell.Item.Info.ShouldLinkInfo)
-                {
-                    for (int i = 0; i < GameScene.Game.BeltBox.Links.Length; i++)
-                    {
-                        ClientBeltLink link = GameScene.Game.BeltBox.Links[i];
-                        if (link.LinkItemIndex != fromCell.Item.Index) continue;
-
-                        link.LinkItemIndex = -1;
-
-                        if (i < GameScene.Game.BeltBox.Grid.Grid.Length)
-                            GameScene.Game.BeltBox.Grid.Grid[i].QuickItem = null; //set belt to null
-
-                        if (!GameScene.Game.Observer)
-                            CEnvir.Enqueue(new C.BeltLinkChanged { Slot = link.Slot, LinkIndex = link.LinkInfoIndex, LinkItemIndex = link.LinkItemIndex }); //Update server
-                    }
-                }
-
-
-                if (cellLinkInfo.Count == fromCell.Item.Count)
-                    fromCell.Item = null;
-                else
-                    fromCell.Item.Count -= cellLinkInfo.Count;
-
-                fromCell.RefreshItem();
-            }
-
-            foreach (CellLinkInfo cellLinkInfo in p.Items)
-            {
-                DXItemCell[] grid;
-
-                switch (cellLinkInfo.GridType)
-                {
-                    case GridType.Inventory:
-                        grid = GameScene.Game.InventoryBox.Grid.Grid;
-                        break;
-                    case GridType.Equipment:
-                        grid = GameScene.Game.CharacterBox.Grid;
-                        break;
-                    case GridType.Storage:
-                        grid = GameScene.Game.StorageBox.Grid.Grid;
-                        break;
-                    case GridType.PartsStorage:
-                        grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                        break;
-                    case GridType.CompanionInventory:
-                        grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                        break;
-                    case GridType.CompanionEquipment:
-                        grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-
-
-                DXItemCell fromCell = grid[cellLinkInfo.Slot];
-                fromCell.Locked = false;
-
-                if (!p.Success) continue;
-
-
-                if (!fromCell.Item.Info.ShouldLinkInfo)
-                {
-                    for (int i = 0; i < GameScene.Game.BeltBox.Links.Length; i++)
-                    {
-                        ClientBeltLink link = GameScene.Game.BeltBox.Links[i];
-                        if (link.LinkItemIndex != fromCell.Item.Index) continue;
-
-                        link.LinkItemIndex = -1;
-
-                        if (i < GameScene.Game.BeltBox.Grid.Grid.Length)
-                            GameScene.Game.BeltBox.Grid.Grid[i].QuickItem = null; //set belt to null
-
-                        if (!GameScene.Game.Observer)
-                            CEnvir.Enqueue(new C.BeltLinkChanged { Slot = link.Slot, LinkIndex = link.LinkInfoIndex, LinkItemIndex = link.LinkItemIndex }); //Update server
-                    }
-                }
-
-
-                if (cellLinkInfo.Count == fromCell.Item.Count)
-                    fromCell.Item = null;
-                else
-                    fromCell.Item.Count -= cellLinkInfo.Count;
-
-                fromCell.RefreshItem();
-            }
-
-            foreach (CellLinkInfo cellLinkInfo in p.Specials)
-            {
-                DXItemCell[] grid;
-
-                switch (cellLinkInfo.GridType)
-                {
-                    case GridType.Inventory:
-                        grid = GameScene.Game.InventoryBox.Grid.Grid;
-                        break;
-                    case GridType.Equipment:
-                        grid = GameScene.Game.CharacterBox.Grid;
-                        break;
-                    case GridType.Storage:
-                        grid = GameScene.Game.StorageBox.Grid.Grid;
-                        break;
-                    case GridType.PartsStorage:
-                        grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                        break;
-                    case GridType.CompanionInventory:
-                        grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                        break;
-                    case GridType.CompanionEquipment:
-                        grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-
-                DXItemCell fromCell = grid[cellLinkInfo.Slot];
-                fromCell.Locked = false;
-
-                if (!p.Success) continue;
-
-
-                if (!fromCell.Item.Info.ShouldLinkInfo)
-                {
-                    for (int i = 0; i < GameScene.Game.BeltBox.Links.Length; i++)
-                    {
-                        ClientBeltLink link = GameScene.Game.BeltBox.Links[i];
-                        if (link.LinkItemIndex != fromCell.Item.Index) continue;
-
-                        link.LinkItemIndex = -1;
-
-                        if (i < GameScene.Game.BeltBox.Grid.Grid.Length)
-                            GameScene.Game.BeltBox.Grid.Grid[i].QuickItem = null; //set belt to null
-
-                        if (!GameScene.Game.Observer)
-                            CEnvir.Enqueue(new C.BeltLinkChanged { Slot = link.Slot, LinkIndex = link.LinkInfoIndex, LinkItemIndex = link.LinkItemIndex }); //Update server
-                    }
-                }
-
-
-                if (cellLinkInfo.Count == fromCell.Item.Count)
-                    fromCell.Item = null;
-                else
-                    fromCell.Item.Count -= cellLinkInfo.Count;
-
-                fromCell.RefreshItem();
-            }
-
-            if (p.Success)
-            {
-                DXItemCell fromCell = GameScene.Game.CharacterBox.Grid[(int)EquipmentSlot.Weapon];
-                fromCell.Item = null;
-                fromCell.RefreshItem();
-
-                GameScene.Game.ReceiveChat($"Your Refine has been placed successfully, please collect your weapon in {Functions.ToString(Globals.RefineTimes[p.RefineQuality], false)}", MessageType.System);
-            }
-        }
-        public void Process(S.NPCMasterRefine p)
-        {
-            foreach (CellLinkInfo cellLinkInfo in p.Fragment1s)
-            {
-                DXItemCell[] grid;
-
-                switch (cellLinkInfo.GridType)
-                {
-                    case GridType.Inventory:
-                        grid = GameScene.Game.InventoryBox.Grid.Grid;
-                        break;
-                    case GridType.Equipment:
-                        grid = GameScene.Game.CharacterBox.Grid;
-                        break;
-                    case GridType.Storage:
-                        grid = GameScene.Game.StorageBox.Grid.Grid;
-                        break;
-                    case GridType.PartsStorage:
-                        grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                        break;
-                    case GridType.CompanionInventory:
-                        grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                        break;
-                    case GridType.CompanionEquipment:
-                        grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-
-
-                DXItemCell fromCell = grid[cellLinkInfo.Slot];
-                fromCell.Locked = false;
-
-                if (!p.Success) continue;
-
-
-                if (!fromCell.Item.Info.ShouldLinkInfo)
-                {
-                    for (int i = 0; i < GameScene.Game.BeltBox.Links.Length; i++)
-                    {
-                        ClientBeltLink link = GameScene.Game.BeltBox.Links[i];
-                        if (link.LinkItemIndex != fromCell.Item.Index) continue;
-
-                        link.LinkItemIndex = -1;
-
-                        if (i < GameScene.Game.BeltBox.Grid.Grid.Length)
-                            GameScene.Game.BeltBox.Grid.Grid[i].QuickItem = null; //set belt to null
-
-                        if (!GameScene.Game.Observer)
-                            CEnvir.Enqueue(new C.BeltLinkChanged { Slot = link.Slot, LinkIndex = link.LinkInfoIndex, LinkItemIndex = link.LinkItemIndex }); //Update server
-                    }
-                }
-
-
-                if (cellLinkInfo.Count == fromCell.Item.Count)
-                    fromCell.Item = null;
-                else
-                    fromCell.Item.Count -= cellLinkInfo.Count;
-
-                fromCell.RefreshItem();
-            }
-
-            foreach (CellLinkInfo cellLinkInfo in p.Fragment2s)
-            {
-                DXItemCell[] grid;
-
-                switch (cellLinkInfo.GridType)
-                {
-                    case GridType.Inventory:
-                        grid = GameScene.Game.InventoryBox.Grid.Grid;
-                        break;
-                    case GridType.Equipment:
-                        grid = GameScene.Game.CharacterBox.Grid;
-                        break;
-                    case GridType.Storage:
-                        grid = GameScene.Game.StorageBox.Grid.Grid;
-                        break;
-                    case GridType.PartsStorage:
-                        grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                        break;
-                    case GridType.CompanionInventory:
-                        grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                        break;
-                    case GridType.CompanionEquipment:
-                        grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-
-
-                DXItemCell fromCell = grid[cellLinkInfo.Slot];
-                fromCell.Locked = false;
-
-                if (!p.Success) continue;
-
-
-                if (!fromCell.Item.Info.ShouldLinkInfo)
-                {
-                    for (int i = 0; i < GameScene.Game.BeltBox.Links.Length; i++)
-                    {
-                        ClientBeltLink link = GameScene.Game.BeltBox.Links[i];
-                        if (link.LinkItemIndex != fromCell.Item.Index) continue;
-
-                        link.LinkItemIndex = -1;
-
-                        if (i < GameScene.Game.BeltBox.Grid.Grid.Length)
-                            GameScene.Game.BeltBox.Grid.Grid[i].QuickItem = null; //set belt to null
-
-                        if (!GameScene.Game.Observer)
-                            CEnvir.Enqueue(new C.BeltLinkChanged { Slot = link.Slot, LinkIndex = link.LinkInfoIndex, LinkItemIndex = link.LinkItemIndex }); //Update server
-                    }
-                }
-
-
-                if (cellLinkInfo.Count == fromCell.Item.Count)
-                    fromCell.Item = null;
-                else
-                    fromCell.Item.Count -= cellLinkInfo.Count;
-
-                fromCell.RefreshItem();
-            }
-
-            foreach (CellLinkInfo cellLinkInfo in p.Fragment3s)
-            {
-                DXItemCell[] grid;
-
-                switch (cellLinkInfo.GridType)
-                {
-                    case GridType.Inventory:
-                        grid = GameScene.Game.InventoryBox.Grid.Grid;
-                        break;
-                    case GridType.Equipment:
-                        grid = GameScene.Game.CharacterBox.Grid;
-                        break;
-                    case GridType.Storage:
-                        grid = GameScene.Game.StorageBox.Grid.Grid;
-                        break;
-                    case GridType.PartsStorage:
-                        grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                        break;
-                    case GridType.CompanionInventory:
-                        grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                        break;
-                    case GridType.CompanionEquipment:
-                        grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-
-                DXItemCell fromCell = grid[cellLinkInfo.Slot];
-                fromCell.Locked = false;
-
-                if (!p.Success) continue;
-
-
-                if (!fromCell.Item.Info.ShouldLinkInfo)
-                {
-                    for (int i = 0; i < GameScene.Game.BeltBox.Links.Length; i++)
-                    {
-                        ClientBeltLink link = GameScene.Game.BeltBox.Links[i];
-                        if (link.LinkItemIndex != fromCell.Item.Index) continue;
-
-                        link.LinkItemIndex = -1;
-
-                        if (i < GameScene.Game.BeltBox.Grid.Grid.Length)
-                            GameScene.Game.BeltBox.Grid.Grid[i].QuickItem = null; //set belt to null
-
-                        if (!GameScene.Game.Observer)
-                            CEnvir.Enqueue(new C.BeltLinkChanged { Slot = link.Slot, LinkIndex = link.LinkInfoIndex, LinkItemIndex = link.LinkItemIndex }); //Update server
-                    }
-                }
-
-
-                if (cellLinkInfo.Count == fromCell.Item.Count)
-                    fromCell.Item = null;
-                else
-                    fromCell.Item.Count -= cellLinkInfo.Count;
-
-                fromCell.RefreshItem();
-            }
-
-            foreach (CellLinkInfo cellLinkInfo in p.Stones)
-            {
-                DXItemCell[] grid;
-
-                switch (cellLinkInfo.GridType)
-                {
-                    case GridType.Inventory:
-                        grid = GameScene.Game.InventoryBox.Grid.Grid;
-                        break;
-                    case GridType.Equipment:
-                        grid = GameScene.Game.CharacterBox.Grid;
-                        break;
-                    case GridType.Storage:
-                        grid = GameScene.Game.StorageBox.Grid.Grid;
-                        break;
-                    case GridType.PartsStorage:
-                        grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                        break;
-                    case GridType.CompanionInventory:
-                        grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                        break;
-                    case GridType.CompanionEquipment:
-                        grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-
-                DXItemCell fromCell = grid[cellLinkInfo.Slot];
-                fromCell.Locked = false;
-
-                if (!p.Success) continue;
-
-
-                if (!fromCell.Item.Info.ShouldLinkInfo)
-                {
-                    for (int i = 0; i < GameScene.Game.BeltBox.Links.Length; i++)
-                    {
-                        ClientBeltLink link = GameScene.Game.BeltBox.Links[i];
-                        if (link.LinkItemIndex != fromCell.Item.Index) continue;
-
-                        link.LinkItemIndex = -1;
-
-                        if (i < GameScene.Game.BeltBox.Grid.Grid.Length)
-                            GameScene.Game.BeltBox.Grid.Grid[i].QuickItem = null; //set belt to null
-
-                        if (!GameScene.Game.Observer)
-                            CEnvir.Enqueue(new C.BeltLinkChanged { Slot = link.Slot, LinkIndex = link.LinkInfoIndex, LinkItemIndex = link.LinkItemIndex }); //Update server
-                    }
-                }
-
-
-                if (cellLinkInfo.Count == fromCell.Item.Count)
-                    fromCell.Item = null;
-                else
-                    fromCell.Item.Count -= cellLinkInfo.Count;
-
-                fromCell.RefreshItem();
-            }
-
-            foreach (CellLinkInfo cellLinkInfo in p.Specials)
-            {
-                DXItemCell[] grid;
-
-                switch (cellLinkInfo.GridType)
-                {
-                    case GridType.Inventory:
-                        grid = GameScene.Game.InventoryBox.Grid.Grid;
-                        break;
-                    case GridType.Equipment:
-                        grid = GameScene.Game.CharacterBox.Grid;
-                        break;
-                    case GridType.Storage:
-                        grid = GameScene.Game.StorageBox.Grid.Grid;
-                        break;
-                    case GridType.PartsStorage:
-                        grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                        break;
-                    case GridType.CompanionInventory:
-                        grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                        break;
-                    case GridType.CompanionEquipment:
-                        grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-
-                DXItemCell fromCell = grid[cellLinkInfo.Slot];
-                fromCell.Locked = false;
-
-                if (!p.Success) continue;
-
-
-                if (!fromCell.Item.Info.ShouldLinkInfo)
-                {
-                    for (int i = 0; i < GameScene.Game.BeltBox.Links.Length; i++)
-                    {
-                        ClientBeltLink link = GameScene.Game.BeltBox.Links[i];
-                        if (link.LinkItemIndex != fromCell.Item.Index) continue;
-
-                        link.LinkItemIndex = -1;
-
-                        if (i < GameScene.Game.BeltBox.Grid.Grid.Length)
-                            GameScene.Game.BeltBox.Grid.Grid[i].QuickItem = null; //set belt to null
-
-                        if (!GameScene.Game.Observer)
-                            CEnvir.Enqueue(new C.BeltLinkChanged { Slot = link.Slot, LinkIndex = link.LinkInfoIndex, LinkItemIndex = link.LinkItemIndex }); //Update server
-                    }
-                }
-
-
-                if (cellLinkInfo.Count == fromCell.Item.Count)
-                    fromCell.Item = null;
-                else
-                    fromCell.Item.Count -= cellLinkInfo.Count;
-
-                fromCell.RefreshItem();
-            }
-        }
-        public void Process(S.RefineList p)
-        {
-            GameScene.Game.NPCRefineRetrieveBox.Refines.AddRange(p.List);
-        }
-        public void Process(S.NPCRefineRetrieve p)
-        {
-            foreach (ClientRefineInfo info in GameScene.Game.NPCRefineRetrieveBox.Refines)
-            {
-                if (info.Index != p.Index) continue;
-
-                GameScene.Game.NPCRefineRetrieveBox.Refines.Remove(info);
-                break;
-            }
-
-            GameScene.Game.NPCRefineRetrieveBox.RefreshList();
-        }
         public void Process(S.NPCClose p)
         {
-
-
             GameScene.Game.NPCBox.Visible = false;
-        }
-        public void Process(S.NPCAccessoryLevelUp p)
-        {
-            if (p.Target != null)
-                p.Links.Add(p.Target);
-
-            foreach (CellLinkInfo cellLinkInfo in p.Links)
-            {
-                UnlockItemFromCell(cellLinkInfo);
-            }
         }
 
         public void Process(S.NPCUpgradeGem p)
@@ -3150,7 +2200,6 @@ namespace Client.Envir
         {
             GameScene.Game.GroupBox.Members.Add(new ClientPlayerInfo { ObjectID = p.ObjectID, Name = p.Name });
 
-
             GameScene.Game.ReceiveChat($"-{p.Name} has joined the group.", MessageType.Group);
 
             GameScene.Game.GroupBox.UpdateMembers();
@@ -3160,7 +2209,6 @@ namespace Client.Envir
 
             GameScene.Game.BigMapBox.Update(data);
             GameScene.Game.MiniMapBox.Update(data);
-
         }
         public void Process(S.GroupRemove p)
         {
@@ -3196,8 +2244,6 @@ namespace Client.Envir
         }
         public void Process(S.GroupInvite p)
         {
-
-
             DXMessageBox messageBox = new DXMessageBox($"Do you want to group with {p.Name}?", "Group Invitation", DXMessageBoxButtons.YesNo);
 
             messageBox.YesButton.MouseClick += (o, e) => CEnvir.Enqueue(new C.GroupResponse { Accept = true });
@@ -3205,7 +2251,6 @@ namespace Client.Envir
             messageBox.CloseButton.MouseClick += (o, e) => CEnvir.Enqueue(new C.GroupResponse { Accept = false });
             messageBox.Modal = false;
             messageBox.CloseButton.Visible = false;
-
         }
 
         public void Process(S.BuffAdd p)
@@ -3242,8 +2287,6 @@ namespace Client.Envir
         }
         public void Process(S.BuffPaused p)
         {
-
-
             MapObject.User.Buffs.First(x => x.Index == p.Index).Pause = p.Paused;
 
             GameScene.Game.BuffBox.BuffsChanged();
@@ -3260,8 +2303,6 @@ namespace Client.Envir
 
         public void Process(S.Inspect p)
         {
-
-
             GameScene.Game.InspectBox.NewInformation(p);
 
         }
@@ -3310,14 +2351,11 @@ namespace Client.Envir
         }
         public void Process(S.ObservableSwitch p)
         {
-
-
             GameScene.Game.RankingBox.Observable = p.Allow;
         }
 
         public void Process(S.MarketPlaceHistory p)
         {
-
             switch (p.Display)
             {
                 case 1:
@@ -3330,7 +2368,6 @@ namespace Client.Envir
                     GameScene.Game.MarketPlaceBox.AveragePriceBox.TextBox.Text = p.SaleCount > 0 ? p.AveragePrice.ToString("#,##0") : "No Records";
                     GameScene.Game.MarketPlaceBox.LastPriceBox.TextBox.Text = p.SaleCount > 0 ? p.LastPrice.ToString("#,##0") : "No Records";
                     break;
-
             }
         }
         public void Process(S.MarketPlaceConsign p)
@@ -3349,16 +2386,12 @@ namespace Client.Envir
         }
         public void Process(S.MarketPlaceSearchCount p)
         {
-
-
             Array.Resize(ref GameScene.Game.MarketPlaceBox.SearchResults, p.Count);
 
             GameScene.Game.MarketPlaceBox.RefreshList();
         }
         public void Process(S.MarketPlaceSearchIndex p)
         {
-
-
             if (GameScene.Game.MarketPlaceBox.SearchResults == null) return;
 
             GameScene.Game.MarketPlaceBox.SearchResults[p.Index] = p.Result;
@@ -3367,8 +2400,6 @@ namespace Client.Envir
         }
         public void Process(S.MarketPlaceConsignChanged p)
         {
-
-
             ClientMarketPlaceInfo info = GameScene.Game.MarketPlaceBox.ConsignItems.FirstOrDefault(x => x.Index == p.Index);
 
             if (info == null) return;
@@ -3399,24 +2430,16 @@ namespace Client.Envir
         }
         public void Process(S.MarketPlaceStoreBuy p)
         {
-
-
             GameScene.Game.MarketPlaceBox.StoreBuyButton.Enabled = true;
         }
 
-
         public void Process(S.MailList p)
         {
-
-
             GameScene.Game.MailBox.MailList.AddRange(p.Mail);
             GameScene.Game.MailBox.UpdateIcon();
         }
         public void Process(S.MailNew p)
         {
-
-
-
             GameScene.Game.MailBox.MailList.Insert(0, p.Mail);
             GameScene.Game.MailBox.RefreshList();
             GameScene.Game.MailBox.UpdateIcon();
@@ -3424,8 +2447,6 @@ namespace Client.Envir
         }
         public void Process(S.MailDelete p)
         {
-
-
             ClientMailInfo mail = GameScene.Game.MailBox.MailList.FirstOrDefault(x => x.Index == p.Index);
 
             if (mail == null) return;
@@ -3440,8 +2461,6 @@ namespace Client.Envir
 
         public void Process(S.MailItemDelete p)
         {
-
-
             ClientMailInfo mail = GameScene.Game.MailBox.MailList.FirstOrDefault(x => x.Index == p.Index);
 
             if (mail == null) return;
@@ -3475,15 +2494,11 @@ namespace Client.Envir
         }
         public void Process(S.MailSend p)
         {
-
-
             GameScene.Game.SendMailBox.SendAttempted = false;
         }
 
         public void Process(S.ChangeAttackMode p)
         {
-
-
             GameScene.Game.User.AttackMode = p.Mode;
 
             GameScene.Game.ReceiveChat(GameScene.Game.MainPanel.AttackModeLabel.Text, MessageType.System);
@@ -3491,8 +2506,6 @@ namespace Client.Envir
         }
         public void Process(S.ChangePetMode p)
         {
-
-
             GameScene.Game.User.PetMode = p.Mode;
 
             GameScene.Game.ReceiveChat(GameScene.Game.MainPanel.PetModeLabel.Text, MessageType.System);
@@ -3501,8 +2514,6 @@ namespace Client.Envir
 
         public void Process(S.WeightUpdate p)
         {
-
-
             GameScene.Game.User.BagWeight = p.BagWeight;
             GameScene.Game.User.WearWeight = p.WearWeight;
             GameScene.Game.User.HandWeight = p.HandWeight;
@@ -3510,11 +2521,8 @@ namespace Client.Envir
             GameScene.Game.WeightChanged();
         }
 
-
         public void Process(S.TradeRequest p)
         {
-
-
             DXMessageBox messageBox = new DXMessageBox($"{p.Name} wishes to trade with you, Do you want to accept?", "Trade Request", DXMessageBoxButtons.YesNo);
 
             messageBox.YesButton.MouseClick += (o, e) => CEnvir.Enqueue(new C.TradeRequestResponse { Accept = true });
@@ -3523,16 +2531,12 @@ namespace Client.Envir
         }
         public void Process(S.TradeOpen p)
         {
-
-
             GameScene.Game.TradeBox.Visible = true;
             GameScene.Game.TradeBox.IsTrading = true;
             GameScene.Game.TradeBox.PlayerLabel.Text = p.Name;
         }
         public void Process(S.TradeClose p)
         {
-
-
             GameScene.Game.TradeBox.Visible = false;
             GameScene.Game.TradeBox.Clear();
         }
@@ -3566,7 +2570,6 @@ namespace Client.Envir
                 default: return;
             }
 
-
             if (!p.Success)
             {
                 fromCell.Link = null;
@@ -3583,12 +2586,9 @@ namespace Client.Envir
                 cell.Link = fromCell;
                 return;
             }
-
         }
         public void Process(S.TradeItemAdded p)
         {
-
-
             foreach (DXItemCell cell in GameScene.Game.TradeBox.PlayerGrid.Grid)
             {
                 if (cell.Item != null) continue;
@@ -3599,27 +2599,19 @@ namespace Client.Envir
         }
         public void Process(S.TradeAddGold p)
         {
-
-
             GameScene.Game.TradeBox.UserGoldLabel.Text = p.Gold.ToString("#,##0");
         }
         public void Process(S.TradeGoldAdded p)
         {
-
-
             GameScene.Game.TradeBox.PlayerGoldLabel.Text = p.Gold.ToString("#,##0");
         }
         public void Process(S.TradeUnlock p)
         {
-
-
             GameScene.Game.TradeBox.ConfirmButton.Enabled = true;
         }
 
         public void Process(S.GuildCreate p)
         {
-
-
             GameScene.Game.GuildBox.CreateAttempted = false;
         }
         public void Process(S.GuildInfo p)
@@ -3653,8 +2645,6 @@ namespace Client.Envir
         }
         public void Process(S.GuildNoticeChanged p)
         {
-
-
             GameScene.Game.GuildBox.GuildInfo.Notice = p.Notice;
 
             if (!GameScene.Game.GuildBox.NoticeTextBox.Editable)
@@ -3662,9 +2652,6 @@ namespace Client.Envir
         }
         public void Process(S.GuildGetItem p)
         {
-
-
-
             DXItemCell[] grid;
 
             switch (p.Grid)
@@ -3693,16 +2680,12 @@ namespace Client.Envir
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-
             DXItemCell fromCell = grid[p.Slot];
 
             fromCell.Item = p.Item;
         }
         public void Process(S.GuildNewItem p)
         {
-
-
             GameScene.Game.GuildBox.StorageGrid.Grid[p.Slot].Item = p.Item;
         }
         public void Process(S.GuildUpdate p)
@@ -3712,7 +2695,6 @@ namespace Client.Envir
 
             GameScene.Game.GuildBox.GuildInfo.TotalContribution = p.TotalContribution;
             GameScene.Game.GuildBox.GuildInfo.DailyContribution = p.DailyContribution;
-
 
             GameScene.Game.GuildBox.GuildInfo.MemberLimit = p.MemberLimit;
             GameScene.Game.GuildBox.GuildInfo.StorageLimit = p.StorageLimit;
@@ -3736,7 +2718,6 @@ namespace Client.Envir
                     GameScene.Game.GuildBox.GuildInfo.Members.Add(info);
                 }
 
-
                 info.TotalContribution = member.TotalContribution;
                 info.DailyContribution = member.DailyContribution;
                 info.LastOnline = member.LastOnline;
@@ -3759,8 +2740,6 @@ namespace Client.Envir
         }
         public void Process(S.GuildKick p)
         {
-
-
             ClientGuildMemberInfo info = GameScene.Game.GuildBox.GuildInfo.Members.First(x => x.Index == p.Index);
 
             GameScene.Game.GuildBox.GuildInfo.Members.Remove(info);
@@ -3777,8 +2756,6 @@ namespace Client.Envir
         }
         public void Process(S.GuildIncreaseMember p)
         {
-
-
             GameScene.Game.GuildBox.IncreaseMemberButton.Enabled = true;
         }
         public void Process(S.GuildIncreaseStorage p)
@@ -3787,23 +2764,17 @@ namespace Client.Envir
         }
         public void Process(S.GuildInviteMember p)
         {
-
-
             GameScene.Game.GuildBox.AddMemberTextBox.Enabled = true;
             GameScene.Game.GuildBox.AddMemberButton.Enabled = true;
         }
         public void Process(S.GuildTax p)
         {
-
-
             GameScene.Game.GuildBox.GuildTaxBox.Enabled = true;
             GameScene.Game.GuildBox.SetTaxButton.Enabled = true;
         }
 
         public void Process(S.GuildMemberOffline p)
         {
-
-
             ClientGuildMemberInfo info = GameScene.Game.GuildBox.GuildInfo.Members.First(x => x.Index == p.Index);
 
             info.LastOnline = CEnvir.Now;
@@ -3815,8 +2786,6 @@ namespace Client.Envir
         }
         public void Process(S.GuildInvite p)
         {
-
-
             DXMessageBox messageBox = new DXMessageBox($"{p.Name} has invited you to the guild {p.GuildName}\n" +
                                                        $"Do you want to join the guild?", "Guild Invitation", DXMessageBoxButtons.YesNo);
 
@@ -3829,8 +2798,6 @@ namespace Client.Envir
         }
         public void Process(S.GuildMemberOnline p)
         {
-
-
             ClientGuildMemberInfo info = GameScene.Game.GuildBox.GuildInfo.Members.First(x => x.Index == p.Index);
 
             info.LastOnline = DateTime.MaxValue;
@@ -3842,8 +2809,6 @@ namespace Client.Envir
         }
         public void Process(S.GuildMemberContribution p)
         {
-
-
             ClientGuildMemberInfo info = GameScene.Game.GuildBox.GuildInfo.Members.First(x => x.Index == p.Index);
 
             info.DailyContribution += p.Contribution;
@@ -3860,8 +2825,6 @@ namespace Client.Envir
         }
         public void Process(S.GuildDayReset p)
         {
-
-
             foreach (ClientGuildMemberInfo member in GameScene.Game.GuildBox.GuildInfo.Members)
                 member.DailyContribution = 0;
 
@@ -3873,8 +2836,6 @@ namespace Client.Envir
         }
         public void Process(S.GuildFundsChanged p)
         {
-
-
             GameScene.Game.GuildBox.GuildInfo.GuildFunds += p.Change;
             GameScene.Game.GuildBox.GuildInfo.DailyGrowth += p.Change;
 
@@ -3954,15 +2915,11 @@ namespace Client.Envir
             castle.WarDate = p.WarDate;
         }
 
-
         public void Process(S.ReviveTimers p)
         {
-
-
             GameScene.Game.ItemReviveTime = CEnvir.Now + p.ItemReviveTime;
             GameScene.Game.ReincarnationPillTime = CEnvir.Now + p.ReincarnationPillTime;
         }
-
 
         public void Process(S.QuestChanged p)
         {
@@ -4657,91 +3614,9 @@ namespace Client.Envir
 
             #endregion
         }
-        public void Process(S.NPCAccessoryRefine p)
-        {
-            if (p.Target != null)
-                p.Links.Add(p.Target);
-            if (p.OreTarget != null)
-                p.Links.Add(p.OreTarget);
-
-            foreach (CellLinkInfo cellLinkInfo in p.Links)
-            {
-                DXItemCell[] grid;
-
-                switch (cellLinkInfo.GridType)
-                {
-                    case GridType.Inventory:
-                        grid = GameScene.Game.InventoryBox.Grid.Grid;
-                        break;
-                    case GridType.Equipment:
-                        grid = GameScene.Game.CharacterBox.Grid;
-                        break;
-                    case GridType.Storage:
-                        grid = GameScene.Game.StorageBox.Grid.Grid;
-                        break;
-                    case GridType.PartsStorage:
-                        grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                        break;
-                    case GridType.CompanionInventory:
-                        grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                        break;
-                    case GridType.CompanionEquipment:
-                        grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                DXItemCell fromCell = grid[cellLinkInfo.Slot];
-                fromCell.Locked = false;
-            }
-        }
-
-        public void Process(S.ItemAcessoryRefined p)
-        {
-            DXItemCell[] grid;
-
-            switch (p.GridType)
-            {
-                case GridType.Inventory:
-                    grid = GameScene.Game.InventoryBox.Grid.Grid;
-                    break;
-                case GridType.Equipment:
-                    grid = GameScene.Game.CharacterBox.Grid;
-                    break;
-                case GridType.Storage:
-                    grid = GameScene.Game.StorageBox.Grid.Grid;
-                    break;
-                case GridType.PartsStorage:
-                    grid = GameScene.Game.StorageBox.PartGrid.Grid;
-                    break;
-                case GridType.CompanionInventory:
-                    grid = GameScene.Game.CompanionBox.InventoryGrid.Grid;
-                    break;
-                case GridType.CompanionEquipment:
-                    grid = GameScene.Game.CompanionBox.EquipmentGrid;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            DXItemCell fromCell = grid[p.Slot];
-
-            fromCell.Item.AddedStats.Add(p.NewStats);
-
-            if (p.NewStats.Count == 0)
-            {
-                GameScene.Game.ReceiveChat($"Nothing happen to your {fromCell.Item.Info.ItemName}", MessageType.Hint);
-                return;
-            }
-
-
-
-            fromCell.RefreshItem();
-        }
 
         public void Process(S.JoinInstance p)
         {
         }
     }
 }
-

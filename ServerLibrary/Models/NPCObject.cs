@@ -149,7 +149,6 @@ namespace Server.Models
                         ob.TakeItem(action.ItemParameter1, action.IntParameter1);
                         break;
                     case NPCActionType.ResetWeapon:
-                        ob.NPCResetWeapon();
                         break;
                     case NPCActionType.GiveItemExperience:
                         if (action.ItemParameter1 == null) continue;
@@ -177,7 +176,6 @@ namespace Server.Models
 
                         break;
                     case NPCActionType.SpecialRefine:
-                        ob.NPCSpecialRefine(action.StatParameter1, action.IntParameter1);
                         break;
                     case NPCActionType.Rebirth:
                         if (Globals.RebirthDataList.Count > (ob.Character.Rebirth + 1) && ob.Level >= Globals.RebirthDataList[ob.Character.Rebirth + 1].RequiredLevel)

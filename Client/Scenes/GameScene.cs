@@ -157,21 +157,14 @@ namespace Client.Scenes
         public NPCDialog NPCBox;
         public NPCGoodsDialog NPCGoodsBox;
         public NPCSellDialog NPCSellBox;
-        public NPCRefinementStoneDialog NPCRefinementStoneBox;
-        public NPCRefineDialog NPCRefineBox;
         public NPCUpgradeItemDialog NPCUpgradeBox;
-        public NPCRefineRetrieveDialog NPCRefineRetrieveBox;
         public NPCQuestDialog NPCQuestBox;
         public NPCAdoptCompanionDialog NPCAdoptCompanionBox;
         public NPCCompanionStorageDialog NPCCompanionStorageBox;
         public NPCWeddingRingDialog NPCWeddingRingBox;
         public NPCItemFragmentDialog NPCItemFragmentBox;
-        public NPCAccessoryUpgradeDialog NPCAccessoryUpgradeBox;
-        public NPCAccessoryLevelDialog NPCAccessoryLevelBox;
-        public NPCAccessoryResetDialog NPCAccessoryResetBox;
         public NPCUpgradeGemDialog NPCUpgradeGemBox;
         public NPCLevelUpDialog NPCLevelUpBox;
-        public NPCMasterRefineDialog NPCMasterRefineBox;
         public MiniMapDialog MiniMapBox;
         public BigMapDialog BigMapBox;
         public AnnouncementDialog AnnouncementBox;
@@ -200,7 +193,6 @@ namespace Client.Scenes
         public EditCharacterDialog EditCharacterBox;
         public FortuneCheckerDialog FortuneCheckerBox;
         public NPCWeaponCraftWindow NPCWeaponCraftBox;
-        public NPCAccessoryRefineDialog NPCAccessoryRefineBox;
 
         public ClientUserItem[] Inventory = new ClientUserItem[Globals.InventorySize];
         public ClientUserItem[] Equipment = new ClientUserItem[Globals.EquipmentSize];
@@ -502,27 +494,7 @@ namespace Client.Scenes
                 Parent = this,
                 Visible = false
             };
-            NPCRefinementStoneBox = new NPCRefinementStoneDialog
-            {
-                Parent = this,
-                Visible = false,
-            };
             NPCItemFragmentBox = new NPCItemFragmentDialog()
-            {
-                Parent = this,
-                Visible = false,
-            };
-            NPCAccessoryUpgradeBox = new NPCAccessoryUpgradeDialog
-            {
-                Parent = this,
-                Visible = false,
-            };
-            NPCAccessoryLevelBox = new NPCAccessoryLevelDialog
-            {
-                Parent = this,
-                Visible = false,
-            };
-            NPCAccessoryResetBox = new NPCAccessoryResetDialog
             {
                 Parent = this,
                 Visible = false,
@@ -543,23 +515,6 @@ namespace Client.Scenes
                 Parent = this,
                 Visible = false
             };
-
-            NPCRefineBox = new NPCRefineDialog
-            {
-                Parent = this,
-                Visible = false
-            };
-            NPCRefineRetrieveBox = new NPCRefineRetrieveDialog
-            {
-                Parent = this,
-                Visible = false
-            };
-            NPCMasterRefineBox = new NPCMasterRefineDialog
-            {
-                Parent = this,
-                Visible = false
-            };
-
             InspectBox = new InspectDialog
             {
                 Parent = this,
@@ -664,12 +619,6 @@ namespace Client.Scenes
             {
                 Visible = false,
                 Parent = this,
-            };
-
-            NPCAccessoryRefineBox = new NPCAccessoryRefineDialog
-            {
-                Parent = this,
-                Visible = false,
             };
 
             SetDefaultLocations();
@@ -3469,12 +3418,10 @@ namespace Client.Scenes
 
             NPCBox.CloseButton.Enabled = !Observer;
             NPCGoodsBox.CloseButton.Enabled = !Observer;
-            NPCRefineBox.CloseButton.Enabled = !Observer;
             NPCUpgradeBox.CloseButton.Enabled = !Observer;
             NPCUpgradeGemBox.CloseButton.Enabled = !Observer;
             NPCLevelUpBox.CloseButton.Enabled = !Observer;
             NPCSellBox.CloseButton.Enabled = !Observer;
-            NPCRefineRetrieveBox.CloseButton.Enabled = !Observer;
         }
         public void LevelChanged()
         {
@@ -4052,15 +3999,7 @@ namespace Client.Scenes
 
                     NPCSellBox = null;
                 }
-
-                if (NPCRefinementStoneBox != null)
-                {
-                    if (!NPCRefinementStoneBox.IsDisposed)
-                        NPCRefinementStoneBox.Dispose();
-
-                    NPCRefinementStoneBox = null;
-                }
-                
+               
                 if (NPCUpgradeBox != null)
                 {
                     if (!NPCUpgradeBox.IsDisposed)
@@ -4068,30 +4007,6 @@ namespace Client.Scenes
 
                     NPCUpgradeBox = null;
                 }
-
-                if (NPCRefineBox != null)
-                {
-                    if (!NPCRefineBox.IsDisposed)
-                        NPCRefineBox.Dispose();
-
-                    NPCRefineBox = null;
-                }
-
-                if (NPCRefineRetrieveBox != null)
-                {
-                    if (!NPCRefineRetrieveBox.IsDisposed)
-                        NPCRefineRetrieveBox.Dispose();
-
-                    NPCRefineRetrieveBox = null;
-                }
-                if (NPCMasterRefineBox != null)
-                {
-                    if (!NPCMasterRefineBox.IsDisposed)
-                        NPCMasterRefineBox.Dispose();
-
-                    NPCMasterRefineBox = null;
-                }
-
 
                 if (NPCQuestBox != null)
                 {
@@ -4131,27 +4046,6 @@ namespace Client.Scenes
                         NPCItemFragmentBox.Dispose();
 
                     NPCItemFragmentBox = null;
-                }
-                if (NPCAccessoryUpgradeBox != null)
-                {
-                    if (!NPCAccessoryUpgradeBox.IsDisposed)
-                        NPCAccessoryUpgradeBox.Dispose();
-
-                    NPCAccessoryUpgradeBox = null;
-                }
-                if (NPCAccessoryLevelBox != null)
-                {
-                    if (!NPCAccessoryLevelBox.IsDisposed)
-                        NPCAccessoryLevelBox.Dispose();
-
-                    NPCAccessoryLevelBox = null;
-                }
-                if (NPCAccessoryResetBox != null)
-                {
-                    if (!NPCAccessoryResetBox.IsDisposed)
-                        NPCAccessoryResetBox.Dispose();
-
-                    NPCAccessoryResetBox = null;
                 }
 
                 if(NPCUpgradeGemBox != null)
@@ -4358,14 +4252,6 @@ namespace Client.Scenes
                         MagicBarBox.Dispose();
 
                     MagicBarBox = null;
-                }
-
-                if (NPCAccessoryRefineBox != null)
-                {
-                    if (!NPCAccessoryRefineBox.IsDisposed)
-                        NPCAccessoryRefineBox.Dispose();
-
-                    NPCAccessoryRefineBox = null;
                 }
 
                 Inventory = null;
