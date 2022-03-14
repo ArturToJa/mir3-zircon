@@ -330,7 +330,7 @@ namespace Server.Envir
 
         public static long ConDelay, SaveDelay;
         public static long ExpEventCount = 0, BossEventCount = 0;
-        public static long ExpEventLimit = 100;
+        public static long ExpEventLimit = 1000000;
         public static long BossEventLimit = 1000;
         public static DateTime ExpTime = Time.Now;
         public static DateTime BossTime = Time.Now;
