@@ -158,7 +158,8 @@ namespace Library
         LevelUpScrolls,
         EquipmentUpgradeTarget,
         EquipmentUpgradeItems,
-        EquipmentUpgradeSpecial
+        EquipmentUpgradeSpecial,
+        SkillStoneItem,
     }
 
     public enum BuffType
@@ -429,6 +430,7 @@ namespace Library
         UpgradeGem,
         LevelUpScroll,
         NoticeBoard,
+        SkillStone,
     }
 
     public enum MagicSchool
@@ -1137,7 +1139,8 @@ namespace Library
         SpiritBlade = 91,
         RefineExtractor = 92,
         UpgradeGem = 93,
-        LevelUpScroll = 94
+        LevelUpScroll = 94,
+        SkillStone = 95,
     }
 
     [Flags]

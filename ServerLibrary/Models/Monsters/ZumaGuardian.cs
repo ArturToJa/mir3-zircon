@@ -59,10 +59,8 @@ namespace Server.Models.Monsters
                 zuma.Wake();
                 zuma.Target = Target;
             }
-
         }
         
-
         public override bool ApplyPoison(Poison p)
         {
             if (!Visible) return false;

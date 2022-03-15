@@ -354,7 +354,6 @@ namespace Client.Controls
                     GameScene.Game.BeltBox.Links[Slot].LinkInfoIndex = -1;
             }
             
-
             RefreshItem();
             LinkedInfoChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -541,7 +540,6 @@ namespace Client.Controls
             ShowCountLabel = true;
             AllowLink = true;
 
-
             BorderColour = Color.FromArgb(99, 83, 50);
             Size = new Size(CellWidth, CellHeight);
 
@@ -594,7 +592,6 @@ namespace Client.Controls
 
             if (Library != null && Item != null)
             {
-
                 int drawIndex;
 
                 if (Item.Info.Effect == ItemEffect.Gold)
@@ -625,7 +622,6 @@ namespace Client.Controls
 
                     drawIndex = info.Image;
                 }
-
 
                 MirImage image = Library.CreateImage(drawIndex, ImageType.Image);
                 if (image != null)
@@ -736,8 +732,6 @@ namespace Client.Controls
                 return;
             }
 
-
-
             switch (SelectedCell.GridType) //FROM Grid
             {
                 case GridType.Equipment:
@@ -765,7 +759,6 @@ namespace Client.Controls
                         return;
                     }
                     
-                    
                     if (Item == null || (SelectedCell.Item.Info == Item.Info && SelectedCell.Item.Count < SelectedCell.Item.Info.StackSize))
                         SelectedCell.MoveItem(this);
                     else
@@ -791,7 +784,6 @@ namespace Client.Controls
                     ToCompanionEquipment(SelectedCell);
                     return;
             }
-
             //Gem sections, Refine box?
 
             SelectedCell.MoveItem(this);
@@ -959,14 +951,11 @@ namespace Client.Controls
                         toCell.LinkedCount = window.Amount;
                         toCell.Link = this;
                     };
-                    
                     return;
                 }
-
                 toCell.LinkedCount = 1;
                 toCell.Link = this;
                 return;
-
             }
             
             C.ItemMove packet = new C.ItemMove
@@ -996,7 +985,6 @@ namespace Client.Controls
         {
             if (toGrid.GridType == GridType.Belt || toGrid.GridType == GridType.AutoPotion) return false;
 
-            
             C.ItemMove packet = new C.ItemMove
             {
                 FromGrid = GridType,
@@ -1062,15 +1050,12 @@ namespace Client.Controls
                                 cell.LinkedCount = Item.Count;
                                 break;
                         }
-
                         cell.Link = this;
                         return true;
                     }
-
                     if (toCell == null) toCell = cell;
                     continue;
                 }
-
                 if (cell.Linked || toItem.Info != Item.Info || toItem.Count >= toItem.Info.StackSize) continue;
                 if ((Item.Flags & UserItemFlags.Bound) != (toItem.Flags & UserItemFlags.Bound)) continue;
                 if ((Item.Flags & UserItemFlags.Worthless) != (toItem.Flags & UserItemFlags.Worthless)) continue;
@@ -1102,7 +1087,6 @@ namespace Client.Controls
         public bool CheckLink(DXItemGrid grid)
         {
             if (!AllowLink || Item == null || (!Linked && Link != null) || grid == null) return false;
-
 
             switch (grid.GridType)
             {
@@ -1304,8 +1288,10 @@ namespace Client.Controls
                     if (item == null) return false;
                     if (Globals.EquipmentUpgradeList[item.Level].SpecialItem != Item.Info.SetValue) return false;
                     break;
+                case GridType.SkillStoneItem:
+                    if (Item.Info.Effect != ItemEffect.SkillStone) return false;
+                    break;
             }
-
             return true;
         }
 
@@ -1324,8 +1310,6 @@ namespace Client.Controls
                 }
                 else
                     cell = GameScene.Game.InventoryBox.Grid.Grid.FirstOrDefault(x => x?.Item == QuickItem);
-
-
 
                 return cell?.UseItem() == true;
             }
@@ -1405,10 +1389,8 @@ namespace Client.Controls
 
                     if ((CEnvir.Now < GameScene.Game.UseItemTime && Item.Info.Effect != ItemEffect.ElixirOfPurification) || MapObject.User.Horse != HorseType.None) return false;
 
-
                     GameScene.Game.UseItemTime = CEnvir.Now.AddMilliseconds(Math.Max(250, Item.Info.SetValue));
                     
-
                     Locked = true;
 
                     CEnvir.Enqueue(new C.ItemUse { Link = new CellLinkInfo { GridType = GridType, Slot = Slot, Count = 1 } });
@@ -1419,7 +1401,6 @@ namespace Client.Controls
 
                     if (CEnvir.Now < GameScene.Game.UseItemTime || MapObject.User.Horse != HorseType.None) return false;
 
-                    
                     GameScene.Game.UseItemTime = CEnvir.Now.AddMilliseconds(250);
                     Locked = true;
 
@@ -1499,10 +1480,8 @@ namespace Client.Controls
                             GameScene.Game.FortuneCheckerBox.Visible = true;
                             break;
                     }
-
                     break;
             }
-
             return true;
         }
 
@@ -1575,7 +1554,6 @@ namespace Client.Controls
                     return;
             }
             
-
             switch (e.Button)
             {
                 case MouseButtons.Left:
@@ -1610,8 +1588,6 @@ namespace Client.Controls
                         CEnvir.Enqueue(new C.ItemLock { GridType = GridType, SlotIndex = Slot, Locked = (Item.Flags & UserItemFlags.Locked) != UserItemFlags.Locked });
                     break;
                 case MouseButtons.Right:
-
-
 
                     switch (GridType)
                     {
@@ -1691,6 +1667,16 @@ namespace Client.Controls
                                 return;
                             }
 
+                            if(GameScene.Game.NPCSkillStoneBox.IsVisible)
+                            {
+                                if(GameScene.Game.NPCSkillStoneBox.Grid.Grid[0].Link == null)
+                                {
+                                    if(!MoveItem(GameScene.Game.NPCSkillStoneBox.Grid))
+                                        GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to upgrade magic.", MessageType.System);
+                                }
+                                return;
+                            }
+
                             if (GameScene.Game.NPCUpgradeBox.IsVisible)
                             {
                                 if(GameScene.Game.NPCUpgradeBox.ItemToUpgradeGrid.Grid[0].Link == null)
@@ -1711,7 +1697,6 @@ namespace Client.Controls
                                 MoveItem(GameScene.Game.MarketPlaceBox.ConsignGrid);
                                 return;
                             }
-
 
                             if (GameScene.Game.SendMailBox.IsVisible)
                             {
@@ -1750,7 +1735,6 @@ namespace Client.Controls
                                 return;
                             }
 
-
                             UseItem(); //Try Use Item
                             break;
                         case GridType.CompanionInventory:
@@ -1776,6 +1760,16 @@ namespace Client.Controls
                                 {
                                     if (!MoveItem(GameScene.Game.NPCUpgradeBox.SpecialGrid) && !MoveItem(GameScene.Game.NPCUpgradeBox.SacrificeItemGrid))
                                         GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to refine.", MessageType.System);
+                                }
+                                return;
+                            }
+
+                            if (GameScene.Game.NPCSkillStoneBox.IsVisible)
+                            {
+                                if (GameScene.Game.NPCSkillStoneBox.Grid.Grid[0].Link == null)
+                                {
+                                    if (!MoveItem(GameScene.Game.NPCSkillStoneBox.Grid))
+                                        GameScene.Game.ReceiveChat($"Unable to use {Item.Info.ItemName} to upgrade magic.", MessageType.System);
                                 }
                                 return;
                             }
@@ -1829,7 +1823,6 @@ namespace Client.Controls
 
                             if (!MoveItem(GameScene.Game.InventoryBox.Grid))
                                 GameScene.Game.ReceiveChat("No Free Space in Inventory.", MessageType.System);
-
 
                             break;
                         case GridType.PartsStorage:

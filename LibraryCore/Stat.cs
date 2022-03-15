@@ -779,6 +779,9 @@ namespace Library
         [StatDescription(Title = "Slot Count ", Format = "{0}", Mode = StatType.Default)]
         GemCount,
 
+        [StatDescription(Title = "Skill Level Upgrade ", Format = "{0}", Mode = StatType.Default)]
+        SkillUpgrade,
+
         [StatDescription(Title = "Duration", Mode = StatType.Time)]
         Duration = 10000,
     }

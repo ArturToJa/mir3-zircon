@@ -348,6 +348,8 @@ namespace Client.Models
             foreach (ClientUserMagic magic in info.Magics)
                 Magics[magic.Info] = magic;
 
+            GameScene.Game.NPCSkillStoneBox.UpdateMagic(Magics);
+
             foreach (ClientBuffInfo buff in info.Buffs)
             {
                 Buffs.Add(buff);

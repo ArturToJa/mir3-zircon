@@ -9588,6 +9588,45 @@ namespace Server.Models
 
             GoldChanged();
         }
+
+        public void NPCSkillStone(C.NPCSkillStone p)
+        {
+            S.NPCReleaseItems result = new S.NPCReleaseItems
+            {
+                Links = new List<CellLinkInfo>()
+            };
+            result.Links.Add(p.SkillStone);
+            Enqueue(result);
+
+            if (Dead || NPC == null || NPCPage == null || NPCPage.DialogType != NPCDialogType.SkillStone) return;
+            if (!ParseLinks(p.SkillStone)) return;
+
+            UserItem[] targetArray = null;
+            UserItem targetItem = FindUserItem(p.SkillStone, out targetArray);
+            if (targetItem == null || p.SkillStone.Count != 1) return; //Already Leveled.
+            if (targetItem.Info.Effect != ItemEffect.SkillStone) return; //No harm in checking
+            if (!Magics.ContainsKey(p.MagicType)) return;
+            UserMagic magic = Magics[p.MagicType];
+            if (magic.Level != targetItem.Info.Stats[Stat.SkillUpgrade] - 1) return;
+            magic.Level++;
+
+
+            Connection.ReceiveChat(String.Format("Upgraded {0} to level {1}", magic.Info.Name, magic.Level), MessageType.System);
+
+            foreach (SConnection con in Connection.Observers)
+                con.ReceiveChat(String.Format("Upgraded {0} to level {1}", magic.Info.Name, magic.Level), MessageType.System);
+
+            Enqueue(new S.MagicLeveled { InfoIndex = magic.Info.Index, Level = magic.Level, Experience = magic.Experience });
+            if (targetItem.Count == p.SkillStone.Count)
+            {
+                RemoveItem(targetItem);
+                targetArray[p.SkillStone.Slot] = null;
+                targetItem.Delete();
+            }
+            S.ItemsChanged skillStoneResult = new S.ItemsChanged { Links = new List<CellLinkInfo>(), Success = true };
+            Enqueue(skillStoneResult);
+            skillStoneResult.Links.Add(p.SkillStone);
+        }
         public void NPCUpgradeGem(C.NPCUpgradeGem p)
         {
             Enqueue(new S.NPCUpgradeGem { Target = p.Target, Gem = p.Gem });

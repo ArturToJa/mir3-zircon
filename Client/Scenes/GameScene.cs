@@ -163,6 +163,7 @@ namespace Client.Scenes
         public NPCCompanionStorageDialog NPCCompanionStorageBox;
         public NPCWeddingRingDialog NPCWeddingRingBox;
         public NPCItemFragmentDialog NPCItemFragmentBox;
+        public NPCSkillStoneDialog NPCSkillStoneBox;
         public NPCUpgradeGemDialog NPCUpgradeGemBox;
         public NPCLevelUpDialog NPCLevelUpBox;
         public MiniMapDialog MiniMapBox;
@@ -495,6 +496,11 @@ namespace Client.Scenes
                 Visible = false
             };
             NPCItemFragmentBox = new NPCItemFragmentDialog()
+            {
+                Parent = this,
+                Visible = false,
+            };
+            NPCSkillStoneBox = new NPCSkillStoneDialog
             {
                 Parent = this,
                 Visible = false,
@@ -3420,6 +3426,7 @@ namespace Client.Scenes
             NPCGoodsBox.CloseButton.Enabled = !Observer;
             NPCUpgradeBox.CloseButton.Enabled = !Observer;
             NPCUpgradeGemBox.CloseButton.Enabled = !Observer;
+            NPCSkillStoneBox.CloseButton.Enabled = !Observer;
             NPCLevelUpBox.CloseButton.Enabled = !Observer;
             NPCSellBox.CloseButton.Enabled = !Observer;
         }
@@ -4046,6 +4053,14 @@ namespace Client.Scenes
                         NPCItemFragmentBox.Dispose();
 
                     NPCItemFragmentBox = null;
+                }
+
+                if(NPCSkillStoneBox != null)
+                {
+                    if (!NPCSkillStoneBox.IsDisposed)
+                        NPCSkillStoneBox.Dispose();
+
+                    NPCSkillStoneBox = null;
                 }
 
                 if(NPCUpgradeGemBox != null)

@@ -541,8 +541,13 @@ namespace Server.Envir
         public void Process(C.NPCFragment p)
         {
             if (Stage != GameStage.Game) return;
-
             Player.NPCFragment(p.Links);
+        }
+
+        public void Process(C.NPCSkillStone p)
+        {
+            if (Stage != GameStage.Game) return;
+            Player.NPCSkillStone(p);
         }
 
         public void Process(C.NPCUpgradeGem p)
@@ -560,7 +565,6 @@ namespace Server.Envir
         public void Process(C.MagicKey p)
         {
             if (Stage != GameStage.Game) return;
-
 
             foreach (KeyValuePair<MagicType, UserMagic> pair in Player.Magics)
             {
@@ -590,25 +594,21 @@ namespace Server.Envir
         public void Process(C.GroupSwitch p)
         {
             if (Stage != GameStage.Game) return;
-
             Player.GroupSwitch(p.Allow);
         }
         public void Process(C.GroupInvite p)
         {
             if (Stage != GameStage.Game) return;
-
             Player.GroupInvite(p.Name);
         }
         public void Process(C.GroupRemove p)
         {
             if (Stage != GameStage.Game) return;
-
             Player.GroupRemove(p.Name);
         }
         public void Process(C.GroupResponse p)
         {
             if (Stage != GameStage.Game) return;
-
             if (p.Accept)
                 Player.GroupJoin();
 

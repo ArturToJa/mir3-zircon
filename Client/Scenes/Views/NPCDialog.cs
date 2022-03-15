@@ -88,6 +88,9 @@ namespace Client.Scenes.Views
             if (GameScene.Game.NPCUpgradeGemBox != null && !IsVisible)
                 GameScene.Game.NPCUpgradeGemBox.Visible = false;
 
+            if (GameScene.Game.NPCSkillStoneBox != null && !IsVisible)
+                GameScene.Game.NPCSkillStoneBox.Visible = false;
+
             if (GameScene.Game.NPCLevelUpBox != null && !IsVisible)
                 GameScene.Game.NPCLevelUpBox.Visible = false;
 
@@ -164,6 +167,7 @@ namespace Client.Scenes.Views
             GameScene.Game.NPCCompanionStorageBox.Visible = false;
             GameScene.Game.NPCWeddingRingBox.Visible = false;
             GameScene.Game.NPCItemFragmentBox.Visible = false;
+            GameScene.Game.NPCSkillStoneBox.Visible = false;
             GameScene.Game.NPCLevelUpBox.Visible = false;
             GameScene.Game.NPCWeaponCraftBox.Visible = false;
             GameScene.Game.NPCUpgradeGemBox.Visible = false;
@@ -209,6 +213,10 @@ namespace Client.Scenes.Views
                 case NPCDialogType.LevelUpScroll:
                     GameScene.Game.NPCLevelUpBox.Visible = true;
                     GameScene.Game.NPCLevelUpBox.Location = new Point(Size.Width - GameScene.Game.NPCLevelUpBox.Size.Width, Size.Height);
+                    break;
+                case NPCDialogType.SkillStone:
+                    GameScene.Game.NPCSkillStoneBox.Visible = true;
+                    GameScene.Game.NPCSkillStoneBox.Location = new Point(Size.Width - GameScene.Game.NPCSkillStoneBox.Size.Width, Size.Height);
                     break;
                 case NPCDialogType.NoticeBoard:
                     PageText.Text = "\nExp Event: " + info.ExpEventNumber.ToString() + "\nBoss Event: " + info.BossEventNumber.ToString();
@@ -3379,6 +3387,118 @@ namespace Client.Scenes.Views
                 }
             }
 
+        }
+
+        #endregion
+    }
+
+    public sealed class NPCSkillStoneDialog : DXWindow
+    {
+        #region Properties
+        public DXItemGrid Grid;
+        public DXComboBox MagicBox;
+        public DXButton UpgradeButton;
+        public MagicType SelectedMagic;
+        public override void OnIsVisibleChanged(bool oValue, bool nValue)
+        {
+            base.OnIsVisibleChanged(oValue, nValue);
+
+            if (GameScene.Game.InventoryBox == null) return;
+
+            if (IsVisible)
+                GameScene.Game.InventoryBox.Visible = true;
+
+            if (!IsVisible)
+            {
+                Grid.ClearLinks();
+            }
+        }
+
+        public override WindowType Type => WindowType.None;
+        public override bool CustomSize => false;
+        public override bool AutomaticVisiblity => false;
+        #endregion
+
+        public NPCSkillStoneDialog()
+        {
+            TitleLabel.Text = "Skill Stone Upgrade";
+            Movable = false;
+            SetClientSize(new Size(160, 160));
+
+            MagicBox = new DXComboBox
+            {
+                Parent = this,
+                Size = new Size(ClientArea.Width - 6, DXComboBox.DefaultNormalHeight),
+            };
+            MagicBox.Location = new Point(ClientArea.X + 3, ClientArea.Y + 10);
+            MagicBox.SelectedItemChanged += (o, e) =>
+            {
+                SelectedMagic = (MagicType)MagicBox.SelectedItem;
+                ShouldEnableButton();
+            };
+
+            DXLabel label = new DXLabel
+            {
+                Text = "Skill Stone",
+                Parent = this,
+                Font = new Font(Config.FontName, CEnvir.FontSize(8F), FontStyle.Underline)
+            };
+            label.Location = new Point(ClientArea.X + (ClientArea.Width - label.Size.Width) / 2, MagicBox.Location.Y + MagicBox.Size.Height + 15);
+
+            Grid = new DXItemGrid
+            {
+                GridSize = new Size(1, 1),
+                Parent = this,
+                GridType = GridType.SkillStoneItem,
+                Linked = true
+            };
+            Grid.Location = new Point(label.Location.X + (label.Size.Width - Grid.Size.Width) / 2, label.Location.Y + label.Size.Height + 10);
+
+            UpgradeButton = new DXButton
+            {
+                Label = { Text = "Upgrade" },
+                ButtonType = ButtonType.SmallButton,
+                Parent = this,
+                Size = new Size(79, SmallButtonHeight),
+                Enabled = false,
+            };
+            UpgradeButton.Location = new Point(Grid.Location.X + (Grid.Size.Width - UpgradeButton.Size.Width) / 2, Grid.Location.Y + Grid.Size.Height + 10);
+            UpgradeButton.MouseClick += (o, e) =>
+            {
+                if (GameScene.Game.Observer) return;
+
+                DXItemCell skillStone = Grid.Grid[0];
+
+                if (skillStone.Link == null) return;
+
+                CellLinkInfo skillStoneLink = new CellLinkInfo { Count = skillStone.LinkedCount, GridType = skillStone.Link.GridType, Slot = skillStone.Link.Slot };
+                skillStone.Link.Locked = true;
+                skillStone.Link = null;
+
+                CEnvir.Enqueue(new C.NPCSkillStone { MagicType = SelectedMagic, SkillStone = skillStoneLink });
+            };
+            Grid.Grid[0].LinkChanged += (o, e) => ShouldEnableButton();
+        }
+
+        #region Methods
+
+
+        private void ShouldEnableButton()
+        {
+            UpgradeButton.Enabled = Grid.Grid[0].Item != null && MagicBox.SelectedItem != null;
+        }
+
+        public void UpdateMagic(Dictionary<MagicInfo, ClientUserMagic> Magics)
+        {
+            foreach (KeyValuePair<MagicInfo, ClientUserMagic> info in Magics)
+            {
+                new DXListBoxItem
+                {
+                    Parent = MagicBox.ListBox,
+                    Label = { Text = $"{info.Key.Magic}" },
+                    Item = info.Value.Info.Magic
+                };
+            }
         }
 
         #endregion

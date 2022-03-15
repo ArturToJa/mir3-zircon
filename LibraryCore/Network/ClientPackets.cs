@@ -228,6 +228,12 @@ namespace Library.Network.ClientPackets
     {
     }
 
+    public sealed class NPCSkillStone : Packet
+    {
+        public MagicType MagicType { get; set; }
+        public CellLinkInfo SkillStone { get; set; }
+    }
+
     public sealed class NPCUpgradeGem : Packet
     {
         public CellLinkInfo Target { get; set; }

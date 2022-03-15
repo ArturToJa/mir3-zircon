@@ -408,9 +408,9 @@ namespace Server.Envir
             }
             if ((Now - Config.BossEventLastTime).TotalHours < 4 * Config.BossEventTime / 60.0)
             {
-                SEnvir.ExpTime = Config.BossEventLastTime;
-                SEnvir.ExpEventCount = Config.BossEventCount;
-                SEnvir.ExpEventLimit = Config.BossEventLimit;
+                SEnvir.BossTime = Config.BossEventLastTime;
+                SEnvir.BossEventCount = Config.BossEventCount;
+                SEnvir.BossEventCount = Config.BossEventLimit;
             }
         }
 
