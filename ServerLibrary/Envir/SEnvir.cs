@@ -329,6 +329,7 @@ namespace Server.Envir
         public static HashSet<CharacterInfo> TopRankings;
 
         public static long ConDelay, SaveDelay;
+
         public static long ExpEventCount = 0, BossEventCount = 0;
         public static long ExpEventLimit = 1000000;
         public static long BossEventLimit = 1000;
@@ -372,7 +373,7 @@ namespace Server.Envir
                 if (BossEventCount >= BossEventLimit)
                 {
                     BossEventCount = 0;
-                    BossEventLimit *= (long)(10080.0 / (Now - BossTime).TotalMinutes);
+                    BossEventLimit *= (long)(Config.BossEventTime / (Now - BossTime).TotalMinutes);
                     BossTime = Now;
                 }
             }
@@ -382,7 +383,7 @@ namespace Server.Envir
                 if (ExpEventCount >= ExpEventLimit)
                 {
                     ExpEventCount = 0;
-                    ExpEventLimit *= (long)(10080.0 / (Now - ExpTime).TotalMinutes);
+                    ExpEventLimit *= (long)(Config.ExpEventTime / (Now - ExpTime).TotalMinutes);
                     ExpTime = Now;
                     StartExpEvent(900);
                 }
@@ -395,6 +396,22 @@ namespace Server.Envir
 
             EnvirThread = new Thread(() => EnvirLoop()) { IsBackground = true };
             EnvirThread.Start();
+        }
+
+        private static void LoadEventData()
+        {
+            if((Now - Config.ExpEventLastTime).TotalHours < 4 * Config.ExpEventTime / 60.0)
+            {
+                SEnvir.ExpTime = Config.ExpEventLastTime;
+                SEnvir.ExpEventCount = Config.ExpEventCount;
+                SEnvir.ExpEventLimit = Config.ExpEventLimit;
+            }
+            if ((Now - Config.BossEventLastTime).TotalHours < 4 * Config.BossEventTime / 60.0)
+            {
+                SEnvir.ExpTime = Config.BossEventLastTime;
+                SEnvir.ExpEventCount = Config.BossEventCount;
+                SEnvir.ExpEventLimit = Config.BossEventLimit;
+            }
         }
 
         public static void LoadExperienceList()
@@ -760,6 +777,8 @@ namespace Server.Envir
             CreateNPCs();
 
             CreateSpawns();
+
+            LoadEventData();
         }
 
         private static void CreateMovements(InstanceInfo instance = null, byte index = 0)
@@ -955,6 +974,17 @@ namespace Server.Envir
             }
         }
 
+        private static void SaveEventData()
+        {
+            Config.ExpEventLastTime = SEnvir.ExpTime;
+            Config.ExpEventCount = SEnvir.ExpEventCount;
+            Config.ExpEventLimit = SEnvir.ExpEventLimit;
+
+            Config.BossEventLastTime = SEnvir.BossTime;
+            Config.BossEventCount = SEnvir.BossEventCount;
+            Config.BossEventLimit = SEnvir.BossEventLimit;
+        }
+
         private static void StopEnvir()
         {
             Now = DateTime.MinValue;
@@ -1002,6 +1032,8 @@ namespace Server.Envir
 
 
             EnvirThread = null;
+
+            SaveEventData();
         }
 
 

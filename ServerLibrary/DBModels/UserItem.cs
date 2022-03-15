@@ -85,20 +85,20 @@ namespace Server.DBModels
         }
         private int _Level;
 
-        public decimal Experience
+        public int GemCount
         {
-            get { return _Experience; }
+            get { return _GemCount; }
             set
             {
-                if (_Experience == value) return;
+                if (_GemCount == value) return;
 
-                var oldValue = _Experience;
-                _Experience = value;
+                var oldValue = _GemCount;
+                _GemCount = value;
 
-                OnChanged(oldValue, value, "Experience");
+                OnChanged(oldValue, value, "GemCount");
             }
         }
-        private decimal _Experience;
+        private int _GemCount;
 
         public Color Colour
         {
@@ -453,23 +453,6 @@ namespace Server.DBModels
             newStat.AddedCount = 1;
         }
 
-        public void AddStatLimited(Stat stat, int amount)
-        {
-            if (amount == 0) return;
-
-            int totalAddedStats = 0;
-            foreach (UserItemStat addedStat in AddedStats)
-            {
-                if (addedStat.StatSource != StatSource.NPCAdded) continue;
-                totalAddedStats += addedStat.AddedCount;
-            }
-            if(totalAddedStats + 1 >= Config.MaxItemStatBonus)
-            {
-                Flags |= UserItemFlags.NonUpgradeable;
-            }
-            AddStat(stat, amount, StatSource.NPCAdded);
-        }
-
         public ClientUserItem ToClientInfo()
         {
             return new ClientUserItem
@@ -485,7 +468,7 @@ namespace Server.DBModels
                 Slot = Slot,
 
                 Level = Level,
-                Experience = Experience,
+                GemCount = GemCount,
 
                 Colour = Colour,
 

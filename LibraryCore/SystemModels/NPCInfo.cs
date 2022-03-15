@@ -667,7 +667,5 @@ namespace Library.SystemModels
 
         LearnSkill,
         SetSkilllevel,
-
-        AddItemStat
     }
 }

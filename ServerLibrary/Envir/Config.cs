@@ -34,6 +34,14 @@ namespace Server.Envir
         public static DateTime HalloweenEventEnd { get; set; } = new DateTime(2018, 11, 07, 00, 00, 00, DateTimeKind.Utc);
         public static DateTime ChristmasEventEnd { get; set; } = new DateTime(2019, 01, 03, 00, 00, 00, DateTimeKind.Utc);
         public static TimeSpan DBSaveDelay { get; set; } = TimeSpan.FromMinutes(5);
+        public static long ExpEventCount { get; set; } = 0;
+        public static long BossEventCount { get; set; } = 0;
+        public static double ExpEventTime { get; set; } = 10080.0;
+        public static double BossEventTime { get; set; } = 10080.0;
+        public static long ExpEventLimit { get; set; } = 1000000;
+        public static long BossEventLimit { get; set; } = 1000;
+        public static DateTime ExpEventLastTime { get; set; } = new DateTime(2020, 01, 01, 01, 01, 01, DateTimeKind.Utc);
+        public static DateTime BossEventLastTime { get; set; } = new DateTime(2020, 01, 01, 01, 01, 01, DateTimeKind.Utc);
 
         [ConfigSection("Control")]
         public static bool AllowLogin { get; set; } = true;

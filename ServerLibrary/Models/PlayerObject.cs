@@ -9615,26 +9615,43 @@ namespace Server.Models
             }
             UserItem gemItem = FindUserItem(p.Gem, out targetArray);
             if (gemItem == null || p.Target.Count > gemItem.Count) return; //Already Leveled.
-            if (gemItem.Info.Effect != ItemEffect.UpgradeGem || (gemItem.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) return;
+            if (gemItem.Info.Effect != ItemEffect.UpgradeGem) return;
+            if (gemItem.Info.Stats[Stat.GemCount] <= 0) return;
+            if (targetItem.GemCount + gemItem.Info.Stats[Stat.GemCount] > Config.MaxItemStatBonus) return;
 
             S.ItemsChanged gemResult = new S.ItemsChanged { Links = new List<CellLinkInfo>(), Success = true };
             S.ItemStatsChanged targetResult = new S.ItemStatsChanged { GridType = p.Target.GridType, Slot = p.Target.Slot, NewStats = new Stats() };
             Enqueue(gemResult);
             Enqueue(targetResult);
 
-            foreach (KeyValuePair<Stat, int> stat in gemItem.Info.Stats.Values)
+            int HowMuchCanBeAdded = (Config.MaxItemStatBonus - targetItem.GemCount) / gemItem.Info.Stats[Stat.GemCount];
+
+            long count = Math.Min(gemItem.Count, Math.Min(p.Gem.Count, HowMuchCanBeAdded));
+            p.Gem.Count = 0;
+            for(long i = 0; i < count; i++)
             {
-                targetItem.AddStatLimited(stat.Key, stat.Value);
-                targetResult.NewStats[stat.Key] += stat.Value;
+                if(targetItem.GemCount + gemItem.Info.Stats[Stat.GemCount] <= Config.MaxItemStatBonus )
+                {
+                    foreach (KeyValuePair<Stat, int> stat in gemItem.Info.Stats.Values)
+                    {
+                        if(stat.Key != Stat.GemCount)
+                        {
+                            targetItem.AddStat(stat.Key, stat.Value, StatSource.NPCAdded);
+                            targetResult.NewStats[stat.Key] += stat.Value;
+                        }
+                    }
+                    gemItem.Count--;
+                    p.Gem.Count++;
+                    targetItem.GemCount += gemItem.Info.Stats[Stat.GemCount];
+                }
+                else
+                {
+                    targetItem.Flags |= UserItemFlags.NonUpgradeable;
+                }
             }
             gemResult.Links.Add(p.Gem);
 
-
-            if (gemItem.Count > 1)
-            {
-                gemItem.Count--;
-            }
-            else
+            if (gemItem.Count < 1)
             {
                 RemoveItem(gemItem);
                 targetArray[p.Gem.Slot] = null;
@@ -9831,6 +9848,8 @@ namespace Server.Models
                     case Stat.ParalysisChance:
                     case Stat.CriticalChance:
                     case Stat.CriticalDamage:
+                    case Stat.HealthPercent:
+                    case Stat.ManaPercent:
                         int statNow = statPair.Value * targetItem.Level / 10;
                         int statBefore = statPair.Value * (targetItem.Level - 1) / 10;
                         int statDelta = statNow - statBefore;
@@ -9923,28 +9942,6 @@ namespace Server.Models
 
             Enqueue(new S.LevelChanged { Level = Level, Experience = Experience, MaxExperience = MaxExperience });
             Broadcast(new S.ObjectLeveled { ObjectID = ObjectID });
-        }
-
-        public void NPCAddItemStat(int WhatWeapon, Stat stat, int amount)
-        {
-            UserItem item = Equipment[WhatWeapon];
-            if (item == null) return;
-
-            if ((item.Flags & UserItemFlags.NonUpgradeable) == UserItemFlags.NonUpgradeable)
-            {
-                item.AddStatLimited(stat, amount);
-
-                Connection.ReceiveChat(Connection.Language.NPCRefineSuccess, MessageType.System);
-
-                foreach (SConnection con in Connection.Observers)
-                    con.ReceiveChat(con.Language.NPCRefineSuccess, MessageType.System);
-
-                item.StatsChanged();
-                SendShapeUpdate();
-                RefreshStats();
-
-                Enqueue(new S.ItemStatsRefreshed { GridType = GridType.Equipment, Slot = WhatWeapon, NewStats = new Stats(item.Stats) });
-            }
         }
 
         public void NPCWeaponCraft(C.NPCWeaponCraft p)

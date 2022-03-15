@@ -1229,7 +1229,6 @@ namespace Client.Controls
                         default:
                             return false;
                     }
-
                     if ((Item.Flags & UserItemFlags.NonUpgradeable) == UserItemFlags.NonUpgradeable) return false;
                     break;
                 case GridType.EquipmentUpgradeGemItems:

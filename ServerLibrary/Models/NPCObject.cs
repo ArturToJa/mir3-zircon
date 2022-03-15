@@ -151,29 +151,6 @@ namespace Server.Models
                     case NPCActionType.ResetWeapon:
                         break;
                     case NPCActionType.GiveItemExperience:
-                        if (action.ItemParameter1 == null) continue;
-
-                        check = new ItemCheck(action.ItemParameter1, action.IntParameter1, UserItemFlags.None, TimeSpan.Zero);
-
-                        if (!ob.CanGainItems(false, check)) continue;
-                        
-                        while (check.Count > 0)
-                        {
-                            UserItem item = SEnvir.CreateFreshItem(check);
-
-                            item.Experience = action.IntParameter2;
-
-                            if (item.Experience >= Globals.AccessoryExperienceList[item.Level])
-                            {
-                                item.Experience -= Globals.AccessoryExperienceList[item.Level];
-                                item.Level++;
-
-                                item.Flags |= UserItemFlags.Refinable;
-                            }
-
-                            ob.GainItem(item);
-                        }
-
                         break;
                     case NPCActionType.SpecialRefine:
                         break;
@@ -227,9 +204,6 @@ namespace Server.Models
 
                             RefreshStats();
                         }
-                        break;
-                    case NPCActionType.AddItemStat:
-                        ob.NPCAddItemStat(action.IntParameter1, action.StatParameter1, action.IntParameter2);
                         break;
                 }
             }

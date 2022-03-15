@@ -767,7 +767,7 @@ namespace Library
         [StatDescription(Title = "Rebirth ", Format = "{0}", Mode = StatType.Default)]
         Rebirth,
 
-        [StatDescription(Title = "LevelUp", Format = "{0}", Mode = StatType.Default)]
+        [StatDescription(Title = "Level Up Count ", Format = "{0}", Mode = StatType.Default)]
         LevelUp,
 
         [StatDescription(Title = "AC", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent)]
@@ -775,6 +775,9 @@ namespace Library
 
         [StatDescription(Title = "MR", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent)]
         MRPercent,
+
+        [StatDescription(Title = "Slot Count ", Format = "{0}", Mode = StatType.Default)]
+        GemCount,
 
         [StatDescription(Title = "Duration", Mode = StatType.Time)]
         Duration = 10000,

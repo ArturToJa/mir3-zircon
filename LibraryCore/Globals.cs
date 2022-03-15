@@ -511,7 +511,7 @@ namespace Library
         public int Slot { get; set; }
 
         public int Level { get; set; }
-        public decimal Experience { get; set; }
+        public int GemCount { get; set; }
 
         public Color Colour { get; set; }
 
@@ -574,7 +574,7 @@ namespace Library
             Slot = item.Slot;
 
             Level = item.Level;
-            Experience = item.Experience;
+            GemCount = item.GemCount;
 
             Colour = item.Colour;
 
