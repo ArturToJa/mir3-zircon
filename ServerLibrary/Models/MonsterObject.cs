@@ -663,7 +663,8 @@ namespace Server.Models
                     {
                         MonsterInfo = monsterInfo,
                         SpawnList = { [SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.SuperLarva)] = 1 },
-                        MinionsCount = 3
+                        MinionsCount = 3,
+                        MaxMinions = 1000
                     };
                 default:
                     return new MonsterObject { MonsterInfo = monsterInfo };
