@@ -126,17 +126,24 @@ namespace Library
             {
                 case MagicType.Slaying:
                 case MagicType.Thrusting:
+                case MagicType.EnhancedThrusting:
+                case MagicType.AwakenedThrusting:
                 case MagicType.FlamingSword:
                     animation = MirAnimation.Combat3;
                     break;
                 case MagicType.HalfMoon:
                 case MagicType.DestructiveSurge:
+                case MagicType.AwakenedDestructiveSurge:
                     animation = MirAnimation.Combat4;
                     break;
                 case MagicType.DragonRise:
+                case MagicType.EnhancedDragonRise:
+                case MagicType.AwakenedDragonRise:
                     animation = MirAnimation.Combat5;
                     break;
                 case MagicType.BladeStorm:
+                case MagicType.EnhancedBladeStorm:
+                case MagicType.AwakenedBladeStorm:
                     animation = MirAnimation.Combat6;
                     break;
                 case MagicType.FullBloom:

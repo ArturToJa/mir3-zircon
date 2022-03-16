@@ -505,7 +505,15 @@ namespace Client.Models
                     {
                         foreach (KeyValuePair<MagicInfo, ClientUserMagic> pair in Magics)
                         {
-                            if (pair.Key.Magic != MagicType.Thrusting) continue;
+                            switch(pair.Key.Magic)
+                            {
+                                case MagicType.Thrusting:
+                                case MagicType.EnhancedThrusting:
+                                case MagicType.AwakenedThrusting:
+                                    break;
+                                default:
+                                    continue;
+                            }
 
                             if (pair.Value.Cost > CurrentMP) break;
 
@@ -515,7 +523,9 @@ namespace Client.Models
                     }
 
                     if (CanHalfMoon && (TargetObject != null || (GameScene.Game.MapControl.CanHalfMoon(action.Direction) &&
-                                                                 (GameScene.Game.MapControl.HasTarget(Functions.Move(CurrentLocation, action.Direction)) || attackMagic != MagicType.Thrusting))))
+                                                                 (GameScene.Game.MapControl.HasTarget(Functions.Move(CurrentLocation, action.Direction)) || (attackMagic != MagicType.Thrusting &&
+                                                                                                                                                             attackMagic != MagicType.EnhancedThrusting &&
+                                                                                                                                                             attackMagic != MagicType.AwakenedThrusting)))))
                     {
                         foreach (KeyValuePair<MagicInfo, ClientUserMagic> pair in Magics)
                         {
@@ -530,11 +540,20 @@ namespace Client.Models
 
 
                     if (CanDestructiveBlow && (TargetObject != null || (GameScene.Game.MapControl.CanDestructiveBlow(action.Direction) &&
-                                                                        (GameScene.Game.MapControl.HasTarget(Functions.Move(CurrentLocation, action.Direction)) || attackMagic != MagicType.Thrusting))))
+                                                                        (GameScene.Game.MapControl.HasTarget(Functions.Move(CurrentLocation, action.Direction)) || (attackMagic != MagicType.Thrusting &&
+                                                                                                                                                             attackMagic != MagicType.EnhancedThrusting &&
+                                                                                                                                                             attackMagic != MagicType.AwakenedThrusting)))))
                     {
                         foreach (KeyValuePair<MagicInfo, ClientUserMagic> pair in Magics)
                         {
-                            if (pair.Key.Magic != MagicType.DestructiveSurge) continue;
+                            switch (pair.Key.Magic)
+                            {
+                                case MagicType.DestructiveSurge:
+                                case MagicType.AwakenedDestructiveSurge:
+                                    break;
+                                default:
+                                    continue;
+                            }
 
                             if (pair.Value.Cost > CurrentMP) break;
 

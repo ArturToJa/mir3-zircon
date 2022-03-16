@@ -2546,6 +2546,8 @@ namespace Client.Models
                         #region Thrusting
 
                         case MagicType.Thrusting:
+                        case MagicType.EnhancedThrusting:
+                        case MagicType.AwakenedThrusting:
                             Effects.Add(new MirEffect(0, 6, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx3, 20, 70, attackColour) //Element style?
                             {
                                 Blend = true,
@@ -2577,6 +2579,7 @@ namespace Client.Models
                         #region Destructive Surge
 
                         case MagicType.DestructiveSurge:
+                        case MagicType.AwakenedDestructiveSurge:
 
                             Effects.Add(new MirEffect(1420, 6, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 20, 70, attackColour) //Element style?
                             {
@@ -2592,6 +2595,8 @@ namespace Client.Models
                         #region Flaming Sword
 
                         case MagicType.FlamingSword:
+                        case MagicType.EnhancedFlamingSword:
+                        case MagicType.AwakenedFlamingSword:
                             Effects.Add(new MirEffect(1470, 6, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 10, 50, Globals.FireColour) //Element style?
                             {
                                 Blend = true,
@@ -2607,6 +2612,8 @@ namespace Client.Models
                         #region Dragon Rise
 
                         case MagicType.DragonRise:
+                        case MagicType.EnhancedDragonRise:
+                        case MagicType.AwakenedDragonRise:
                             Effects.Add(new MirEffect(2180, 10, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 20, 70, attackColour) //Element style?
                             {
                                 Blend = true,
@@ -2624,6 +2631,8 @@ namespace Client.Models
                         #region Blade Storm
 
                         case MagicType.BladeStorm:
+                        case MagicType.EnhancedBladeStorm:
+                        case MagicType.AwakenedBladeStorm:
                             Effects.Add(new MirEffect(1780, 10, TimeSpan.FromMilliseconds(60), LibraryFile.MagicEx, 20, 70, attackColour) //Element style?
                             {
                                 Blend = true,

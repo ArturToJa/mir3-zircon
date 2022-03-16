@@ -711,11 +711,20 @@ namespace Server.Models
             if (Character.CanThrusting && Magics.ContainsKey(MagicType.Thrusting))
                 Enqueue(new S.MagicToggle { Magic = MagicType.Thrusting, CanUse = true });
 
+            if (Character.CanThrusting && Magics.ContainsKey(MagicType.EnhancedThrusting))
+                Enqueue(new S.MagicToggle { Magic = MagicType.EnhancedThrusting, CanUse = true });
+
+            if (Character.CanThrusting && Magics.ContainsKey(MagicType.AwakenedThrusting))
+                Enqueue(new S.MagicToggle { Magic = MagicType.AwakenedThrusting, CanUse = true });
+
             if (Character.CanHalfMoon && Magics.ContainsKey(MagicType.HalfMoon))
                 Enqueue(new S.MagicToggle { Magic = MagicType.HalfMoon, CanUse = true });
 
             if (Character.CanDestructiveSurge && Magics.ContainsKey(MagicType.DestructiveSurge))
                 Enqueue(new S.MagicToggle { Magic = MagicType.DestructiveSurge, CanUse = true });
+
+            if (Character.CanDestructiveSurge && Magics.ContainsKey(MagicType.AwakenedDestructiveSurge))
+                Enqueue(new S.MagicToggle { Magic = MagicType.AwakenedDestructiveSurge, CanUse = true });
 
             if (Character.CanFlameSplash && Magics.ContainsKey(MagicType.FlameSplash))
                 Enqueue(new S.MagicToggle { Magic = MagicType.FlameSplash, CanUse = true });
@@ -6500,8 +6509,9 @@ namespace Server.Models
 
 
                     MagicInfo info = SEnvir.MagicInfoList.Binding.First(x => x.Index == item.Info.Shape);
+                    MagicType type;
 
-                    if (Magics.TryGetValue(info.Magic, out magic) || Magics.TryGetValue(Globals.MagicEnhancement[info.Magic], out magic) || Magics.TryGetValue(Globals.MagicAwakening[info.Magic], out magic))
+                    if (Magics.TryGetValue(info.Magic, out magic) || (Globals.MagicEnhancement.TryGetValue(info.Magic, out type) && Magics.TryGetValue(type, out magic)) || (Globals.MagicAwakening.TryGetValue(info.Magic, out type) && Magics.TryGetValue(type, out magic)))
                     {
                         int rate = (magic.Level - 2) * 500;
 
@@ -10819,13 +10829,13 @@ namespace Server.Models
                     Enqueue(new S.MagicToggle { Magic = MagicType.Slaying, CanUse = CanPowerAttack = true });
             }
 
-            if (attackMagic == MagicType.Thrusting && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
+            if ((attackMagic == MagicType.Thrusting || attackMagic == MagicType.EnhancedThrusting || attackMagic == MagicType.AwakenedThrusting) && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
             {
                 int cost = magic.Cost;
 
                 if (cost <= CurrentMP)
                 {
-                    validMagic = MagicType.Thrusting;
+                    validMagic = attackMagic;
                     magics.Add(magic);
                     ChangeMP(-cost);
                 }
@@ -11160,7 +11170,12 @@ namespace Server.Models
             switch (validMagic)
             {
                 case MagicType.Thrusting:
+                case MagicType.EnhancedThrusting:
                     AttackLocation(Functions.Move(CurrentLocation, Direction, 2), magics, false);
+                    break;
+                case MagicType.AwakenedThrusting:
+                    AttackLocation(Functions.Move(CurrentLocation, Direction, 2), magics, false);
+                    AttackLocation(Functions.Move(CurrentLocation, Direction, 3), magics, false);
                     break;
                 case MagicType.HalfMoon:
                 case MagicType.DragonRise:
@@ -11169,6 +11184,44 @@ namespace Server.Models
                     AttackLocation(Functions.Move(CurrentLocation, Functions.ShiftDirection(Direction, 2)), magics, false);
                     break;
                 case MagicType.DestructiveSurge:
+                    int range = 1;
+
+                    UserMagic thrusting;
+                    if(Magics.TryGetValue(MagicType.EnhancedThrusting, out thrusting) && Level >= thrusting.Info.NeedLevel1)
+                    {
+                        range = 2;
+                    }
+                    else if(Magics.TryGetValue(MagicType.AwakenedThrusting, out thrusting) && Level >= thrusting.Info.NeedLevel1)
+                    {
+                        range = 3;
+                    }
+
+                    if(range == 1)
+                    {
+                        for (int i = 1; i < 8; i++)
+                            AttackLocation(Functions.Move(CurrentLocation, Functions.ShiftDirection(Direction, i)), magics, false);
+                    }
+                    else
+                    {
+                        int squareSide = 1 + range * 2;
+                        Point StartingPoint = Functions.Move(CurrentLocation, MirDirection.UpLeft, range);
+                        Point RowMovingPoint = StartingPoint;
+                        Point FrontPoint = Functions.Move(CurrentLocation, Direction);
+                        for (int Column = 0; Column < squareSide; Column++)
+                        {
+                            Point ColumnMovingPoint = Functions.Move(StartingPoint, MirDirection.Down, Column);
+                            for (int Row = 0; Row < squareSide; Row++)
+                            {
+                                RowMovingPoint = Functions.Move(ColumnMovingPoint, MirDirection.Right, Row);
+                                if (CurrentLocation == RowMovingPoint || FrontPoint == RowMovingPoint) continue;
+                                AttackLocation(RowMovingPoint, magics, false);
+                            }
+                        }
+                    }
+
+                    break;
+                case MagicType.EnhancedDragonRise:
+                case MagicType.AwakenedDragonRise:
                     for (int i = 1; i < 8; i++)
                         AttackLocation(Functions.Move(CurrentLocation, Functions.ShiftDirection(Direction, i)), magics, false);
                     break;
@@ -13145,6 +13198,8 @@ namespace Server.Models
             switch (p.Magic)
             {
                 case MagicType.Thrusting:
+                case MagicType.EnhancedThrusting:
+                case MagicType.AwakenedThrusting:
                     Character.CanThrusting = p.CanUse;
                     Enqueue(new S.MagicToggle { Magic = p.Magic, CanUse = p.CanUse });
                     break;
@@ -13506,6 +13561,8 @@ namespace Server.Models
                         hasBladeStorm = true;
                         break;
                     case MagicType.Thrusting:
+                    case MagicType.EnhancedThrusting:
+                    case MagicType.AwakenedThrusting:
                     case MagicType.HalfMoon:
                     case MagicType.DestructiveSurge:
                         if (!primary)
