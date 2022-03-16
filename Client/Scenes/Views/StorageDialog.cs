@@ -287,12 +287,14 @@ namespace Client.Scenes.Views
 
             if (cell.Item != null)
             {
-                ItemInfo info = Globals.ItemInfoList.Binding.First(x => x.Index == cell.Item.AddedStats[Stat.ItemIndex]);
-
-                if (!string.IsNullOrEmpty(ItemNameTextBox.TextBox.Text) && info.ItemName.IndexOf(ItemNameTextBox.TextBox.Text, StringComparison.OrdinalIgnoreCase) < 0)
+                ItemInfo info = Globals.ItemInfoList.Binding.FirstOrDefault(x => x.Index == cell.Item.AddedStats[Stat.ItemIndex]);
+                if (info != null)
                 {
-                    cell.Enabled = false;
-                    return;
+                    if (!string.IsNullOrEmpty(ItemNameTextBox.TextBox.Text) && info.ItemName.IndexOf(ItemNameTextBox.TextBox.Text, StringComparison.OrdinalIgnoreCase) < 0)
+                    {
+                        cell.Enabled = false;
+                        return;
+                    }
                 }
             }
 
