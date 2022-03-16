@@ -651,7 +651,20 @@ namespace Server.Models
                         MonsterInfo = monsterInfo,
                     };
                 case 135:
-                    return new MonsterObject { MonsterInfo = monsterInfo, PoisonType = PoisonType.StrongGreen, PoisonTicks = 10, PoisonFrequency = 1, PoisonRate = 8 };
+                    return new MonsterObject { 
+                        MonsterInfo = monsterInfo,
+                        PoisonType = PoisonType.StrongGreen,
+                        PoisonTicks = 10,
+                        PoisonFrequency = 1,
+                        PoisonRate = 8
+                    };
+                case 136:
+                    return new ArachnidGrazer
+                    {
+                        MonsterInfo = monsterInfo,
+                        SpawnList = { [SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.SuperLarva)] = 1 }
+                        MinionsCount = 3
+                    };
                 default:
                     return new MonsterObject { MonsterInfo = monsterInfo };
             }

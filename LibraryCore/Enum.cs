@@ -1309,6 +1309,7 @@ namespace Library
 
 
         Larva = 100,
+        SuperLarva = 101,
 
         LesserWedgeMoth = 110,
 

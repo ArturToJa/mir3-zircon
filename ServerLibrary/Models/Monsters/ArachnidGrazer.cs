@@ -10,12 +10,12 @@ namespace Server.Models.Monsters
     public class ArachnidGrazer : MonsterObject
     {
         public override bool CanMove => false;
+        public int MinionsCount = 1;
         
         protected override bool InAttackRange()
         {
             return Target.CurrentMap == CurrentMap;
         }
-
 
         public ArachnidGrazer()
         {
@@ -27,7 +27,7 @@ namespace Server.Models.Monsters
             switch (action.Type)
             {
                 case ActionType.Function:
-                    SpawnMinions(1, 0, Target);
+                    SpawnMinions(MinionsCount, 0, Target);
                     break;
             }
 
@@ -45,7 +45,6 @@ namespace Server.Models.Monsters
                                ActionType.Function));
         }
         
-
         public override bool SpawnMinion(MonsterObject mob)
         {
             return mob.Spawn(CurrentMap, Functions.Move(CurrentLocation, Functions.ShiftDirection(Direction, 3)));
