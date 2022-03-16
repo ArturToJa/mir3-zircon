@@ -650,6 +650,8 @@ namespace Server.Models
                     {
                         MonsterInfo = monsterInfo,
                     };
+                case 135:
+                    return new MonsterObject { MonsterInfo = monsterInfo, PoisonType = PoisonType.StrongGreen, PoisonTicks = 10, PoisonFrequency = 1, PoisonRate = 8 };
                 default:
                     return new MonsterObject { MonsterInfo = monsterInfo };
             }
@@ -1595,7 +1597,6 @@ namespace Server.Models
                             break;
                     }
 
-
                     if (PetOwner.Pets.Any(x =>
                     {
                         if (x.Target == null) return false;
@@ -1688,7 +1689,6 @@ namespace Server.Models
                 return 0;
             }
 
-
             damage = ob.Attacked(this, damage, element, true, IgnoreShield);
 
             if (damage <= 0) return damage;
@@ -1715,7 +1715,6 @@ namespace Server.Models
                 TickFrequency = TimeSpan.FromSeconds(PoisonFrequency),
                 TickCount = PoisonTicks,
             });
-
 
             return damage;
         }

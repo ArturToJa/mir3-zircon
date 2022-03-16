@@ -3490,6 +3490,23 @@ namespace Client.Scenes.Views
 
         public void UpdateMagic(Dictionary<MagicInfo, ClientUserMagic> Magics)
         {
+            if(MagicBox != null)
+            {
+                MagicBox.Dispose();
+            }
+
+            MagicBox = new DXComboBox
+            {
+                Parent = this,
+                Size = new Size(ClientArea.Width - 6, DXComboBox.DefaultNormalHeight),
+            };
+            MagicBox.Location = new Point(ClientArea.X + 3, ClientArea.Y + 10);
+            MagicBox.SelectedItemChanged += (o, e) =>
+            {
+                SelectedMagic = (MagicType)MagicBox.SelectedItem;
+                ShouldEnableButton();
+            };
+
             foreach (KeyValuePair<MagicInfo, ClientUserMagic> info in Magics)
             {
                 new DXListBoxItem

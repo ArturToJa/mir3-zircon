@@ -227,6 +227,8 @@ namespace Library
         RagingWind = 410,
         FrostBite = 411,
 
+        AwakenedDefiance = 412,
+
         MagicWeakness = 500,
     }
 
@@ -645,6 +647,33 @@ namespace Library
         PinkFireBall = 530,
         GreenSludgeBall = 540,
 
+        AwakenedSlaying = 541,
+        EnhancedThrusting = 542,
+        AwakenedThrusting = 543,
+        AwakenedDestructiveSurge = 544,
+        EnhancedFlamingSword = 545,
+        AwakenedFlamingSword = 546,
+        EnhancedDragonRise = 547,
+        AwakenedDragonRise = 548,
+        EnhancedBladeStorm = 549,
+        AwakenedBladeStorm = 550,
+        EnhancedInterchange = 551,
+        AwakenedInterchange = 552,
+        EnhancedBeckon = 553,
+        AwakenedBeckon = 554,
+        EnhancedDefiance = 555,
+        AwakenedDefiance = 556,
+        EnhancedMight = 557,
+        AwakenedMight = 558,
+        AwakenedAssault = 559,
+        EnhancedReflectDamage = 560,
+        AwakenedReflectDamage = 561,
+        EnhancedSwiftBlade = 562,
+        AwakenedSwiftBlade = 563,
+        EnhancedSeismicSlam = 564,
+        AwakenedSeismicSlam = 565,
+        EnhancedMassBeckon = 566,
+        AwakenedMassBeckon = 567,
     }
 
     public enum MonsterImage
@@ -991,6 +1020,7 @@ namespace Library
         Silenced = 64,
         Abyss = 128,
         Infection = 256,
+        StrongGreen = 512,
     }
 
     public enum SpellEffect
@@ -1141,6 +1171,8 @@ namespace Library
         UpgradeGem = 93,
         LevelUpScroll = 94,
         SkillStone = 95,
+        SkillEnhancement = 96,
+        SkillAwakening = 97
     }
 
     [Flags]

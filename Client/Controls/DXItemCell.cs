@@ -1289,7 +1289,7 @@ namespace Client.Controls
                     if (Globals.EquipmentUpgradeList[item.Level].SpecialItem != Item.Info.SetValue) return false;
                     break;
                 case GridType.SkillStoneItem:
-                    if (Item.Info.Effect != ItemEffect.SkillStone) return false;
+                    if (Item.Info.Effect != ItemEffect.SkillStone && Item.Info.Effect != ItemEffect.SkillEnhancement && Item.Info.Effect != ItemEffect.SkillAwakening) return false;
                     break;
             }
             return true;

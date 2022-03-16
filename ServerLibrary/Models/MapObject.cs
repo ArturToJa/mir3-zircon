@@ -215,6 +215,9 @@ namespace Server.Models
                     case PoisonType.Green:
                         damage += poison.Value;
                         break;
+                    case PoisonType.StrongGreen:
+                        damage += poison.Value * Stats[Stat.Health] / 1000;
+                        break;
                     case PoisonType.WraithGrip:
                         ChangeMP(-poison.Value);
 
@@ -1535,7 +1538,7 @@ namespace Server.Models
         {
             int count = 0;
             if (Dead) return count;
-            if (Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.DragonRepulse)) return count;
+            if (Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.DragonRepulse || x.Type == BuffType.AwakenedDefiance)) return count;
 
             PreventSpellCheck = true;
             for (int i = 0; i < distance; i++)

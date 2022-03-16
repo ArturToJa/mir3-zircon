@@ -1399,9 +1399,19 @@ namespace Client.Envir
         public void Process(S.NewMagic p)
         {
             MapObject.User.Magics[p.Magic.Info] = p.Magic;
-
-            GameScene.Game.MagicBox.Magics[p.Magic.Info].Refresh();
+            GameScene.Game.MagicBox.CreateTabs();
+            GameScene.Game.NPCSkillStoneBox.UpdateMagic(MapObject.User.Magics);
+            //GameScene.Game.MagicBox.Magics[p.Magic.Info].Refresh();
         }
+
+        public void Process(S.MagicUpgraded p)
+        {
+            MapObject.User.Magics.Remove(p.OldMagicInfo);
+            MapObject.User.Magics[p.NewMagic.Info] = p.NewMagic;
+            GameScene.Game.MagicBox.CreateTabs();
+            GameScene.Game.NPCSkillStoneBox.UpdateMagic(MapObject.User.Magics);
+        }
+
         public void Process(S.MagicLeveled p)
         {
             MapObject.User.Magics[p.Info].Level = p.Level;

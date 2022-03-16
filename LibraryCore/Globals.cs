@@ -326,45 +326,43 @@ namespace Library
             "Forged Steel"
         };
 
-        public static List<decimal> WeaponExperienceList = new List<decimal>
+        public static Dictionary<MagicType, MagicType> MagicEnhancement = new Dictionary<MagicType, MagicType>
         {
-            0, //0
-
-            300000,
-            350000,
-            400000,
-            450000,
-            500000,
-            550000,
-            600000,
-            650000,
-            700000,
-            750000, //10
-
-            800000,
-            850000,
-            900000,
-            1000000,
-            1300000,
-            2000000,
+            {MagicType.Swordsmanship, MagicType.Slaying },
+            {MagicType.Thrusting, MagicType.EnhancedThrusting },
+            {MagicType.EnhancedThrusting, MagicType.AwakenedThrusting },
+            {MagicType.HalfMoon, MagicType.DestructiveSurge },
+            {MagicType.FlamingSword, MagicType.EnhancedFlamingSword },
+            {MagicType.DragonRise, MagicType.EnhancedDragonRise},
+            {MagicType.BladeStorm, MagicType.EnhancedBladeStorm},
+            {MagicType.Interchange, MagicType.EnhancedInterchange},
+            {MagicType.MassBeckon, MagicType.EnhancedMassBeckon},
+            {MagicType.Beckon, MagicType.EnhancedBeckon },
+            {MagicType.Defiance, MagicType.EnhancedDefiance},
+            {MagicType.Might, MagicType.EnhancedMight},
+            {MagicType.ShoulderDash, MagicType.Assault},
+            {MagicType.ReflectDamage, MagicType.EnhancedReflectDamage},
+            {MagicType.SwiftBlade, MagicType.EnhancedSwiftBlade},
+            {MagicType.SeismicSlam, MagicType.EnhancedSeismicSlam},
         };
 
-        public static List<decimal> AccessoryExperienceList = new List<decimal>
+        public static Dictionary<MagicType, MagicType> MagicAwakening = new Dictionary<MagicType, MagicType>
         {
-            0,
-
-            5,
-            20,
-            80,
-            350,
-            1500,
-            6200,
-            26500,
-            114000,
-            490000,
-            2090000,
+            {MagicType.Slaying, MagicType.AwakenedSlaying },
+            {MagicType.DestructiveSurge, MagicType.AwakenedDestructiveSurge },
+            {MagicType.EnhancedFlamingSword, MagicType.AwakenedFlamingSword },
+            {MagicType.EnhancedDragonRise, MagicType.AwakenedDragonRise },
+            {MagicType.EnhancedBladeStorm, MagicType.AwakenedBladeStorm },
+            {MagicType.EnhancedInterchange, MagicType.AwakenedInterchange },
+            {MagicType.EnhancedMassBeckon, MagicType.AwakenedMassBeckon },
+            {MagicType.EnhancedBeckon, MagicType.AwakenedBeckon},
+            {MagicType.EnhancedDefiance, MagicType.AwakenedDefiance },
+            {MagicType.EnhancedMight, MagicType.AwakenedMight },
+            {MagicType.Assault, MagicType.AwakenedAssault },
+            {MagicType.EnhancedReflectDamage, MagicType.AwakenedReflectDamage },
+            {MagicType.EnhancedSwiftBlade, MagicType.AwakenedSwiftBlade },
+            {MagicType.EnhancedSeismicSlam, MagicType.AwakenedSeismicSlam },
         };
-
 
         public const int InventorySize = 49,
                          EquipmentSize = 17,

@@ -56,8 +56,8 @@ namespace Client.Scenes.Views
                 pair.Value.Dispose();
 
             SchoolTabs.Clear();
-
-            List<MagicInfo> magics = Globals.MagicInfoList.Binding.ToList();
+            Magics.Clear();
+            List<MagicInfo> magics = MapObject.User.Magics.Keys.ToList();
             magics.Sort((x1, x2) => x1.NeedLevel1.CompareTo(x2.NeedLevel1));
 
             foreach (MagicInfo magic in magics)

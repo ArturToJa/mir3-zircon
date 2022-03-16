@@ -2465,7 +2465,6 @@ namespace Server.Models
                 }
             }
 
-
             foreach (KeyValuePair<MagicType, UserMagic> pair in Magics)
             {
                 if (Level < pair.Value.Info.NeedLevel1) continue;
@@ -2473,15 +2472,21 @@ namespace Server.Models
                 switch (pair.Key)
                 {
                     case MagicType.Swordsmanship:
-                        Stats[Stat.Accuracy] += pair.Value.GetPower();
+                        Stats[Stat.Accuracy] += pair.Value.Level * 2;
                         break;
                     case MagicType.SpiritSword:
                         Stats[Stat.Accuracy] += pair.Value.GetPower();
                         break;
                     case MagicType.Slaying:
                         Stats[Stat.Accuracy] += pair.Value.Level * 2;
-                        Stats[Stat.MinDC] += pair.Value.Level * 2;
-                        Stats[Stat.MaxDC] += pair.Value.Level * 2;
+                        Stats[Stat.MinDC] += pair.Value.Level * 100;
+                        Stats[Stat.MaxDC] += pair.Value.Level * 100;
+                        break;
+                    case MagicType.AwakenedSlaying:
+                        Stats[Stat.Accuracy] += pair.Value.Level * 2;
+                        Stats[Stat.MinDC] += pair.Value.Level * 100;
+                        Stats[Stat.MaxDC] += pair.Value.Level * 100;
+                        Stats[Stat.IgnoreArmour] += pair.Value.Level;
                         break;
                     case MagicType.WillowDance:
                         Stats[Stat.Agility] += pair.Value.GetPower();
@@ -2505,6 +2510,12 @@ namespace Server.Models
                         break;
                     case MagicType.AdvancedRenounce:
                         Stats[Stat.MCPercent] += (1 + pair.Value.Level) * 10;
+                        break;
+                    case MagicType.EnhancedReflectDamage:
+                        Stats[Stat.ReflectDamage] = 5 + pair.Value.Level * 3;
+                        break;
+                    case MagicType.AwakenedReflectDamage:
+                        Stats[Stat.AwakenedReflectDamage] = 5 + pair.Value.Level * 3;
                         break;
                 }
             }
@@ -6490,7 +6501,7 @@ namespace Server.Models
 
                     MagicInfo info = SEnvir.MagicInfoList.Binding.First(x => x.Index == item.Info.Shape);
 
-                    if (Magics.TryGetValue(info.Magic, out magic))
+                    if (Magics.TryGetValue(info.Magic, out magic) || Magics.TryGetValue(Globals.MagicEnhancement[info.Magic], out magic) || Magics.TryGetValue(Globals.MagicAwakening[info.Magic], out magic))
                     {
                         int rate = (magic.Level - 2) * 500;
 
@@ -9604,19 +9615,72 @@ namespace Server.Models
             UserItem[] targetArray = null;
             UserItem targetItem = FindUserItem(p.SkillStone, out targetArray);
             if (targetItem == null || p.SkillStone.Count != 1) return; //Already Leveled.
-            if (targetItem.Info.Effect != ItemEffect.SkillStone) return; //No harm in checking
+            if (targetItem.Info.Effect != ItemEffect.SkillStone && targetItem.Info.Effect != ItemEffect.SkillEnhancement && targetItem.Info.Effect != ItemEffect.SkillAwakening) return; //No harm in checking
             if (!Magics.ContainsKey(p.MagicType)) return;
             UserMagic magic = Magics[p.MagicType];
-            if (magic.Level != targetItem.Info.Stats[Stat.SkillUpgrade] - 1) return;
-            magic.Level++;
+            if(targetItem.Info.Effect == ItemEffect.SkillStone)
+            {
+                if (magic.Level != targetItem.Info.Stats[Stat.SkillUpgrade] - 1) return;
+                magic.Level++;
 
+                Connection.ReceiveChat(String.Format("Upgraded {0} to level {1}", magic.Info.Name, magic.Level), MessageType.System);
 
-            Connection.ReceiveChat(String.Format("Upgraded {0} to level {1}", magic.Info.Name, magic.Level), MessageType.System);
+                foreach (SConnection con in Connection.Observers)
+                    con.ReceiveChat(String.Format("Upgraded {0} to level {1}", magic.Info.Name, magic.Level), MessageType.System);
 
-            foreach (SConnection con in Connection.Observers)
-                con.ReceiveChat(String.Format("Upgraded {0} to level {1}", magic.Info.Name, magic.Level), MessageType.System);
+                Enqueue(new S.MagicLeveled { InfoIndex = magic.Info.Index, Level = magic.Level, Experience = magic.Experience });
+            }
+            else if(targetItem.Info.Effect == ItemEffect.SkillEnhancement)
+            {
+                if (magic.Level >= 7) return;
+                if (!Globals.MagicEnhancement.ContainsKey(magic.Info.Magic)) return;
 
-            Enqueue(new S.MagicLeveled { InfoIndex = magic.Info.Index, Level = magic.Level, Experience = magic.Experience });
+                MagicInfo info = SEnvir.MagicInfoList.Binding.FirstOrDefault(x => x.Magic == Globals.MagicEnhancement[magic.Info.Magic]);
+                if (info == null) return;
+                UserMagic newMagic = SEnvir.UserMagicList.CreateNewObject();
+                newMagic.Character = Character;
+                newMagic.Info = info;
+                newMagic.Level = magic.Level;
+
+                Connection.ReceiveChat(String.Format("Enhanced {0} to {1}", magic.Info.Name, newMagic.Info.Name), MessageType.System);
+
+                foreach (SConnection con in Connection.Observers)
+                    con.ReceiveChat(String.Format("Enhanced {0} to {1}", magic.Info.Name, newMagic.Info.Name), MessageType.System);
+
+                Enqueue(new S.MagicUpgraded { OldMagicIndex = magic.Info.Index, NewMagic = newMagic.ToClientInfo() });Magics.Remove(magic.Info.Magic);
+                Magics.Remove(magic.Info.Magic);
+
+                magic.Character = null;
+                magic.Delete();
+
+                Magics[info.Magic] = newMagic;
+            }
+            else if(targetItem.Info.Effect == ItemEffect.SkillAwakening)
+            {
+                if (magic.Level >= 8) return;
+                if (!Globals.MagicAwakening.ContainsKey(magic.Info.Magic)) return;
+
+                MagicInfo info = SEnvir.MagicInfoList.Binding.FirstOrDefault(x => x.Magic == Globals.MagicAwakening[magic.Info.Magic]);
+                if (info == null) return;
+                UserMagic newMagic = SEnvir.UserMagicList.CreateNewObject();
+                newMagic.Character = Character;
+                newMagic.Info = info;
+                newMagic.Level = magic.Level;
+
+                Connection.ReceiveChat(String.Format("Awakened {0} to {1}", magic.Info.Name, newMagic.Info.Name), MessageType.System);
+
+                foreach (SConnection con in Connection.Observers)
+                    con.ReceiveChat(String.Format("Awakened {0} to {1}", magic.Info.Name, newMagic.Info.Name), MessageType.System);
+
+                Enqueue(new S.MagicUpgraded { OldMagicIndex = magic.Info.Index, NewMagic = newMagic.ToClientInfo() });
+                
+                Magics.Remove(magic.Info.Magic);
+                magic.Character = null;
+                magic.Delete();
+                
+                Magics[info.Magic] = newMagic;
+            }
+            
             if (targetItem.Count == p.SkillStone.Count)
             {
                 RemoveItem(targetItem);
@@ -14463,13 +14527,16 @@ namespace Server.Models
 
             if (canReflect && CanAttackTarget(attacker) && attacker.Race != ObjectType.Player)
             {
-                attacker.Attacked(this, power * Stats[Stat.ReflectDamage] / 100, Element.None, false);
+                attacker.Attacked(this, power * (Stats[Stat.ReflectDamage] + Stats[Stat.AwakenedReflectDamage]) / 100, Element.None, false);
 
 /*                if (Buffs.Any(x => x.Type == BuffType.ReflectDamage) && Magics.TryGetValue(MagicType.ReflectDamage, out magic))
                     LevelMagic(magic);*/
             }
 
-
+            if (!ignoreShield)
+            {
+                power -= power * Stats[Stat.AwakenedReflectDamage] / 100;
+            }
 
             if (canReflect && CanAttackTarget(attacker) && SEnvir.Random.Next(100) < Stats[Stat.JudgementOfHeaven] && !(attacker is CastleLord))
             {
@@ -14920,7 +14987,7 @@ namespace Server.Models
                 ((PlayerObject)p.Owner).PvPTime = SEnvir.Now;
             }
 
-            if (Buffs.Any(x => x.Type == BuffType.Endurance))
+            if (Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.AwakenedDefiance))
             {
 /*                UserMagic magic;
                 if (Magics.TryGetValue(MagicType.Endurance, out magic))
@@ -15495,7 +15562,7 @@ namespace Server.Models
                     MapObject ob = cell.Objects[c];
                     if (!ob.Blocking) continue;
 
-                    if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance))
+                    if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.AwakenedDefiance))
                     {
                         blocked = true;
                         break;
@@ -15541,7 +15608,7 @@ namespace Server.Models
                         MapObject ob = cell.Objects[c];
                         if (!ob.Blocking) continue;
 
-                        if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance))
+                        if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.AwakenedDefiance))
                         {
                             blocked = true;
                             break;
@@ -15584,7 +15651,7 @@ namespace Server.Models
                     MapObject ob = cell.Objects[c];
                     if (!ob.Blocking) continue;
 
-                    if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance))
+                    if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.AwakenedDefiance))
                     {
                         blocked = true;
                         break;
@@ -15674,7 +15741,7 @@ namespace Server.Models
             {
                 case ObjectType.Player:
                     if (!CanAttackTarget(ob)) return;
-                    if (ob.Level >= Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance)) return;
+                    if (ob.Level >= Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.AwakenedDefiance)) return;
                     break;
                 case ObjectType.Monster:
                     if (!CanAttackTarget(ob)) return;
@@ -15731,7 +15798,7 @@ namespace Server.Models
             {
                 case ObjectType.Player:
                     if (!CanAttackTarget(ob)) return;
-                    if (ob.Level >= Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance)) return;
+                    if (ob.Level >= Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.AwakenedDefiance)) return;
 
                     /* if (CurrentMap.Info.SkillDelay > 0)
                      {

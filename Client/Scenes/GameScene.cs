@@ -2212,46 +2212,6 @@ namespace Client.Scenes
                     label.DisplayArea.Bottom > ItemLabel.Size.Height ? label.DisplayArea.Bottom : ItemLabel.Size.Height);
             }
             ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 5);
-
-            switch (displayInfo.ItemType)
-            {
-                case ItemType.Weapon:
-                    if ((MouseItem.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) break;
-
-                    label = new DXLabel
-                    {
-                        ForeColour = Color.White,
-                        Location = new Point(4, ItemLabel.DisplayArea.Bottom),
-                        Parent = ItemLabel,
-                        Text = $"{displayInfo.ItemType} Level: " + (MouseItem.Level < Globals.WeaponExperienceList.Count ? MouseItem.Level.ToString() : "Max")
-                    };
-
-                    ItemLabel.Size = new Size(label.DisplayArea.Right + 4 > ItemLabel.Size.Width ? label.DisplayArea.Right + 4 : ItemLabel.Size.Width,
-                        label.DisplayArea.Bottom > ItemLabel.Size.Height ? label.DisplayArea.Bottom : ItemLabel.Size.Height);
-
-                    ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 5);
-                    break;
-                case ItemType.Necklace:
-                case ItemType.Bracelet:
-                case ItemType.Ring:
-
-                    if ((MouseItem.Flags & UserItemFlags.NonRefinable) == UserItemFlags.NonRefinable) break;
-
-                    label = new DXLabel
-                    {
-                        ForeColour = Color.White,
-                        Location = new Point(4, ItemLabel.DisplayArea.Bottom),
-                        Parent = ItemLabel,
-                        Text = $"{displayInfo.ItemType} Level: " + (MouseItem.Level < Globals.AccessoryExperienceList.Count ? MouseItem.Level.ToString() : "Max")
-                    };
-
-                    ItemLabel.Size = new Size(label.DisplayArea.Right + 4 > ItemLabel.Size.Width ? label.DisplayArea.Right + 4 : ItemLabel.Size.Width,
-                        label.DisplayArea.Bottom > ItemLabel.Size.Height ? label.DisplayArea.Bottom : ItemLabel.Size.Height);
-
-                    ItemLabel.Size = new Size(ItemLabel.Size.Width, ItemLabel.Size.Height + 5);
-                    break;
-
-            }
         }
         private void CreatePotionLabel()
         {
@@ -3458,6 +3418,7 @@ namespace Client.Scenes
             MainPanel.SCLabel.Visible = User.Class == MirClass.Taoist;
             
             MagicBox?.CreateTabs();
+            GameScene.Game.NPCSkillStoneBox.UpdateMagic(MapObject.User.Magics);
         }
         public void StatsChanged()
         {

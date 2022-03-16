@@ -170,7 +170,7 @@ namespace Server.Models
                     case NPCActionType.LearnSkill:
                         MagicInfo info = SEnvir.MagicInfoList.Binding.First(x => x.Index == action.IntParameter1);
                         UserMagic magic;
-                        if (!ob.Magics.TryGetValue(info.Magic, out magic))
+                        if (!ob.Magics.TryGetValue(info.Magic, out magic) && !ob.Magics.TryGetValue(Globals.MagicEnhancement[info.Magic], out magic) && !ob.Magics.TryGetValue(Globals.MagicAwakening[info.Magic], out magic))
                         {
                             magic = SEnvir.UserMagicList.CreateNewObject();
                             magic.Character = ob.Character;

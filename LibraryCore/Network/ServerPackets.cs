@@ -409,6 +409,18 @@ namespace Library.Network.ServerPackets
     {
         public ClientUserMagic Magic { get; set; }
     }
+
+    public sealed class MagicUpgraded : Packet
+    {
+        public int OldMagicIndex { get; set; }
+        public MagicInfo OldMagicInfo { get; set; }
+        public ClientUserMagic NewMagic { get; set; }
+        [CompleteObject]
+        public void Complete()
+        {
+            OldMagicInfo = Globals.MagicInfoList.Binding.FirstOrDefault(x => x.Index == OldMagicIndex);
+        }
+    }
     public sealed class MagicLeveled : Packet
     {
         public int InfoIndex { get; set; }
