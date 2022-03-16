@@ -560,9 +560,6 @@ namespace Library
         [StatDescription(Title = "Reflect Damage", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent)]
         ReflectDamage,
 
-        [StatDescription(Title = "Disperse Damage", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent)]
-        AwakenedReflectDamage,
-
         [StatDescription(Mode = StatType.None)]
         WeaponElement,
         [StatDescription(Title = "Temporary Innocence.", Mode = StatType.Text)]
@@ -793,6 +790,9 @@ namespace Library
 
         [StatDescription(Title = "Ignore Magic Shield", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent)]
         IgnoreMagicShield,
+
+        [StatDescription(Title = "Disperse Damage", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent)]
+        AwakenedReflectDamage,
 
         [StatDescription(Title = "Duration", Mode = StatType.Time)]
         Duration = 10000,
