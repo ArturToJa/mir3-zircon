@@ -662,7 +662,7 @@ namespace Server.Models
                     return new ArachnidGrazer
                     {
                         MonsterInfo = monsterInfo,
-                        SpawnList = { [SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.SuperLarva)] = 1 }
+                        SpawnList = { [SEnvir.MonsterInfoList.Binding.First(x => x.Flag == MonsterFlag.SuperLarva)] = 1 },
                         MinionsCount = 3
                     };
                 default:
