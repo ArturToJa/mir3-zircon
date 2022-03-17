@@ -548,17 +548,20 @@ namespace Server.Envir
                         }
                     }
 
-                    if(AccountInfoList[i].Characters[j].Class == MirClass.Warrior)
+                    if(false)
                     {
-                        for (int k = AccountInfoList[i].Characters[j].Magics.Count - 1; k >= 0; k--)
+                        if (AccountInfoList[i].Characters[j].Class == MirClass.Warrior)
                         {
-                            UserMagic item = AccountInfoList[i].Characters[j].Magics[k];
-                            if (item.Info != null)
+                            for (int k = AccountInfoList[i].Characters[j].Magics.Count - 1; k >= 0; k--)
                             {
-                                if(Globals.MagicAwakening.ContainsKey(item.Info.Magic) || Globals.MagicAwakening.ContainsValue(item.Info.Magic))
+                                UserMagic item = AccountInfoList[i].Characters[j].Magics[k];
+                                if (item.Info != null)
                                 {
-                                    item.Character = null;
-                                    item.Delete();
+                                    if (Globals.MagicAwakening.ContainsKey(item.Info.Magic) || Globals.MagicAwakening.ContainsValue(item.Info.Magic))
+                                    {
+                                        item.Character = null;
+                                        item.Delete();
+                                    }
                                 }
                             }
                         }
