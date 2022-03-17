@@ -227,6 +227,9 @@ namespace Server.Models
                     case PoisonType.HellFire:
                         damage += poison.Value;
                         break;
+                    case PoisonType.Burn:
+                        damage += poison.Value;
+                        break;
                     case PoisonType.Infection:
                         if (Race == ObjectType.Player)
                             damage += 1 + Stats[Stat.Health] / 100;
@@ -344,7 +347,10 @@ namespace Server.Models
                         }
                         #endregion
 
-                        ChangeHP(-damage);
+                        damage -= GetMR();
+
+                        if(damage > 0)
+                            ChangeHP(-damage);
                     }
 
                     if (Dead) break;

@@ -133,7 +133,7 @@ namespace Server.DBModels
         public DateTime Cooldown;
         
         [IgnoreProperty]
-        public int Cost => Info.BaseCost + Level * Info.LevelCost / 3;
+        public int Cost => Info.BaseCost + Level * Info.LevelCost / 4;
 
         protected override void OnDeleted()
         {
@@ -146,8 +146,8 @@ namespace Server.DBModels
 
         public int GetPower()
         {
-            int min = Info.MinBasePower + Level*Info.MinLevelPower/3;
-            int max = Info.MaxBasePower + Level * Info.MaxLevelPower / 3;
+            int min = Info.MinBasePower + Level * Info.MinLevelPower / 4;
+            int max = Info.MaxBasePower + Level * Info.MaxLevelPower / 4;
 
             if (min < 0) min = 0;
             if (min >= max) return min;

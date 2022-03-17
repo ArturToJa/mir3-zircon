@@ -249,6 +249,20 @@ namespace Client.Models
         }
         private bool _canThrusting;
 
+        public bool CanAThrusting
+        {
+            get { return _canAThrusting; }
+            set
+            {
+                if (_canAThrusting == value) return;
+
+                _canAThrusting = value;
+
+                GameScene.Game.ReceiveChat(CanAThrusting ? "Use Awakened Thrusting." : "Do not use Awakened Thrusting.", MessageType.Hint);
+            }
+        }
+        private bool _canAThrusting;
+
         public bool CanHalfMoon
         {
             get { return _CanHalfMoon; }
@@ -276,6 +290,7 @@ namespace Client.Models
         private bool _CanDestructiveBlow;
 
         public bool CanFlamingSword, CanDragonRise, CanBladeStorm;
+        public MagicType MeleeMagic = MagicType.None;
 
         public bool CanFlameSplash
         {
@@ -501,14 +516,33 @@ namespace Client.Models
                         }
                     }
 
-                    if (CanThrusting && GameScene.Game.MapControl.CanEnergyBlast(action.Direction))
+                    if ((CanThrusting || CanAThrusting) && GameScene.Game.MapControl.CanEnergyBlast(action.Direction))
                     {
                         foreach (KeyValuePair<MagicInfo, ClientUserMagic> pair in Magics)
                         {
                             switch(pair.Key.Magic)
                             {
-                                case MagicType.Thrusting:
+                                case MagicType.AwakenedThrusting:
                                 case MagicType.EnhancedThrusting:
+                                case MagicType.Thrusting:
+                                    break;
+                                default:
+                                    continue;
+                            }
+
+                            if (pair.Value.Cost > CurrentMP) break;
+
+                            attackMagic = pair.Key.Magic;
+                            break;
+                        }
+                    }
+
+                    if (CanAThrusting && GameScene.Game.MapControl.CanEnergyBlast(action.Direction, 3))
+                    {
+                        foreach (KeyValuePair<MagicInfo, ClientUserMagic> pair in Magics)
+                        {
+                            switch (pair.Key.Magic)
+                            {
                                 case MagicType.AwakenedThrusting:
                                     break;
                                 default:
@@ -539,17 +573,17 @@ namespace Client.Models
                     }
 
 
-                    if (CanDestructiveBlow && (TargetObject != null || (GameScene.Game.MapControl.CanDestructiveBlow(action.Direction) &&
+                    if (CanDestructiveBlow &&// (TargetObject != null || (GameScene.Game.MapControl.CanDestructiveBlow(action.Direction) &&
                                                                         (GameScene.Game.MapControl.HasTarget(Functions.Move(CurrentLocation, action.Direction)) || (attackMagic != MagicType.Thrusting &&
                                                                                                                                                              attackMagic != MagicType.EnhancedThrusting &&
-                                                                                                                                                             attackMagic != MagicType.AwakenedThrusting)))))
+                                                                                                                                                             attackMagic != MagicType.AwakenedThrusting)))//))
                     {
                         foreach (KeyValuePair<MagicInfo, ClientUserMagic> pair in Magics)
                         {
                             switch (pair.Key.Magic)
                             {
-                                case MagicType.DestructiveSurge:
                                 case MagicType.AwakenedDestructiveSurge:
+                                case MagicType.DestructiveSurge:
                                     break;
                                 default:
                                     continue;
@@ -575,14 +609,12 @@ namespace Client.Models
                         }
                     }
 
-
                     if (CanBladeStorm)
-                        attackMagic = MagicType.BladeStorm;
+                        attackMagic = GameScene.Game.User.MeleeMagic;
                     else if (CanDragonRise)
-                        attackMagic = MagicType.DragonRise;
+                        attackMagic = GameScene.Game.User.MeleeMagic;
                     else if (CanFlamingSword)
-                        attackMagic = MagicType.FlamingSword;
-                    
+                        attackMagic = GameScene.Game.User.MeleeMagic;
 
                     action.Extra[1] = attackMagic;
                     break;
@@ -647,7 +679,6 @@ namespace Client.Models
                     break;
             }
             ServerTime = CEnvir.Now.AddSeconds(5);
-
         }
 
         public override void Process()

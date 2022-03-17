@@ -310,7 +310,7 @@ namespace Server.Models
                     Attack((MirDirection)action.Data[0], (MagicType)action.Data[1]);
                     return;
                 case ActionType.DelayAttack:
-                    Attack((MapObject)action.Data[0], (List<UserMagic>)action.Data[1], (bool)action.Data[2], (int)action.Data[3]);
+                    Attack((MapObject)action.Data[0], (List<UserMagic>)action.Data[1], (bool)action.Data[2], (int)action.Data[3], (bool)action.Data[4], (bool)action.Data[5]);
                     return;
                 case ActionType.DelayMagic:
                     CompleteMagic(action.Data);
@@ -5900,24 +5900,8 @@ namespace Server.Models
                             {
                                 Poison pois = PoisonList[i];
 
-                                switch (pois.Type)
-                                {
-                                    case PoisonType.Green:
-                                    case PoisonType.Red:
-                                    case PoisonType.Slow:
-                                    case PoisonType.Paralysis:
-                                    case PoisonType.HellFire:
-                                    case PoisonType.Silenced:
-                                        work = true;
-                                        PoisonList.Remove(pois);
-                                        break;
-                                    case PoisonType.Abyss:
-                                        work = true;
-                                        PoisonList.Remove(pois);
-                                        break;
-                                    default:
-                                        continue;
-                                }
+                                work = true;
+                                PoisonList.Remove(pois);
                             }
 
                             if (!work)
@@ -9642,7 +9626,7 @@ namespace Server.Models
             }
             else if(targetItem.Info.Effect == ItemEffect.SkillEnhancement)
             {
-                if (magic.Level >= 7) return;
+                if (magic.Level < 7) return;
                 if (!Globals.MagicEnhancement.ContainsKey(magic.Info.Magic)) return;
 
                 MagicInfo info = SEnvir.MagicInfoList.Binding.FirstOrDefault(x => x.Magic == Globals.MagicEnhancement[magic.Info.Magic]);
@@ -9667,7 +9651,7 @@ namespace Server.Models
             }
             else if(targetItem.Info.Effect == ItemEffect.SkillAwakening)
             {
-                if (magic.Level >= 8) return;
+                if (magic.Level < 8) return;
                 if (!Globals.MagicAwakening.ContainsKey(magic.Info.Magic)) return;
 
                 MagicInfo info = SEnvir.MagicInfoList.Binding.FirstOrDefault(x => x.Magic == Globals.MagicAwakening[magic.Info.Magic]);
@@ -10818,15 +10802,15 @@ namespace Server.Models
 
             if (Magics.TryGetValue(MagicType.Slaying, out magic) && Level >= magic.Info.NeedLevel1)
             {
-                if (CanPowerAttack && attackMagic == MagicType.Slaying)
+                if (CanPowerAttack && (attackMagic == MagicType.Slaying || attackMagic == MagicType.AwakenedSlaying))
                 {
                     magics.Add(magic);
-                    validMagic = MagicType.Slaying;
-                    Enqueue(new S.MagicToggle { Magic = MagicType.Slaying, CanUse = CanPowerAttack = false });
+                    validMagic = attackMagic;
+                    Enqueue(new S.MagicToggle { Magic = attackMagic, CanUse = CanPowerAttack = false });
                 }
 
                 if (!CanPowerAttack && SEnvir.Random.Next(5) == 0)
-                    Enqueue(new S.MagicToggle { Magic = MagicType.Slaying, CanUse = CanPowerAttack = true });
+                    Enqueue(new S.MagicToggle { Magic = attackMagic, CanUse = CanPowerAttack = true });
             }
 
             if ((attackMagic == MagicType.Thrusting || attackMagic == MagicType.EnhancedThrusting || attackMagic == MagicType.AwakenedThrusting) && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
@@ -10848,48 +10832,48 @@ namespace Server.Models
 
                 if (cost <= CurrentMP)
                 {
-                    validMagic = MagicType.HalfMoon;
+                    validMagic = attackMagic;
                     magics.Add(magic);
                     ChangeMP(-cost);
                 }
             }
 
-            if (attackMagic == MagicType.DestructiveSurge && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
+            if ((attackMagic == MagicType.DestructiveSurge || attackMagic == MagicType.AwakenedDestructiveSurge) && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
             {
                 int cost = magic.Cost;
 
                 if (cost <= CurrentMP)
                 {
                     DestructiveSurgeLifeSteal = 0;
-                    validMagic = MagicType.DestructiveSurge;
+                    validMagic = attackMagic;
                     magics.Add(magic);
                     ChangeMP(-cost);
                 }
             }
 
-            if (CanFlamingSword && attackMagic == MagicType.FlamingSword && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
+            if (CanFlamingSword && (attackMagic == MagicType.FlamingSword || attackMagic == MagicType.EnhancedFlamingSword || attackMagic == MagicType.AwakenedFlamingSword) && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
             {
-                validMagic = MagicType.FlamingSword;
+                validMagic = attackMagic;
                 magics.Add(magic);
                 CanFlamingSword = false;
-                Enqueue(new S.MagicToggle { Magic = MagicType.FlamingSword, CanUse = false });
+                Enqueue(new S.MagicToggle { Magic = attackMagic, CanUse = false });
             }
 
 
-            if (CanDragonRise && attackMagic == MagicType.DragonRise && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
+            if (CanDragonRise && (attackMagic == MagicType.DragonRise || attackMagic == MagicType.EnhancedDragonRise || attackMagic == MagicType.AwakenedDragonRise) && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
             {
-                validMagic = MagicType.DragonRise;
+                validMagic = attackMagic;
                 magics.Add(magic);
                 CanDragonRise = false;
-                Enqueue(new S.MagicToggle { Magic = MagicType.DragonRise, CanUse = false });
+                Enqueue(new S.MagicToggle { Magic = attackMagic, CanUse = false });
             }
 
-            if (CanBladeStorm && attackMagic == MagicType.BladeStorm && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
+            if (CanBladeStorm && (attackMagic == MagicType.BladeStorm || attackMagic == MagicType.EnhancedBladeStorm || attackMagic == MagicType.AwakenedBladeStorm) && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
             {
-                validMagic = MagicType.BladeStorm;
+                validMagic = attackMagic;
                 magics.Add(magic);
                 CanBladeStorm = false;
-                Enqueue(new S.MagicToggle { Magic = MagicType.BladeStorm, CanUse = false });
+                Enqueue(new S.MagicToggle { Magic = attackMagic, CanUse = false });
             }
 
             #endregion
@@ -11038,7 +11022,7 @@ namespace Server.Models
                 }
             }
 
-            if (AttackLocation(Functions.Move(CurrentLocation, Direction), magics, true))
+            if (AttackLocation(Functions.Move(CurrentLocation, Direction), magics, true, SEnvir.Random.Next(100)< Stats[Stat.IgnoreArmour]))
             {
                 switch (attackMagic)
                 {
@@ -11187,16 +11171,16 @@ namespace Server.Models
                     int range = 1;
 
                     UserMagic thrusting;
-                    if(Magics.TryGetValue(MagicType.EnhancedThrusting, out thrusting) && Level >= thrusting.Info.NeedLevel1)
-                    {
-                        range = 2;
-                    }
-                    else if(Magics.TryGetValue(MagicType.AwakenedThrusting, out thrusting) && Level >= thrusting.Info.NeedLevel1)
+                    if (Magics.TryGetValue(MagicType.AwakenedThrusting, out thrusting) && Level >= thrusting.Info.NeedLevel1)
                     {
                         range = 3;
                     }
+                    else if (Magics.TryGetValue(MagicType.EnhancedThrusting, out thrusting) && Level >= thrusting.Info.NeedLevel1)
+                    {
+                        range = 2;
+                    }
 
-                    if(range == 1)
+                    if (range == 1)
                     {
                         for (int i = 1; i < 8; i++)
                             AttackLocation(Functions.Move(CurrentLocation, Functions.ShiftDirection(Direction, i)), magics, false);
@@ -11218,12 +11202,48 @@ namespace Server.Models
                             }
                         }
                     }
+                    break;
+                case MagicType.AwakenedDestructiveSurge:
+                    range = 1;
+                    if(Magics.TryGetValue(MagicType.AwakenedThrusting, out thrusting) && Level >= thrusting.Info.NeedLevel1)
+                    {
+                        range = 3; 
+                    }
+                    else if(Magics.TryGetValue(MagicType.EnhancedThrusting, out thrusting) && Level >= thrusting.Info.NeedLevel1)
+                    {
+                        range = 2;
+                    }
 
+                    if(range == 1)
+                    {
+                        for (int i = 1; i < 8; i++)
+                            AttackLocation(Functions.Move(CurrentLocation, Functions.ShiftDirection(Direction, i)), magics, false, true, true);
+                    }
+                    else
+                    {
+                        int squareSide = 1 + range * 2;
+                        Point StartingPoint = Functions.Move(CurrentLocation, MirDirection.UpLeft, range);
+                        Point RowMovingPoint = StartingPoint;
+                        Point FrontPoint = Functions.Move(CurrentLocation, Direction);
+                        for (int Column = 0; Column < squareSide; Column++)
+                        {
+                            Point ColumnMovingPoint = Functions.Move(StartingPoint, MirDirection.Down, Column);
+                            for (int Row = 0; Row < squareSide; Row++)
+                            {
+                                RowMovingPoint = Functions.Move(ColumnMovingPoint, MirDirection.Right, Row);
+                                if (CurrentLocation == RowMovingPoint || FrontPoint == RowMovingPoint) continue;
+                                AttackLocation(RowMovingPoint, magics, false, true, true);
+                            }
+                        }
+                    }
                     break;
                 case MagicType.EnhancedDragonRise:
-                case MagicType.AwakenedDragonRise:
                     for (int i = 1; i < 8; i++)
                         AttackLocation(Functions.Move(CurrentLocation, Functions.ShiftDirection(Direction, i)), magics, false);
+                    break;
+                case MagicType.AwakenedDragonRise:
+                    for (int i = 1; i < 8; i++)
+                        AttackLocation(Functions.Move(CurrentLocation, Functions.ShiftDirection(Direction, i)), magics, false, true, true);
                     break;
                 case MagicType.FlameSplash:
                     int count = 0;
@@ -13208,6 +13228,7 @@ namespace Server.Models
                     Enqueue(new S.MagicToggle { Magic = p.Magic, CanUse = p.CanUse });
                     break;
                 case MagicType.DestructiveSurge:
+                case MagicType.AwakenedDestructiveSurge:
                     Character.CanDestructiveSurge = p.CanUse;
                     Enqueue(new S.MagicToggle { Magic = p.Magic, CanUse = p.CanUse });
                     break;
@@ -13228,6 +13249,8 @@ namespace Server.Models
                     DemonicRecoveryEnd(magic);
                     break;
                 case MagicType.FlamingSword:
+                case MagicType.EnhancedFlamingSword:
+                case MagicType.AwakenedFlamingSword:
                     if (magic.Cost > CurrentMP || SEnvir.Now < magic.Cooldown || Dead || (Poison & PoisonType.Paralysis) == PoisonType.Paralysis || (Poison & PoisonType.Silenced) == PoisonType.Silenced) return;
 
                     ChangeMP(-magic.Cost);
@@ -13262,6 +13285,8 @@ namespace Server.Models
 
                     break;
                 case MagicType.DragonRise:
+                case MagicType.EnhancedDragonRise:
+                case MagicType.AwakenedDragonRise:
                     if (magic.Cost > CurrentMP || SEnvir.Now < magic.Cooldown || Dead || (Poison & PoisonType.Paralysis) == PoisonType.Paralysis || (Poison & PoisonType.Silenced) == PoisonType.Silenced) return;
 
                     ChangeMP(-magic.Cost);
@@ -13295,6 +13320,8 @@ namespace Server.Models
                     }
                     break;
                 case MagicType.BladeStorm:
+                case MagicType.EnhancedBladeStorm:
+                case MagicType.AwakenedBladeStorm:
                     if (magic.Cost > CurrentMP || SEnvir.Now < magic.Cooldown || Dead || (Poison & PoisonType.Paralysis) == PoisonType.Paralysis || (Poison & PoisonType.Silenced) == PoisonType.Silenced) return;
 
                     ChangeMP(-magic.Cost);
@@ -13358,8 +13385,6 @@ namespace Server.Models
                 return;
             }
 
-
-
             CombatTime = SEnvir.Now;
 
             if (Stats[Stat.Comfort] < 15)
@@ -13402,7 +13427,6 @@ namespace Server.Models
                         GainItem(item);
                     }
 
-
                     bool hasRubble = false;
 
                     foreach (MapObject ob in CurrentCell.Objects)
@@ -13436,13 +13460,9 @@ namespace Server.Models
 
                         PauseBuffs();
                     }
-
-
-
                     result = true;
                 }
             }
-
 
             BuffRemove(BuffType.Transparency);
             BuffRemove(BuffType.Cloak);
@@ -13451,7 +13471,7 @@ namespace Server.Models
         #endregion
 
         #region Combat
-        public bool AttackLocation(Point location, List<UserMagic> magics, bool primary)
+        public bool AttackLocation(Point location, List<UserMagic> magics, bool primary, bool ignoreArmour = false, bool ignoreMagicShield = false)
         {
             Cell cell = CurrentMap.GetCell(location);
 
@@ -13474,7 +13494,9 @@ namespace Server.Models
                     ob,
                     magics,
                     primary,
-                    0));
+                    0,
+                    ignoreArmour,
+                    ignoreMagicShield));
 
 
                 result = true;
@@ -13482,7 +13504,7 @@ namespace Server.Models
             return result;
         }
 
-        public void Attack(MapObject ob, List<UserMagic> magics, bool primary, int extra)
+        public void Attack(MapObject ob, List<UserMagic> magics, bool primary, int extra, bool ignoreArmour = false, bool ignoreMagicShield = false)
         {
             if (ob?.Node == null || ob.Dead) return;
 
@@ -13493,9 +13515,10 @@ namespace Server.Models
             int power = GetDC();
             int karmaDamage = 0;
             bool ignoreAccuracy = false, hasFlameSplash = false, hasLotus = false, hasDestructiveSurge = false;
-            bool hasBladeStorm = false, hasDanceOfSallows = false;
+            bool hasBladeStorm = false, hasAwakenedBladeStorm = false;
+            bool hasDanceOfSallows = false;
             bool hasMassacre = false;
-            bool hasSwiftBlade = false, hasSeismicSlam = false;
+            bool hasSwiftBlade = false, hasSeismicSlam = false, hasFlamingSwordBurn = false, hasFlamingSwordStrongBurn = false;
 
             UserMagic magic;
             foreach (UserMagic mag in magics)
@@ -13521,10 +13544,9 @@ namespace Server.Models
                         hasDanceOfSallows = true;
                         break;
                     case MagicType.DestructiveSurge:
+                    case MagicType.AwakenedDestructiveSurge:
                         hasDestructiveSurge = !primary;
                         break;
-
-
                 }
             }
 
@@ -13547,24 +13569,41 @@ namespace Server.Models
                 switch (magic.Info.Magic)
                 {
                     case MagicType.Slaying:
+                    case MagicType.AwakenedSlaying:
                     case MagicType.CalamityOfFullMoon: // Lotus only
                         power += magic.GetPower();
                         break;
                     case MagicType.FlamingSword:
                         power = power * magic.GetPower() / 100;
                         break;
+                    case MagicType.EnhancedFlamingSword:
+                        power = power * magic.GetPower() / 100;
+                        hasFlamingSwordBurn = true;
+                        break;
+                    case MagicType.AwakenedFlamingSword:
+                        power = power * magic.GetPower() / 100;
+                        hasFlamingSwordStrongBurn = true;
+                        break;
                     case MagicType.DragonRise:
+                    case MagicType.EnhancedDragonRise:
+                    case MagicType.AwakenedDragonRise:
                         power = power * magic.GetPower() / 100;
                         break;
                     case MagicType.BladeStorm:
+                    case MagicType.EnhancedBladeStorm:
                         power = power * magic.GetPower() / 100;
                         hasBladeStorm = true;
+                        break;
+                    case MagicType.AwakenedBladeStorm:
+                        power = power * magic.GetPower() / 100;
+                        hasAwakenedBladeStorm = true;
                         break;
                     case MagicType.Thrusting:
                     case MagicType.EnhancedThrusting:
                     case MagicType.AwakenedThrusting:
                     case MagicType.HalfMoon:
                     case MagicType.DestructiveSurge:
+                    case MagicType.AwakenedDestructiveSurge:
                         if (!primary)
                             power = power * magic.GetPower() / 100;
                         break;
@@ -13730,7 +13769,7 @@ namespace Server.Models
 
             if (!hasMassacre)
             {
-                if (!hasLotus)
+                if (!hasLotus && !ignoreArmour)
                 {
                     power -= ob.GetAC();
 
@@ -13798,16 +13837,20 @@ namespace Server.Models
             }
 
             int damage = 0;
-            if (hasBladeStorm)
+            if (hasBladeStorm || hasAwakenedBladeStorm)
             {
                 power /= 2;
                 ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(300), ActionType.DelayedAttackDamage, ob, power, element, true, true, ob.Stats[Stat.MagicShield] == 0, true));
+                if(hasAwakenedBladeStorm)
+                {
+                    ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(600), ActionType.DelayedAttackDamage, ob, power, element, true, true, ob.Stats[Stat.MagicShield] == 0, true));
+                }
             }
 
             if (karmaDamage > 0)
                 damage += ob.Attacked(this, karmaDamage, Element.None, false, true, false);
 
-            damage += ob.Attacked(this, power, element, true, false, !hasMassacre);
+            damage += ob.Attacked(this, power, element, true, ignoreMagicShield, !hasMassacre);
 
             if (damage <= 0) return;
 
@@ -13874,6 +13917,30 @@ namespace Server.Models
 
             if (ob.Level >= 250)
                 psnRate = 2000;
+
+            if(hasFlamingSwordBurn)
+            {
+                ob.ApplyPoison(new Poison
+                {
+                    Owner = this,
+                    Type = PoisonType.Burn,
+                    TickFrequency = TimeSpan.FromSeconds(1),
+                    TickCount = 2,
+                    Value = ob.Stats[Stat.Health] / 100
+                });
+            }
+
+            if(hasFlamingSwordStrongBurn)
+            {
+                ob.ApplyPoison(new Poison
+                {
+                    Owner = this,
+                    Type = PoisonType.Burn,
+                    TickFrequency = TimeSpan.FromSeconds(1),
+                    TickCount = 2,
+                    Value = 5 * (ob.Stats[Stat.Health] / 100)
+                });
+            }
 
             if (SEnvir.Random.Next(psnRate) < Stats[Stat.ParalysisChance] || hasSeismicSlam)
             {
@@ -14796,7 +14863,7 @@ namespace Server.Models
                         for (int i = cell.Objects.Count - 1; i >= 0; i--)
                         {
                             if (!CanAttackTarget(cell.Objects[i])) continue;
-                            Attack(cell.Objects[i], magics, true, 0);
+                            Attack(cell.Objects[i], magics, true, 0, false, false);
                         }
 
                         break;
@@ -16174,21 +16241,15 @@ namespace Server.Models
                 return;
             }
 
-            if (SEnvir.Random.Next(9) > 2 + magic.Level * 2) return;
-            /*
-            if (CurrentMap.Info.SkillDelay > 0)
+            if (!CurrentMap.Info.AllowRT)
             {
-                TimeSpan delay = TimeSpan.FromMilliseconds(CurrentMap.Info.SkillDelay * 3);
-
-                Connection.ReceiveChat(string.Format(Connection.Language.SkillEffort, magic.Info.Name, Functions.ToString(delay, true)), MessageType.System);
+                Connection.ReceiveChat(Connection.Language.CannotRandomTeleport, MessageType.System);
 
                 foreach (SConnection con in Connection.Observers)
-                    con.ReceiveChat(string.Format(con.Language.SkillEffort, magic.Info.Name, Functions.ToString(delay, true)), MessageType.System);
-
-                UseItemTime = (UseItemTime < SEnvir.Now ? SEnvir.Now : UseItemTime) + delay;
-                Enqueue(new S.ItemUseDelay { Delay = SEnvir.Now - UseItemTime });
-            }*/
-
+                    con.ReceiveChat(con.Language.CannotRandomTeleport, MessageType.System);
+                return;
+            }
+            if (SEnvir.Random.Next(9) > 2 + magic.Level * 2) return;
             Teleport(CurrentMap, CurrentMap.GetRandomLocation());
             //LevelMagic(magic);
 
@@ -16829,7 +16890,7 @@ namespace Server.Models
 
                 if (ob.Pushed(direction, magic.GetPower()) <= 0) continue;
 
-                Attack(ob, new List<UserMagic> { magic }, true, 0);
+                Attack(ob, new List<UserMagic> { magic }, true, 0, false, false);
                 //LevelMagic(magic);
                 break;
             }

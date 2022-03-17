@@ -321,8 +321,8 @@ namespace Library
         public static List<string> UpgradeSpecialItems = new List<string>
         {
             "null",
-            "Iron Ore",
-            "Black Iron Ore",
+            "Iron",
+            "Black Iron",
             "Forged Steel"
         };
 
@@ -349,6 +349,7 @@ namespace Library
         public static Dictionary<MagicType, MagicType> MagicAwakening = new Dictionary<MagicType, MagicType>
         {
             {MagicType.Slaying, MagicType.AwakenedSlaying },
+            {MagicType.EnhancedThrusting, MagicType.AwakenedThrusting },
             {MagicType.DestructiveSurge, MagicType.AwakenedDestructiveSurge },
             {MagicType.EnhancedFlamingSword, MagicType.AwakenedFlamingSword },
             {MagicType.EnhancedDragonRise, MagicType.AwakenedDragonRise },

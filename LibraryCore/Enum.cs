@@ -1021,6 +1021,7 @@ namespace Library
         Abyss = 128,
         Infection = 256,
         StrongGreen = 512,
+        Burn = 1024,
     }
 
     public enum SpellEffect
@@ -1028,7 +1029,6 @@ namespace Library
         None,
 
         SafeZone,
-
 
         FireWall,
         MonsterFireWall,
@@ -1053,7 +1053,6 @@ namespace Library
         LowestPrice,
     }
 
-
     public enum MarketPlaceStoreSort
     {
         Alphabetical,
@@ -1063,7 +1062,6 @@ namespace Library
         LowestPrice,
         Favourite
     }
-
 
     public enum DungeonFinderSort
     {
@@ -1307,7 +1305,6 @@ namespace Library
 
         MirrorImage = 7,
 
-
         Larva = 100,
         SuperLarva = 101,
 
@@ -1413,7 +1410,6 @@ namespace Library
         Success
     }
     
-
     public enum ActivationResult : byte
     {
         Disabled,

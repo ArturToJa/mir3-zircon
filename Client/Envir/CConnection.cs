@@ -1427,12 +1427,15 @@ namespace Client.Envir
             switch (p.Magic)
             {
                 case MagicType.Slaying:
+                case MagicType.AwakenedSlaying:
                     GameScene.Game.User.CanPowerAttack = p.CanUse;
                     break;
                 case MagicType.Thrusting:
                 case MagicType.EnhancedThrusting:
-                case MagicType.AwakenedThrusting:
                     GameScene.Game.User.CanThrusting = p.CanUse;
+                    break;
+                case MagicType.AwakenedThrusting:
+                    GameScene.Game.User.CanAThrusting = p.CanUse;
                     break;
                 case MagicType.HalfMoon:
                     GameScene.Game.User.CanHalfMoon = p.CanUse;
@@ -1445,6 +1448,7 @@ namespace Client.Envir
                 case MagicType.EnhancedFlamingSword:
                 case MagicType.AwakenedFlamingSword:
                     GameScene.Game.User.CanFlamingSword = p.CanUse;
+                    GameScene.Game.User.MeleeMagic = p.CanUse ? p.Magic : MagicType.None;
                     if (p.CanUse)
                         GameScene.Game.ReceiveChat("Energy builds up within your weapon, Flaming Sword is ready.", MessageType.Hint);
                     break;
@@ -1452,6 +1456,7 @@ namespace Client.Envir
                 case MagicType.EnhancedDragonRise:
                 case MagicType.AwakenedDragonRise:
                     GameScene.Game.User.CanDragonRise = p.CanUse;
+                    GameScene.Game.User.MeleeMagic = p.CanUse ? p.Magic : MagicType.None;
                     if (p.CanUse)
                         GameScene.Game.ReceiveChat("Energy builds up within your weapon, Dragon Rise is ready.", MessageType.Hint);
                     break;
@@ -1459,6 +1464,7 @@ namespace Client.Envir
                 case MagicType.EnhancedBladeStorm:
                 case MagicType.AwakenedBladeStorm:
                     GameScene.Game.User.CanBladeStorm = p.CanUse;
+                    GameScene.Game.User.MeleeMagic = p.CanUse ? p.Magic : MagicType.None;
                     if (p.CanUse)
                         GameScene.Game.ReceiveChat("Energy builds up within your weapon, Blade Storm is ready.", MessageType.Hint);
                     break;

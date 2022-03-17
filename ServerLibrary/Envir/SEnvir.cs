@@ -547,6 +547,22 @@ namespace Server.Envir
                             item.Delete();
                         }
                     }
+
+                    if(AccountInfoList[i].Characters[j].Class == MirClass.Warrior)
+                    {
+                        for (int k = AccountInfoList[i].Characters[j].Magics.Count - 1; k >= 0; k--)
+                        {
+                            UserMagic item = AccountInfoList[i].Characters[j].Magics[k];
+                            if (item.Info != null)
+                            {
+                                if(Globals.MagicAwakening.ContainsKey(item.Info.Magic) || Globals.MagicAwakening.ContainsValue(item.Info.Magic))
+                                {
+                                    item.Character = null;
+                                    item.Delete();
+                                }
+                            }
+                        }
+                    }
                 }
 
                 for (int j = AccountInfoList[i].Companions.Count - 1; j >= 0; j--)

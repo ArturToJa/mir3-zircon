@@ -1122,9 +1122,9 @@ namespace Client.Scenes.Views
 
             return false;
         }
-        public bool CanEnergyBlast(MirDirection direction)
+        public bool CanEnergyBlast(MirDirection direction, int range = 2)
         {
-            return HasTarget(Functions.Move(MapObject.User.CurrentLocation, direction, 2));
+            return HasTarget(Functions.Move(MapObject.User.CurrentLocation, direction, range));
         }
 
         public bool CanHalfMoon(MirDirection direction)

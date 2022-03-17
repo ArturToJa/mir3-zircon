@@ -337,10 +337,10 @@ namespace Client.Models
 
             DrawColour = DefaultColour;
 
-            if ((Poison & PoisonType.Red) == PoisonType.Red)
+            if ((Poison & PoisonType.Red) == PoisonType.Red || (Poison & PoisonType.Burn) == PoisonType.Burn)
                 DrawColour = Color.IndianRed;
 
-            if ((Poison & PoisonType.Green) == PoisonType.Green)
+            if ((Poison & PoisonType.Green) == PoisonType.Green || (Poison & PoisonType.StrongGreen) == PoisonType.StrongGreen)
                 DrawColour = Color.SeaGreen;
 
             if ((Poison & PoisonType.Slow) == PoisonType.Slow)
@@ -4250,14 +4250,16 @@ namespace Client.Models
                 count++;
             }
 
-            if ((Poison & PoisonType.Red) == PoisonType.Red)
+            if ((Poison & PoisonType.Red) == PoisonType.Red || (Poison & PoisonType.Burn) == PoisonType.Burn)
             {
                 DXManager.Sprite.Draw(DXManager.PoisonTexture, Vector3.Zero, new Vector3(DrawX + count * 5, DrawY - 50, 0), Color.IndianRed);
                 count++;
             }
 
-            if ((Poison & PoisonType.Green) == PoisonType.Green)
+            if ((Poison & PoisonType.Green) == PoisonType.Green || (Poison & PoisonType.StrongGreen) == PoisonType.StrongGreen)
+            {
                 DXManager.Sprite.Draw(DXManager.PoisonTexture, Vector3.Zero, new Vector3(DrawX + count * 5, DrawY - 50, 0), Color.SeaGreen);
+            }
         }
         public virtual void DrawHealth()
         {

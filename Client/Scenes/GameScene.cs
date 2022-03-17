@@ -2614,9 +2614,15 @@ namespace Client.Scenes
                 case MagicType.WillowDance:
                     return;
                 case MagicType.Thrusting:
+                case MagicType.EnhancedThrusting:
                     if (CEnvir.Now < ToggleTime) return;
                     ToggleTime = CEnvir.Now.AddSeconds(1);
                     CEnvir.Enqueue(new C.MagicToggle { Magic = magic.Info.Magic, CanUse = !User.CanThrusting });
+                    return;
+                case MagicType.AwakenedThrusting:
+                    if (CEnvir.Now < ToggleTime) return;
+                    ToggleTime = CEnvir.Now.AddSeconds(1);
+                    CEnvir.Enqueue(new C.MagicToggle { Magic = magic.Info.Magic, CanUse = !User.CanAThrusting });
                     return;
                 case MagicType.HalfMoon:
                     if (CEnvir.Now < ToggleTime) return;
@@ -2624,13 +2630,20 @@ namespace Client.Scenes
                     CEnvir.Enqueue(new C.MagicToggle { Magic = magic.Info.Magic, CanUse = !User.CanHalfMoon });
                     return;
                 case MagicType.DestructiveSurge:
+                case MagicType.AwakenedDestructiveSurge:
                     if (CEnvir.Now < ToggleTime) return;
                     ToggleTime = CEnvir.Now.AddSeconds(1);
                     CEnvir.Enqueue(new C.MagicToggle { Magic = magic.Info.Magic, CanUse = !User.CanDestructiveBlow });
                     return;
                 case MagicType.FlamingSword:
+                case MagicType.EnhancedFlamingSword:
+                case MagicType.AwakenedFlamingSword:
                 case MagicType.DragonRise:
+                case MagicType.EnhancedDragonRise:
+                case MagicType.AwakenedDragonRise:
                 case MagicType.BladeStorm:
+                case MagicType.EnhancedBladeStorm:
+                case MagicType.AwakenedBladeStorm:
                 case MagicType.DemonicRecovery:
                     if (CEnvir.Now < magic.NextCast || magic.Cost > User.CurrentMP) return;
                     magic.NextCast = CEnvir.Now.AddSeconds(0.5D); //Act as an anti spam
