@@ -9626,7 +9626,7 @@ namespace Server.Models
             }
             else if(targetItem.Info.Effect == ItemEffect.SkillEnhancement)
             {
-                if (magic.Level < 7) return;
+                if (magic.Level < 6) return;
                 if (!Globals.MagicEnhancement.ContainsKey(magic.Info.Magic)) return;
 
                 MagicInfo info = SEnvir.MagicInfoList.Binding.FirstOrDefault(x => x.Magic == Globals.MagicEnhancement[magic.Info.Magic]);
