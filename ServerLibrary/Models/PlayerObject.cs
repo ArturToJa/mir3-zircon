@@ -16173,7 +16173,10 @@ namespace Server.Models
                 [Stat.MaxDC] = -100 * magic.Level,
                 [Stat.MinAC] = 150 * magic.Level,
                 [Stat.MaxAC] = 150 * magic.Level,
-                [Stat.ACPercent] = 4 + magic.Level
+                [Stat.ACPercent] = 4 + magic.Level,
+                [Stat.MinMR] = 150 * magic.Level,
+                [Stat.MaxMR] = 150 * magic.Level,
+                [Stat.MRPercent] = 4 + magic.Level
 
             };
 
@@ -16194,7 +16197,10 @@ namespace Server.Models
             {
                 [Stat.MinAC] = 150 * magic.Level,
                 [Stat.MaxAC] = 150 * magic.Level,
-                [Stat.ACPercent] = 4 + magic.Level
+                [Stat.ACPercent] = 4 + magic.Level,
+                [Stat.MinMR] = 150 * magic.Level,
+                [Stat.MaxMR] = 150 * magic.Level,
+                [Stat.MRPercent] = 4 + magic.Level
             };
 
             BuffAdd(BuffType.Defiance, TimeSpan.FromSeconds(60 + magic.Level * 30), buffStats, false, false, TimeSpan.Zero);
@@ -16215,6 +16221,9 @@ namespace Server.Models
                 [Stat.MinAC] = 150 * magic.Level,
                 [Stat.MaxAC] = 150 * magic.Level,
                 [Stat.ACPercent] = 4 + magic.Level,
+                [Stat.MinMR] = 150 * magic.Level,
+                [Stat.MaxMR] = 150 * magic.Level,
+                [Stat.MRPercent] = 4 + magic.Level,
                 [Stat.Endurance] = 100
             };
 
