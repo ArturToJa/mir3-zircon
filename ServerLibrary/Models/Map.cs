@@ -193,10 +193,8 @@ namespace Server.Models
                     }
                 }
             }
-
             return cells;
         }
-
 
         public Point GetRandomLocation()
         {
@@ -217,7 +215,6 @@ namespace Server.Models
                 if (GetCell(test) != null)
                     return test;
             }
-
             return Point.Empty;
         }
 
@@ -230,7 +227,6 @@ namespace Server.Models
                 if (GetCell(test) != null)
                     return test;
             }
-
             return Point.Empty;
         }
 
@@ -281,7 +277,6 @@ namespace Server.Models
                         LastCheck = SEnvir.Now;
                         return;
                     }
-
                     LastCheck = SEnvir.Now;
                 }
                 else
@@ -290,7 +285,6 @@ namespace Server.Models
                         NextSpawn = SEnvir.Now.AddSeconds(Info.Delay * 60);
                     else
                         NextSpawn = SEnvir.Now.AddSeconds(SEnvir.Random.Next(Info.Delay * 60) + Info.Delay * 30);
-
                 }
             }
 
@@ -311,7 +305,6 @@ namespace Server.Models
                         CurrentMap.ChristmasEventTime = SEnvir.Now.AddMinutes(20);
                     }
                 }
-
 
                 mob.SpawnInfo = this;
 
@@ -353,12 +346,10 @@ namespace Server.Models
         public List<MovementInfo> Movements;
         public bool HasMovement;
 
-
         public Cell(Point location)
         {
             Location = location;
         }
-
 
         public void AddObject(MapObject ob)
         {
@@ -394,10 +385,8 @@ namespace Server.Models
 
                 if (ob.Buffs.Any(x => x.Type == BuffType.Cloak || x.Type == BuffType.Transparency) && ob.Level > checker.Level && !ob.InGroup(checker)) continue;
 
-
                 return true;
             }
-
             return false;
         }
 
@@ -411,7 +400,6 @@ namespace Server.Models
                 MovementInfo movement = Movements[SEnvir.Random.Next(Movements.Count)];
 
                 Map map = SEnvir.GetMap(movement.DestinationRegion.Map, Map.Instance, Map.InstanceIndex);
-
 
                 Cell cell = map.GetCell(movement.DestinationRegion.PointList[SEnvir.Random.Next(movement.DestinationRegion.PointList.Count)]);
 
@@ -491,7 +479,6 @@ namespace Server.Models
 
                             break;
                         }
-
                     }
 
                     if (movement.NeedItem != null)
@@ -508,10 +495,8 @@ namespace Server.Models
                         player.TakeItem(movement.NeedItem, 1);
                     }
                 }
-
                 return cell.GetMovement(ob);
             }
-
             return this;
         }
     }

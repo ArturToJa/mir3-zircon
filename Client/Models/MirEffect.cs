@@ -122,13 +122,13 @@ namespace Client.Models
             }
         }
         
-        public MirEffect(int startIndex, int frameCount, TimeSpan frameDelay, LibraryFile file, int startLight, int endLight, Color lightColour)
+        public MirEffect(int startIndex, int frameCount, TimeSpan frameDelay, LibraryFile file, int startLight, int endLight, Color lightColour, int startDelay = 0)
         {
             StartIndex = startIndex;
             FrameCount = frameCount;
             Skip = 10;
 
-            StartTime = CEnvir.Now;
+            StartTime = CEnvir.Now.AddMilliseconds(startDelay);
             StartLight = startLight;
             EndLight = endLight;
 

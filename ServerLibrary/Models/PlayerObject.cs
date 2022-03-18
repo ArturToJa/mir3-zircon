@@ -8551,7 +8551,6 @@ namespace Server.Models
 
             Enqueue(new S.BuffRemove { Index = info.Index });
 
-
             switch (info.Type)
             {
                 case BuffType.StrengthOfFaith:
@@ -8710,7 +8709,6 @@ namespace Server.Models
                 return;
             }
 
-
             if (!player.Character.Account.AllowTrade)
             {
                 Connection.ReceiveChat(string.Format(Connection.Language.TradeTargetNotAllowed, player.Character.CharacterName), MessageType.System);
@@ -8732,7 +8730,6 @@ namespace Server.Models
                     con.ReceiveChat(con.Language.TradeTargetDead, MessageType.System);
                 return;
             }
-
 
             player.TradePartnerRequest = this;
             player.Enqueue(new S.TradeRequest { Name = Name, ObserverPacket = false });
@@ -8908,7 +8905,6 @@ namespace Server.Models
                 return;
             }
 
-
             gold = TradePartner.Gold;
             gold += TradeGold - TradePartner.TradeGold;
 
@@ -8999,7 +8995,6 @@ namespace Server.Models
                     if ((check.Flags & UserItemFlags.Worthless) != (item.Flags & UserItemFlags.Worthless)) continue;
                     if ((check.Flags & UserItemFlags.NonRefinable) != (item.Flags & UserItemFlags.NonRefinable)) continue;
 
-
                     check.Count += pair.Value.Count;
                     handled = true;
                     break;
@@ -9059,7 +9054,6 @@ namespace Server.Models
                             TradeClose();
                             return;
                         }
-
 
                         fromArray = TradePartner.Companion.Inventory;
                         break;
@@ -9142,7 +9136,6 @@ namespace Server.Models
                     continue;
                 }
 
-
                 UserItem[] fromArray;
 
                 switch (pair.Value.GridType)
@@ -9184,7 +9177,6 @@ namespace Server.Models
                     continue;
                 }
 
-
                 UserItem[] fromArray;
 
                 switch (pair.Value.GridType)
@@ -9224,7 +9216,6 @@ namespace Server.Models
             TradePartner.Gold += TradeGold - TradePartner.TradeGold;
             TradePartner.GoldChanged();
 
-
             Connection.ReceiveChat(Connection.Language.TradeComplete, MessageType.System);
             TradePartner.Connection.ReceiveChat(TradePartner.Connection.Language.TradeComplete, MessageType.System);
 
@@ -9260,7 +9251,6 @@ namespace Server.Models
         {
             if (Dead || NPC == null || NPCPage == null) return;
 
-
             foreach (NPCButton button in NPCPage.Buttons)
             {
                 if (button.ButtonID != ButtonID || button.DestinationPage == null) continue;
@@ -9268,8 +9258,6 @@ namespace Server.Models
                 NPC.NPCCall(this, button.DestinationPage);
                 return;
             }
-
-
         }
         public void NPCBuy(C.NPCBuy p)
         {
@@ -9988,7 +9976,6 @@ namespace Server.Models
                         sacrificeItem.Count -= link.Count;
                 }
             }
-
             targetItem.StatsChanged();
             RefreshStats();
         }
@@ -10055,7 +10042,6 @@ namespace Server.Models
             };
             Enqueue(result);
 
-
             int statCount = 0;
 
             bool isTemplate = false;
@@ -10097,7 +10083,6 @@ namespace Server.Models
                         break;
                 }
             }
-
 
             #region Yellow Check
 
@@ -10205,7 +10190,6 @@ namespace Server.Models
 
             if (isTemplate)
             {
-
                 switch (p.Class)
                 {
                     case RequiredClass.Warrior:
@@ -10440,7 +10424,6 @@ namespace Server.Models
 
             Direction = direction;
 
-
             ActionTime = SEnvir.Now + Globals.TurnTime;
 
             Poison poison = PoisonList.FirstOrDefault(x => x.Type == PoisonType.Slow);
@@ -10486,7 +10469,6 @@ namespace Server.Models
             }
 
             Broadcast(new S.ObjectHarvest { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Slow = slow });
-
 
             Point front = Functions.Move(CurrentLocation, Direction, 1);
             int range = Stats[Stat.PickUpRadius];
@@ -10546,8 +10528,6 @@ namespace Server.Models
                                 if (items.Count == 0) items = null;
                             }
 
-
-
                             if (items == null)
                             {
                                 ob.Drops.Remove(Character.Account);
@@ -10596,7 +10576,6 @@ namespace Server.Models
             if (send)
             {
                 Connection.ReceiveChat(Connection.Language.HarvestOwner, MessageType.System);
-
 
                 foreach (SConnection con in Connection.Observers)
                     con.ReceiveChat(con.Language.HarvestOwner, MessageType.System);
@@ -10692,7 +10671,6 @@ namespace Server.Models
                 return;
             }
 
-
             Cell cell = null;
 
             for (int i = 1; i <= distance; i++)
@@ -10720,7 +10698,6 @@ namespace Server.Models
                     RegenTime = SEnvir.Now + RegenDelay;
                 BuffRemove(BuffType.Cloak);
             }
-
 
             Direction = direction;
 
@@ -10789,7 +10766,6 @@ namespace Server.Models
             if (BagWeight > Stats[Stat.BagWeight])
                 AttackTime += TimeSpan.FromMilliseconds(attackDelay);
 
-
             MagicType validMagic = MagicType.None;
             List<UserMagic> magics = new List<UserMagic>();
 
@@ -10823,7 +10799,6 @@ namespace Server.Models
                     magics.Add(magic);
                     ChangeMP(-cost);
                 }
-
             }
 
             if (attackMagic == MagicType.HalfMoon && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
@@ -10858,7 +10833,6 @@ namespace Server.Models
                 CanFlamingSword = false;
                 Enqueue(new S.MagicToggle { Magic = attackMagic, CanUse = false });
             }
-
 
             if (CanDragonRise && (attackMagic == MagicType.DragonRise || attackMagic == MagicType.EnhancedDragonRise || attackMagic == MagicType.AwakenedDragonRise) && Magics.TryGetValue(attackMagic, out magic) && Level >= magic.Info.NeedLevel1)
             {
@@ -10898,7 +10872,6 @@ namespace Server.Models
 
             if (Magics.TryGetValue(MagicType.AdvancedBloodyFlower, out magic) && Level >= magic.Info.NeedLevel1)
                 magics.Add(magic);
-
 
             if (SEnvir.Random.Next(2) == 0 && Magics.TryGetValue(MagicType.CalamityOfFullMoon, out magic) && Level >= magic.Info.NeedLevel1) //LOTUS Phase
                 magics.Add(magic);
@@ -10985,9 +10958,7 @@ namespace Server.Models
                     ChangeMP(-cost);
                 }
             }
-
             #endregion
-
 
             Element element = Functions.GetElement(Stats);
 
@@ -11028,7 +10999,6 @@ namespace Server.Models
                 {
                     case MagicType.FullBloom:
                         Enqueue(new S.MagicToggle { Magic = attackMagic, CanUse = false });
-
 
                         if (Magics.TryGetValue(MagicType.FullBloom, out magic))
                         {
@@ -11142,7 +11112,6 @@ namespace Server.Models
                         }
                         break;
                     default:
-
                         break;
                 }
             }
@@ -11264,8 +11233,6 @@ namespace Server.Models
                         directions.Remove(dir);
                         if (directions.Count == 0) break;
                     }
-
-
                     break;
             }
         }
@@ -11302,16 +11269,28 @@ namespace Server.Models
             {
                 case MagicType.ShoulderDash:
                 case MagicType.Interchange:
+                case MagicType.EnhancedInterchange:
+                case MagicType.AwakenedInterchange:
                 case MagicType.Defiance:
+                case MagicType.EnhancedDefiance:
+                case MagicType.AwakenedDefiance:
                 case MagicType.Beckon:
+                case MagicType.EnhancedBeckon:
+                case MagicType.AwakenedBeckon:
                 case MagicType.Might:
+                case MagicType.EnhancedMight:
+                case MagicType.AwakenedMight:
                 case MagicType.ReflectDamage:
                 case MagicType.Fetter:
                 case MagicType.SwiftBlade:
+                case MagicType.EnhancedSwiftBlade:
+                case MagicType.AwakenedSwiftBlade:
                 case MagicType.Endurance:
                 case MagicType.Assault:
+                case MagicType.AwakenedAssault:
                 case MagicType.SeismicSlam:
-
+                case MagicType.EnhancedSeismicSlam:
+                case MagicType.AwakenedSeismicSlam:
 
                 case MagicType.FireBall:
                 case MagicType.IceBolt:
@@ -11392,6 +11371,8 @@ namespace Server.Models
                 case MagicType.Evasion:
                 case MagicType.RagingWind:
                 case MagicType.MassBeckon:
+                case MagicType.EnhancedMassBeckon:
+                case MagicType.AwakenedMassBeckon:
                 case MagicType.Infection:
                     if (magic.Cost > CurrentMP)
                     {
@@ -11452,9 +11433,6 @@ namespace Server.Models
                 ob = null;
 
             bool cast = true;
-
-
-
             List<uint> targets = new List<uint>();
             List<Point> locations = new List<Point>();
 
@@ -11473,6 +11451,8 @@ namespace Server.Models
                 #region Warrior
 
                 case MagicType.ShoulderDash:
+                case MagicType.Assault:
+                case MagicType.AwakenedAssault:
                     if ((Poison & PoisonType.WraithGrip) == PoisonType.WraithGrip) break;
 
                     Direction = p.Direction;
@@ -11491,7 +11471,11 @@ namespace Server.Models
                     ChangeMP(-magic.Cost);
                     return;
                 case MagicType.Interchange:
+                case MagicType.EnhancedInterchange:
+                case MagicType.AwakenedInterchange:
                 case MagicType.Beckon:
+                case MagicType.EnhancedBeckon:
+                case MagicType.AwakenedBeckon:
                     if (ob == null) break;
 
                     if (!CanAttackTarget(ob))
@@ -11507,7 +11491,11 @@ namespace Server.Models
                         ob));
                     break;
                 case MagicType.Defiance:
+                case MagicType.EnhancedDefiance:
+                case MagicType.AwakenedDefiance:
                 case MagicType.Might:
+                case MagicType.EnhancedMight:
+                case MagicType.AwakenedMight:
                 case MagicType.ReflectDamage:
                 case MagicType.Endurance:
                     ob = null;
@@ -11534,6 +11522,7 @@ namespace Server.Models
                     }
                     break;
                 case MagicType.SwiftBlade:
+                case MagicType.EnhancedSwiftBlade:
                     ob = null;
 
                     if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
@@ -11556,9 +11545,41 @@ namespace Server.Models
                             cell));
                     }
                     break;
-                case MagicType.SeismicSlam:
+                case MagicType.AwakenedSwiftBlade:
                     ob = null;
 
+                    if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
+                    {
+                        cast = false;
+                        break;
+                    }
+
+                    locations.Add(p.Location);
+
+                    cells = CurrentMap.GetCells(p.Location, 0, 3);
+                    List<Cell> extraCells = CurrentMap.GetCells(p.Location, 0, 7);
+                    SwiftBladeLifeSteal = 0;
+
+                    foreach (Cell cell in cells)
+                    {
+                        ActionList.Add(new DelayedAction(
+                            SEnvir.Now.AddMilliseconds(900),
+                            ActionType.DelayMagic,
+                            new List<UserMagic> { magic },
+                            cell));
+                    }
+                    foreach (Cell cell in extraCells)
+                    {
+                        ActionList.Add(new DelayedAction(
+                            SEnvir.Now.AddMilliseconds(1800),
+                            ActionType.DelayMagic,
+                            new List<UserMagic> { magic },
+                            cell));
+                    }
+                    break;
+                case MagicType.SeismicSlam:
+                case MagicType.EnhancedSeismicSlam:
+                    ob = null;
 
                     cells = CurrentMap.GetCells(Functions.Move(CurrentLocation, p.Direction, 3), 0, 3);
                     SwiftBladeLifeSteal = 0;
@@ -11572,7 +11593,24 @@ namespace Server.Models
                             cell));
                     }
                     break;
+                case MagicType.AwakenedSeismicSlam:
+                    ob = null;
+
+                    cells = CurrentMap.GetCells(Functions.Move(CurrentLocation, p.Direction, 4), 0, 4);
+                    SwiftBladeLifeSteal = 0;
+
+                    foreach (Cell cell in cells)
+                    {
+                        ActionList.Add(new DelayedAction(
+                            SEnvir.Now.AddMilliseconds(600),
+                            ActionType.DelayMagic,
+                            new List<UserMagic> { magic },
+                            cell));
+                    }
+                    break;
                 case MagicType.MassBeckon:
+                case MagicType.EnhancedMassBeckon:
+                case MagicType.AwakenedMassBeckon:
                     ob = null;
 
                     ActionList.Add(new DelayedAction(
@@ -13134,7 +13172,11 @@ namespace Server.Models
                 case MagicType.SummonDemonicCreature:
                     break;
                 case MagicType.Defiance:
+                case MagicType.EnhancedDefiance:
+                case MagicType.AwakenedDefiance:
                 case MagicType.Might:
+                case MagicType.EnhancedMight:
+                case MagicType.AwakenedMight:
                 case MagicType.ReflectDamage:
 
                 case MagicType.Repulsion:
@@ -13170,13 +13212,11 @@ namespace Server.Models
                     break;
             }
 
-
             if (cast)
             {
                 Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = magic.Info.Delay });
                 magic.Cooldown = SEnvir.Now.AddMilliseconds(magic.Info.Delay);
             }
-
 
             Direction = ob == null || ob == this ? p.Direction : Functions.DirectionFromPoint(CurrentLocation, ob.CurrentLocation);
 
@@ -13195,7 +13235,6 @@ namespace Server.Models
                 slow = TimeSpan.FromMilliseconds(poison.Value * 100);
                 ActionTime += slow;
             }
-
 
             Broadcast(new S.ObjectMagic
             {
@@ -13518,7 +13557,7 @@ namespace Server.Models
             bool hasBladeStorm = false, hasAwakenedBladeStorm = false;
             bool hasDanceOfSallows = false;
             bool hasMassacre = false;
-            bool hasSwiftBlade = false, hasSeismicSlam = false, hasFlamingSwordBurn = false, hasFlamingSwordStrongBurn = false;
+            bool hasSwiftBlade = false, hasSeismicSlam = false, hasAwakenedSeismicSlam = false, hasFlamingSwordBurn = false, hasFlamingSwordStrongBurn = false;
 
             UserMagic magic;
             foreach (UserMagic mag in magics)
@@ -13533,7 +13572,11 @@ namespace Server.Models
                         hasLotus = true;
                         break;
                     case MagicType.SwiftBlade:
+                    case MagicType.EnhancedSwiftBlade:
+                    case MagicType.AwakenedSwiftBlade:
                     case MagicType.SeismicSlam:
+                    case MagicType.EnhancedSeismicSlam:
+                    case MagicType.AwakenedSeismicSlam:
                         ignoreAccuracy = true;
                         hasSwiftBlade = true;
                         break;
@@ -13608,18 +13651,30 @@ namespace Server.Models
                             power = power * magic.GetPower() / 100;
                         break;
                     case MagicType.SwiftBlade:
+                    case MagicType.EnhancedSwiftBlade:
+                    case MagicType.AwakenedSwiftBlade:
+                    case MagicType.SeismicSlam:
                         power = power * magic.GetPower() / 100;
 
                         if (ob.Race == ObjectType.Player)
                             power /= 2;
                         break;
-                    case MagicType.SeismicSlam:
+                    case MagicType.EnhancedSeismicSlam:
                         power = power * magic.GetPower() / 100;
 
                         if (ob.Race == ObjectType.Player)
                             power /= 2;
 
                         hasSeismicSlam = true;
+
+                        break;
+                    case MagicType.AwakenedSeismicSlam:
+                        power = power * magic.GetPower() / 100;
+
+                        if (ob.Race == ObjectType.Player)
+                            power /= 2;
+
+                        hasAwakenedSeismicSlam = true;
 
                         break;
                     case MagicType.FullBloom:
@@ -13942,7 +13997,7 @@ namespace Server.Models
                 });
             }
 
-            if (SEnvir.Random.Next(psnRate) < Stats[Stat.ParalysisChance] || hasSeismicSlam)
+            if (SEnvir.Random.Next(psnRate) < Stats[Stat.ParalysisChance] || hasAwakenedSeismicSlam)
             {
                 ob.ApplyPoison(new Poison
                 {
@@ -13953,7 +14008,7 @@ namespace Server.Models
                 });
             }
 
-            if (hasSeismicSlam)
+            if (hasAwakenedSeismicSlam)
             {
                 ob.ApplyPoison(new Poison
                 {
@@ -13964,7 +14019,7 @@ namespace Server.Models
                 });
             }
 
-            if (ob.Race != ObjectType.Player && SEnvir.Random.Next(psnRate) < Stats[Stat.SlowChance])
+            if (ob.Race != ObjectType.Player && SEnvir.Random.Next(psnRate) < Stats[Stat.SlowChance] || hasSeismicSlam)
             {
                 ob.ApplyPoison(new Poison
                 {
@@ -13976,7 +14031,7 @@ namespace Server.Models
                 });
             }
 
-            if (SEnvir.Random.Next(psnRate) < Stats[Stat.SilenceChance] || hasSeismicSlam)
+            if (SEnvir.Random.Next(psnRate) < Stats[Stat.SilenceChance] || hasAwakenedSeismicSlam)
             {
                 ob.ApplyPoison(new Poison
                 {
@@ -14837,17 +14892,43 @@ namespace Server.Models
                     case MagicType.Interchange:
                         InterchangeEnd(magic, (MapObject)data[1]);
                         break;
+                    case MagicType.EnhancedInterchange:
+                    case MagicType.AwakenedInterchange:
+                        EnhancedInterchangeEnd(magic, (MapObject)data[1]);
+                        break;
                     case MagicType.Beckon:
                         BeckonEnd(magic, (MapObject)data[1]);
+                        break;
+                    case MagicType.EnhancedBeckon:
+                    case MagicType.AwakenedBeckon:
+                        EnhancedBeckonEnd(magic, (MapObject)data[1]);
                         break;
                     case MagicType.MassBeckon:
                         MassBeckonEnd(magic);
                         break;
+                    case MagicType.EnhancedMassBeckon:
+                        EnhancedMassBeckonEnd(magic);
+                        break;
+                    case MagicType.AwakenedMassBeckon:
+                        AwakenedMassBeckonEnd(magic);
+                        break;
                     case MagicType.Defiance:
                         DefianceEnd(magic);
                         break;
+                    case MagicType.EnhancedDefiance:
+                        EnhancedDefianceEnd(magic);
+                        break;
+                    case MagicType.AwakenedDefiance:
+                        AwakenedDefianceEnd(magic);
+                        break;
                     case MagicType.Might:
                         MightEnd(magic);
+                        break;
+                    case MagicType.EnhancedMight:
+                        EnhancedMightEnd(magic);
+                        break;
+                    case MagicType.AwakenedMight:
+                        AwakenedMightEnd(magic);
                         break;
                     case MagicType.ReflectDamage:
                         ReflectDamageEnd(magic);
@@ -14856,7 +14937,11 @@ namespace Server.Models
                         FetterEnd(magic, (Cell)data[1]);
                         break;
                     case MagicType.SwiftBlade:
+                    case MagicType.EnhancedSwiftBlade:
+                    case MagicType.AwakenedSwiftBlade:
                     case MagicType.SeismicSlam:
+                    case MagicType.EnhancedSeismicSlam:
+                    case MagicType.AwakenedSeismicSlam:
                         Cell cell = (Cell)data[1];
                         if (cell == null || cell.Objects == null) continue;
 
@@ -15686,7 +15771,7 @@ namespace Server.Models
                     MapObject ob = cell.Objects[c];
                     if (!ob.Blocking) continue;
 
-                    if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.AwakenedDefiance))
+                    if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level || SEnvir.Random.Next(1, 101) <= ob.Stats[Stat.Endurance])
                     {
                         blocked = true;
                         break;
@@ -15732,7 +15817,7 @@ namespace Server.Models
                         MapObject ob = cell.Objects[c];
                         if (!ob.Blocking) continue;
 
-                        if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.AwakenedDefiance))
+                        if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level || SEnvir.Random.Next(1, 101) <= ob.Stats[Stat.Endurance])
                         {
                             blocked = true;
                             break;
@@ -15775,7 +15860,7 @@ namespace Server.Models
                     MapObject ob = cell.Objects[c];
                     if (!ob.Blocking) continue;
 
-                    if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.AwakenedDefiance))
+                    if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level || SEnvir.Random.Next(1, 101) <= ob.Stats[Stat.Endurance])
                     {
                         blocked = true;
                         break;
@@ -15806,7 +15891,36 @@ namespace Server.Models
             MagicType type = magic.Info.Magic;
             if (travelled > 0 && target != null)
             {
-                UserMagic assault;
+                if(type == MagicType.Assault || type == MagicType.AwakenedAssault)
+                {
+                    target.ApplyPoison(new Poison
+                    {
+                        Type = PoisonType.Paralysis,
+                        TickCount = 1,
+                        TickFrequency = TimeSpan.FromMilliseconds(travelled * 300 + magic.GetPower()),
+                        Owner = this,
+                    });
+
+                    target.ApplyPoison(new Poison
+                    {
+                        Type = PoisonType.Silenced,
+                        TickCount = 1,
+                        TickFrequency = TimeSpan.FromMilliseconds(travelled * 300 + magic.GetPower() * 2),
+                        Owner = this,
+                    });
+                }
+                if(type == MagicType.AwakenedAssault)
+                {
+                    target.ApplyPoison(new Poison
+                    {
+                        Type = PoisonType.Red,
+                        TickCount = 1,
+                        TickFrequency = TimeSpan.FromMilliseconds(travelled * 300 + magic.GetPower() * 2),
+                        Owner = this,
+                    });
+                }
+
+                /*UserMagic assault;
 
                 if (Magics.TryGetValue(MagicType.Assault, out assault) && Level >= assault.Info.NeedLevel1 && SEnvir.Now >= assault.Cooldown)
                 {
@@ -15830,7 +15944,7 @@ namespace Server.Models
                     Enqueue(new S.MagicCooldown { InfoIndex = assault.Info.Index, Delay = assault.Info.Delay });
                     type = assault.Info.Magic;
                     //LevelMagic(assault);
-                }
+                }*/
             }
 
             cell = CurrentMap.GetCell(Functions.Move(CurrentLocation, Direction, travelled));
@@ -15847,52 +15961,29 @@ namespace Server.Models
             return travelled;
         }
 
-        public void InterchangeEnd(UserMagic magic, MapObject ob)
+        public bool InterchangeEnd(UserMagic magic, MapObject ob)
         {
-            /*  if (CurrentMap.Info.SkillDelay > 0)
-              {
-                  Connection.ReceiveChat(string.Format(Connection.Language.SkillBadMap, magic.Info.Name), MessageType.System);
-
-                  foreach (SConnection con in Connection.Observers)
-                      con.ReceiveChat(string.Format(con.Language.SkillBadMap, magic.Info.Name), MessageType.System);
-                  return;
-              }*/
-
-            if (ob == null || ob.CurrentMap != CurrentMap) return;
-
+            if (ob == null || ob.CurrentMap != CurrentMap) return false;
 
             switch (ob.Race)
             {
                 case ObjectType.Player:
-                    if (!CanAttackTarget(ob)) return;
-                    if (ob.Level >= Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.AwakenedDefiance)) return;
+                    if (!CanAttackTarget(ob)) return false;
+                    if (ob.Level >= Level || SEnvir.Random.Next(1, 101) <= ob.Stats[Stat.Endurance]) return false;
                     break;
                 case ObjectType.Monster:
-                    if (!CanAttackTarget(ob)) return;
-                    if (ob.Level >= Level || !((MonsterObject)ob).MonsterInfo.CanPush) return;
+                    if (!CanAttackTarget(ob)) return false;
+                    if (ob.Level >= Level || !((MonsterObject)ob).MonsterInfo.CanPush) return false;
                     break;
                 case ObjectType.Item:
                     break;
                 default:
-                    return;
+                    return false;
             }
 
-            if (SEnvir.Random.Next(9) > 2 + magic.Level * 2) return;
+            if (SEnvir.Random.Next(9) > 2 + magic.Level * 2) return false;
 
             Point current = CurrentLocation;
-
-            /*  if (CurrentMap.Info.SkillDelay > 0) return;
-              {
-                  TimeSpan delay = TimeSpan.FromMilliseconds(CurrentMap.Info.SkillDelay);
-
-                  Connection.ReceiveChat(string.Format(Connection.Language.SkillEffort, magic.Info.Name, Functions.ToString(delay, true)), MessageType.System);
-
-                  foreach (SConnection con in Connection.Observers)
-                      con.ReceiveChat(string.Format(con.Language.SkillEffort, magic.Info.Name, Functions.ToString(delay, true)), MessageType.System);
-
-                  UseItemTime = (UseItemTime < SEnvir.Now ? SEnvir.Now : UseItemTime) + delay;
-                  Enqueue(new S.ItemUseDelay { Delay = SEnvir.Now - UseItemTime });
-              }*/
 
             Teleport(CurrentMap, ob.CurrentLocation);
             ob.Teleport(CurrentMap, current);
@@ -15903,7 +15994,6 @@ namespace Server.Models
                 ((PlayerObject)ob).PvPTime = SEnvir.Now;
             }
 
-
             int delay = magic.Info.Delay;
             if (SEnvir.Now <= PvPTime.AddSeconds(30))
                 delay *= 10;
@@ -15912,60 +16002,52 @@ namespace Server.Models
             Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = delay });
 
             //LevelMagic(magic);
+            return true;
         }
 
-        public void BeckonEnd(UserMagic magic, MapObject ob)
+        public void EnhancedInterchangeEnd(UserMagic magic, MapObject ob)
         {
-            if (ob == null || ob.CurrentMap != CurrentMap) return;
+            if(InterchangeEnd(magic, ob))
+            {
+                ob.ApplyPoison(new Poison
+                {
+                    Type = PoisonType.Silenced,
+                    TickCount = 1,
+                    Owner = this,
+                    TickFrequency = TimeSpan.FromSeconds(3),
+                });
+            }
+        }
+
+        public bool BeckonEnd(UserMagic magic, MapObject ob)
+        {
+            if (ob == null || ob.CurrentMap != CurrentMap) return false;
 
             switch (ob.Race)
             {
                 case ObjectType.Player:
-                    if (!CanAttackTarget(ob)) return;
-                    if (ob.Level >= Level || ob.Buffs.Any(x => x.Type == BuffType.Endurance || x.Type == BuffType.AwakenedDefiance)) return;
+                    if (!CanAttackTarget(ob)) return false;
+                    if (ob.Level >= Level || SEnvir.Random.Next(1, 101) <= ob.Stats[Stat.Endurance]) return false;
 
-                    /* if (CurrentMap.Info.SkillDelay > 0)
-                     {
-                         Connection.ReceiveChat(string.Format(Connection.Language.SkillBadMap, magic.Info.Name), MessageType.System);
-
-                         foreach (SConnection con in Connection.Observers)
-                             con.ReceiveChat(string.Format(con.Language.SkillBadMap, magic.Info.Name), MessageType.System);
-                         return;
-                     }*/
-
-                    if (SEnvir.Random.Next(10) > 4 + magic.Level) return;
+                    if (SEnvir.Random.Next(10) > 4 + magic.Level) return false;
 
                     break;
                 case ObjectType.Monster:
-                    if (!CanAttackTarget(ob)) return;
+                    if (!CanAttackTarget(ob)) return false;
 
                     MonsterObject mob = (MonsterObject)ob;
-                    if (mob.MonsterInfo.IsBoss || !mob.MonsterInfo.CanPush) return;
+                    if (mob.MonsterInfo.IsBoss || !mob.MonsterInfo.CanPush) return false;
 
-                    if (SEnvir.Random.Next(9) > 2 + magic.Level * 2) return;
+                    if (SEnvir.Random.Next(9) > 2 + magic.Level * 2) return false;
                     break;
                 case ObjectType.Item:
-                    if (SEnvir.Random.Next(9) > 2 + magic.Level * 2) return;
+                    if (SEnvir.Random.Next(9) > 2 + magic.Level * 2) return false;
                     break;
                 default:
-                    return;
+                    return false;
             }
 
-            if (!ob.Teleport(CurrentMap, Functions.Move(CurrentLocation, Direction))) return;
-
-            /*   if (CurrentMap.Info.SkillDelay > 0)
-               {
-                   TimeSpan delay = TimeSpan.FromMilliseconds(CurrentMap.Info.SkillDelay);
-
-                   Connection.ReceiveChat(string.Format(Connection.Language.SkillEffort, magic.Info.Name, Functions.ToString(delay, true)), MessageType.System);
-
-                   foreach (SConnection con in Connection.Observers)
-                       con.ReceiveChat(string.Format(con.Language.SkillEffort, magic.Info.Name, Functions.ToString(delay, true)), MessageType.System);
-
-                   UseItemTime = (UseItemTime < SEnvir.Now ? SEnvir.Now : UseItemTime) + delay;
-                   Enqueue(new S.ItemUseDelay { Delay = SEnvir.Now - UseItemTime });
-               }*/
-
+            if (!ob.Teleport(CurrentMap, Functions.Move(CurrentLocation, Direction))) return false;
 
             if (ob.Race != ObjectType.Item)
             {
@@ -15986,7 +16068,23 @@ namespace Server.Models
             Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = delay });
 
             //LevelMagic(magic);
+            return true;
         }
+
+        public void EnhancedBeckonEnd(UserMagic magic, MapObject ob)
+        {
+            if (BeckonEnd(magic, ob))
+            {
+                ob.ApplyPoison(new Poison
+                {
+                    Type = PoisonType.Silenced,
+                    TickCount = 1,
+                    Owner = this,
+                    TickFrequency = TimeSpan.FromSeconds(3),
+                });
+            }
+        }
+
         public void MassBeckonEnd(UserMagic magic)
         {
             List<MapObject> targets = GetTargets(CurrentMap, CurrentLocation, 9);
@@ -16000,7 +16098,51 @@ namespace Server.Models
 
                 if (SEnvir.Random.Next(9) > 2 + magic.Level * 2) continue;
 
+                if (!ob.Teleport(CurrentMap, CurrentMap.GetRandomLocation(CurrentLocation, 3))) continue;
 
+                //LevelMagic(magic);
+            }
+        }
+
+        public void EnhancedMassBeckonEnd(UserMagic magic)
+        {
+            List<MapObject> targets = GetTargets(CurrentMap, CurrentLocation, 9);
+
+            foreach (MapObject ob in targets)
+            {
+                if (ob.Race != ObjectType.Monster) continue;
+
+                if (!CanAttackTarget(ob)) continue;
+                if (ob.Level - 10 > Level || !((MonsterObject)ob).MonsterInfo.CanPush) continue;
+
+                if (SEnvir.Random.Next(9) > 2 + magic.Level * 2) continue;
+
+                if (!ob.Teleport(CurrentMap, CurrentMap.GetRandomLocation(CurrentLocation, 3))) continue;
+
+                ob.ApplyPoison(new Poison
+                {
+                    Owner = this,
+                    Type = PoisonType.Slow,
+                    TickFrequency = TimeSpan.FromSeconds(1 + magic.Level),
+                    TickCount = 1,
+                });
+
+                //LevelMagic(magic);
+            }
+        }
+
+        public void AwakenedMassBeckonEnd(UserMagic magic)
+        {
+            List<MapObject> targets = GetTargets(CurrentMap, CurrentLocation, 9);
+
+            foreach (MapObject ob in targets)
+            {
+                if (ob.Race != ObjectType.Monster) continue;
+
+                if (!CanAttackTarget(ob)) continue;
+                if (ob.Level - 10 > Level || !((MonsterObject)ob).MonsterInfo.CanPush) continue;
+
+                if (SEnvir.Random.Next(9) > 2 + magic.Level * 2) continue;
 
                 if (!ob.Teleport(CurrentMap, CurrentMap.GetRandomLocation(CurrentLocation, 3))) continue;
 
@@ -16026,7 +16168,54 @@ namespace Server.Models
 
             Stats buffStats = new Stats
             {
-                [Stat.Defiance] = 1,
+                [Stat.DCPercent] = -15 + magic.Level,
+                [Stat.MinDC] = -100 * magic.Level,
+                [Stat.MaxDC] = -100 * magic.Level,
+                [Stat.MinAC] = 150 * magic.Level,
+                [Stat.MaxAC] = 150 * magic.Level,
+                [Stat.ACPercent] = 4 + magic.Level
+
+            };
+
+            BuffAdd(BuffType.Defiance, TimeSpan.FromSeconds(60 + magic.Level * 30), buffStats, false, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+
+        public void EnhancedDefianceEnd(UserMagic magic)
+        {
+            if (Buffs.Any(x => x.Type == BuffType.Might))
+            {
+                BuffRemove(BuffType.Might);
+                ChangeHP(-(CurrentHP / 2));
+            }
+
+            Stats buffStats = new Stats
+            {
+                [Stat.MinAC] = 150 * magic.Level,
+                [Stat.MaxAC] = 150 * magic.Level,
+                [Stat.ACPercent] = 4 + magic.Level
+            };
+
+            BuffAdd(BuffType.Defiance, TimeSpan.FromSeconds(60 + magic.Level * 30), buffStats, false, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+
+        public void AwakenedDefianceEnd(UserMagic magic)
+        {
+            if (Buffs.Any(x => x.Type == BuffType.Might))
+            {
+                BuffRemove(BuffType.Might);
+                ChangeHP(-(CurrentHP / 2));
+            }
+
+            Stats buffStats = new Stats
+            {
+                [Stat.MinAC] = 150 * magic.Level,
+                [Stat.MaxAC] = 150 * magic.Level,
+                [Stat.ACPercent] = 4 + magic.Level,
+                [Stat.Endurance] = 100
             };
 
             BuffAdd(BuffType.Defiance, TimeSpan.FromSeconds(60 + magic.Level * 30), buffStats, false, false, TimeSpan.Zero);
@@ -16045,8 +16234,55 @@ namespace Server.Models
 
             Stats buffStats = new Stats
             {
-                [Stat.MinDC] = value,
-                [Stat.MaxDC] = value,
+                [Stat.DCPercent] = 4 + magic.Level,
+                [Stat.MinDC] = 150 * magic.Level,
+                [Stat.MaxDC] = 150 * magic.Level,
+                [Stat.MinAC] = -100 * magic.Level,
+                [Stat.MaxAC] = -100 * magic.Level,
+                [Stat.ACPercent] = -15 + magic.Level
+            };
+
+            BuffAdd(BuffType.Might, TimeSpan.FromSeconds(60 + magic.Level * 30), buffStats, false, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+
+        public void EnhancedMightEnd(UserMagic magic)
+        {
+            if (Buffs.Any(x => x.Type == BuffType.Defiance))
+            {
+                BuffRemove(BuffType.Defiance);
+                ChangeHP(-(CurrentHP / 2));
+            }
+            int value = 4 + magic.Level * 6;
+
+            Stats buffStats = new Stats
+            {
+                [Stat.DCPercent] = 4 + magic.Level,
+                [Stat.MinDC] = 150 * magic.Level,
+                [Stat.MaxDC] = 150 * magic.Level,
+            };
+
+            BuffAdd(BuffType.Might, TimeSpan.FromSeconds(60 + magic.Level * 30), buffStats, false, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+
+        public void AwakenedMightEnd(UserMagic magic)
+        {
+            if (Buffs.Any(x => x.Type == BuffType.Defiance))
+            {
+                BuffRemove(BuffType.Defiance);
+                ChangeHP(-(CurrentHP / 2));
+            }
+            int value = 4 + magic.Level * 6;
+
+            Stats buffStats = new Stats
+            {
+                [Stat.DCPercent] = 4 + magic.Level,
+                [Stat.MinDC] = 150 * magic.Level,
+                [Stat.MaxDC] = 150 * magic.Level,
+                [Stat.IgnoreArmour] = magic.Level
             };
 
             BuffAdd(BuffType.Might, TimeSpan.FromSeconds(60 + magic.Level * 30), buffStats, false, false, TimeSpan.Zero);

@@ -581,7 +581,6 @@ namespace Client.Models
                 case MirAction.Spell:
                     if (!MagicCast) break;
 
-
                     switch (MagicType)
                     {
                         #region Warrior
@@ -614,10 +613,10 @@ namespace Client.Models
 
                         //Might
 
-
                         #region Swift Blade
 
                         case MagicType.SwiftBlade:
+                        case MagicType.EnhancedSwiftBlade:
                             //todo element colour
                             foreach (Point point in MagicLocations)
                             {
@@ -625,6 +624,46 @@ namespace Client.Models
                                 {
                                     Blend = true,
                                     MapTarget = point,
+                                };
+                                spell.Process();
+                            }
+
+                            DXSoundManager.Play(SoundIndex.SwiftBladeEnd);
+                            break;
+
+                        case MagicType.AwakenedSwiftBlade:
+                            //todo element colour
+                            foreach (Point point in MagicLocations)
+                            {
+                                spell = new MirEffect(2330, 16, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 10, 35, Globals.NoneColour)
+                                {
+                                    Blend = true,
+                                    MapTarget = point,
+                                };
+                                spell.Process();
+
+                                spell = new MirEffect(2330, 16, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 10, 35, Globals.NoneColour, 900)
+                                {
+                                    Blend = true,
+                                    MapTarget = Functions.Move(point, MirDirection.UpRight, 3),
+                                };
+                                spell.Process();
+                                spell = new MirEffect(2330, 16, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 10, 35, Globals.NoneColour, 900)
+                                {
+                                    Blend = true,
+                                    MapTarget = Functions.Move(point, MirDirection.UpLeft, 3),
+                                };
+                                spell.Process();
+                                spell = new MirEffect(2330, 16, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 10, 35, Globals.NoneColour, 900)
+                                {
+                                    Blend = true,
+                                    MapTarget = Functions.Move(point, MirDirection.DownLeft, 3),
+                                };
+                                spell.Process();
+                                spell = new MirEffect(2330, 16, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 10, 35, Globals.NoneColour, 900)
+                                {
+                                    Blend = true,
+                                    MapTarget = Functions.Move(point, MirDirection.DownRight, 3),
                                 };
                                 spell.Process();
                             }
@@ -2375,6 +2414,7 @@ namespace Client.Models
                     switch (MagicType)
                     {
                         case MagicType.Assault:
+                        case MagicType.AwakenedAssault:
                             DXSoundManager.Play(SoundIndex.AssaultStart);
                             AssaultCreate();
                             break;
@@ -2711,6 +2751,8 @@ namespace Client.Models
                         #region Interchange
 
                         case MagicType.Interchange:
+                        case MagicType.EnhancedInterchange:
+                        case MagicType.AwakenedInterchange:
                             Effects.Add(new MirEffect(0, 9, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 60, 60, Globals.NoneColour)
                             {
                                 Blend = true,
@@ -2724,6 +2766,8 @@ namespace Client.Models
                         #region Defiance
 
                         case MagicType.Defiance:
+                        case MagicType.EnhancedDefiance:
+                        case MagicType.AwakenedDefiance:
                             Effects.Add(new MirEffect(40, 10, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 60, 60, Globals.NoneColour)
                             {
                                 Blend = true,
@@ -2737,7 +2781,11 @@ namespace Client.Models
                         #region Beckon
 
                         case MagicType.Beckon:
+                        case MagicType.EnhancedBeckon:
+                        case MagicType.AwakenedBeckon:
                         case MagicType.MassBeckon:
+                        case MagicType.EnhancedMassBeckon:
+                        case MagicType.AwakenedMassBeckon:
                             Effects.Add(new MirEffect(580, 10, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 60, 60, Globals.NoneColour)
                             {
                                 Blend = true,
@@ -2765,6 +2813,8 @@ namespace Client.Models
                         #region Lightning Beam
 
                         case MagicType.SeismicSlam:
+                        case MagicType.EnhancedSeismicSlam:
+                        case MagicType.AwakenedSeismicSlam:
                             Effects.Add(spell = new MirEffect(4900, 6, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx5, 10, 35, Globals.LightningColour)
                             {
                                 Blend = true,
@@ -3204,7 +3254,6 @@ namespace Client.Models
                             break;
 
                         #endregion
-
 
                         #region Frost Bite
 
@@ -3746,7 +3795,6 @@ namespace Client.Models
 
                         #endregion
 
-
                         #region Monster Scortched Earth
 
                         case MagicType.MonsterScortchedEarth:
@@ -3868,11 +3916,7 @@ namespace Client.Models
                             break;
 
                             #endregion
-
-
                     }
-
-
                     break;
             }
         }
@@ -3892,7 +3936,6 @@ namespace Client.Models
                         ActionQueue.Add(new ObjectAction(MirAction.Standing, Direction, CurrentLocation));
                         break;
                 }
-
             }
 
             switch (ActionQueue[0].Action)
@@ -3903,12 +3946,10 @@ namespace Client.Models
                 case MirAction.Pushed:
                     if (!GameScene.Game.MoveFrame) return;
                     break;
-
             }
             SetAction(ActionQueue[0]);
             ActionQueue.RemoveAt(0);
         }
-
 
         public virtual void DrawFrameChanged()
         {
@@ -4039,13 +4080,9 @@ namespace Client.Models
 
         public virtual void Draw()
         {
-
-
-
         }
         public virtual void DrawBlend()
         {
-
         }
 
         public void Chat(string text)
@@ -4072,7 +4109,6 @@ namespace Client.Models
             ChatLabel.Size = DXLabel.GetHeight(ChatLabel, chatWidth);
             ChatLabel.Disposing += (o, e) => ChatLabels.Remove(ChatLabel);
             ChatLabels.Add(ChatLabel);
-
         }
 
         public virtual void NameChanged()
@@ -4194,7 +4230,6 @@ namespace Client.Models
         }
         public virtual void DrawDamage()
         {
-
             foreach (DamageInfo damageInfo in DamageList)
                 damageInfo.Draw(DrawX, DrawY);
         }
@@ -4220,16 +4255,12 @@ namespace Client.Models
 
         public virtual void PlayAttackSound()
         {
-
         }
         public virtual void PlayStruckSound()
         {
-
         }
         public virtual void PlayDieSound()
         {
-
-
         }
 
         public void DrawPoison()
@@ -4263,14 +4294,12 @@ namespace Client.Models
         }
         public virtual void DrawHealth()
         {
-
         }
 
         public abstract bool MouseOver(Point p);
 
         public virtual void UpdateQuests()
         {
-
         }
 
         public void WraithGripCreate()
@@ -4456,7 +4485,6 @@ namespace Client.Models
             InfectionEffect?.Remove();
             InfectionEffect = null;
         }
-
 
         public void DragonRepulseCreate()
         {

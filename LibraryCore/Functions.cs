@@ -193,7 +193,11 @@ namespace Library
             switch (m)
             {
                 case MagicType.Beckon:
+                case MagicType.EnhancedBeckon:
+                case MagicType.AwakenedBeckon:
                 case MagicType.MassBeckon:
+                case MagicType.EnhancedMassBeckon:
+                case MagicType.AwakenedMassBeckon:
 
                 case MagicType.FireBall:
                 case MagicType.IceBolt:
@@ -224,7 +228,9 @@ namespace Library
 
 
                 case MagicType.Interchange:
-                    
+                case MagicType.EnhancedInterchange:
+                case MagicType.AwakenedInterchange:
+
                 case MagicType.Repulsion:
                 case MagicType.ElectricShock:
                 case MagicType.LightningWave:
@@ -293,13 +299,21 @@ namespace Library
                     return MirAnimation.Combat10;
 
                 case MagicType.Defiance:
+                case MagicType.EnhancedDefiance:
+                case MagicType.AwakenedDefiance:
                 case MagicType.Might:
+                case MagicType.EnhancedMight:
+                case MagicType.AwakenedMight:
                 case MagicType.ReflectDamage:
                 case MagicType.Fetter:
                     return MirAnimation.Combat15;
 
                 case MagicType.SwiftBlade:
+                case MagicType.EnhancedSwiftBlade:
+                case MagicType.AwakenedSwiftBlade:
                 case MagicType.SeismicSlam:
+                case MagicType.EnhancedSeismicSlam:
+                case MagicType.AwakenedSeismicSlam:
                     return MirAnimation.Combat3;
 
                 default:

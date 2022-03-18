@@ -2781,6 +2781,8 @@ namespace Client.Scenes
             switch (magic.Info.Magic)
             {
                 case MagicType.ShoulderDash:
+                case MagicType.Assault:
+                case MagicType.AwakenedAssault:
                     if (CEnvir.Now < User.ServerTime) return;
                     if ((User.Poison & PoisonType.WraithGrip) == PoisonType.WraithGrip) return;
 
@@ -2859,7 +2861,11 @@ namespace Client.Scenes
                     //        ;//target = GetCloseesTarget();
                     break;
                 case MagicType.Interchange:
+                case MagicType.EnhancedInterchange:
+                case MagicType.AwakenedInterchange:
                 case MagicType.Beckon:
+                case MagicType.EnhancedBeckon:
+                case MagicType.AwakenedBeckon:
                     if (CanAttackTarget(MouseObject))
                         target = MouseObject;
 
@@ -2867,6 +2873,8 @@ namespace Client.Scenes
                     //        ;//target = GetCloseesTarget();
                     break;
                 case MagicType.MassBeckon:
+                case MagicType.EnhancedMassBeckon:
+                case MagicType.AwakenedMassBeckon:
                     break;
 
                 case MagicType.Heal:
@@ -2884,9 +2892,13 @@ namespace Client.Scenes
                     break;
 
                 case MagicType.Defiance:
+                case MagicType.EnhancedDefiance:
+                case MagicType.AwakenedDefiance:
                     direction = MirDirection.Down;
                     break;
                 case MagicType.Might:
+                case MagicType.EnhancedMight:
+                case MagicType.AwakenedMight:
                     direction = MirDirection.Down;
                     break;
                 case MagicType.ReflectDamage:
@@ -2911,6 +2923,8 @@ namespace Client.Scenes
 
 
                 case MagicType.SeismicSlam:
+                case MagicType.EnhancedSeismicSlam:
+                case MagicType.AwakenedSeismicSlam:
 
                 case MagicType.Repulsion:
                 case MagicType.ScortchedEarth:
@@ -2945,6 +2959,8 @@ namespace Client.Scenes
                     break;
 
                 case MagicType.SwiftBlade:
+                case MagicType.EnhancedSwiftBlade:
+                case MagicType.AwakenedSwiftBlade:
 
                 case MagicType.FireWall:
                 case MagicType.FireStorm:
@@ -2957,7 +2973,6 @@ namespace Client.Scenes
                 case MagicType.MeteorShower:
                 case MagicType.Tempest:
                 case MagicType.Asteroid:
-
 
                 case MagicType.MagicResistance:
                 case MagicType.Resilience:
@@ -3008,9 +3023,7 @@ namespace Client.Scenes
                 default:
                     targetLocation = target?.CurrentLocation ?? MapControl.MapLocation;
                     break;
-
             }
-
 
             //switch spell type.
 
@@ -3018,8 +3031,6 @@ namespace Client.Scenes
                 FocusObject = (MonsterObject) MouseObject;
 
             User.MagicAction = new ObjectAction(MirAction.Spell, direction, MapObject.User.CurrentLocation, magic.Info.Magic, new List<uint> { targetID }, new List<Point> { targetLocation }, false);
-
-
         }
         private bool CanAttackTarget(MapObject ob)
         {
