@@ -2928,6 +2928,8 @@ namespace Client.Scenes
 
                 case MagicType.Repulsion:
                 case MagicType.ScortchedEarth:
+                case MagicType.EnhancedScorchedEarth:
+                case MagicType.AwakenedScorchedEarth:
                 case MagicType.LightningBeam:
                 case MagicType.Teleportation:
                 case MagicType.FrozenEarth:
@@ -2963,6 +2965,8 @@ namespace Client.Scenes
                 case MagicType.AwakenedSwiftBlade:
 
                 case MagicType.FireWall:
+                case MagicType.EnhancedFireWall:
+                case MagicType.AwakenedFireWall:
                 case MagicType.FireStorm:
                 case MagicType.LightningWave:
                 case MagicType.IceStorm:
@@ -2973,6 +2977,7 @@ namespace Client.Scenes
                 case MagicType.MeteorShower:
                 case MagicType.Tempest:
                 case MagicType.Asteroid:
+                case MagicType.AwakenedAsteroid:
 
                 case MagicType.MagicResistance:
                 case MagicType.Resilience:

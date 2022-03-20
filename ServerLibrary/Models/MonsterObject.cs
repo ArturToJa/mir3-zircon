@@ -917,6 +917,8 @@ namespace Server.Models
                     switch ((MagicType)action.Data[0])
                     {
                         case MagicType.FireWall:
+                        case MagicType.EnhancedFireWall:
+                        case MagicType.AwakenedFireWall:
                             FireWallEnd((Cell)action.Data[1]);
                             break;
                         case MagicType.DragonRepulse:

@@ -242,30 +242,33 @@ namespace Server.Models
 
             if (CanFlamingSword && SEnvir.Now >= FlamingSwordTime)
             {
+                MagicType type = Magics.ContainsKey(MagicType.FlamingSword) ? MagicType.FlamingSword : Magics.ContainsKey(MagicType.EnhancedFlamingSword) ? MagicType.EnhancedFlamingSword : MagicType.AwakenedFlamingSword;
                 CanFlamingSword = false;
-                Enqueue(new S.MagicToggle { Magic = MagicType.FlamingSword, CanUse = CanFlamingSword });
+                Enqueue(new S.MagicToggle { Magic = type, CanUse = CanFlamingSword });
 
-                Connection.ReceiveChat(string.Format(Connection.Language.ChargeExpire, Magics[MagicType.FlamingSword].Info.Name), MessageType.System);
+                Connection.ReceiveChat(string.Format(Connection.Language.ChargeExpire, Magics[type].Info.Name), MessageType.System);
                 foreach (SConnection con in Connection.Observers)
-                    con.ReceiveChat(string.Format(con.Language.ChargeExpire, Magics[MagicType.FlamingSword].Info.Name), MessageType.System);
+                    con.ReceiveChat(string.Format(con.Language.ChargeExpire, Magics[type].Info.Name), MessageType.System);
             }
             if (CanDragonRise && SEnvir.Now >= DragonRiseTime)
             {
+                MagicType type = Magics.ContainsKey(MagicType.DragonRise) ? MagicType.DragonRise : Magics.ContainsKey(MagicType.EnhancedDragonRise) ? MagicType.EnhancedDragonRise : MagicType.AwakenedDragonRise;
                 CanDragonRise = false;
-                Enqueue(new S.MagicToggle { Magic = MagicType.DragonRise, CanUse = CanDragonRise });
+                Enqueue(new S.MagicToggle { Magic = type, CanUse = CanDragonRise });
 
-                Connection.ReceiveChat(string.Format(Connection.Language.ChargeExpire, Magics[MagicType.DragonRise].Info.Name), MessageType.System);
+                Connection.ReceiveChat(string.Format(Connection.Language.ChargeExpire, Magics[type].Info.Name), MessageType.System);
                 foreach (SConnection con in Connection.Observers)
-                    con.ReceiveChat(string.Format(con.Language.ChargeExpire, Magics[MagicType.DragonRise].Info.Name), MessageType.System);
+                    con.ReceiveChat(string.Format(con.Language.ChargeExpire, Magics[type].Info.Name), MessageType.System);
             }
             if (CanBladeStorm && SEnvir.Now >= BladeStormTime)
             {
+                MagicType type = Magics.ContainsKey(MagicType.BladeStorm) ? MagicType.BladeStorm : Magics.ContainsKey(MagicType.EnhancedBladeStorm) ? MagicType.EnhancedBladeStorm : MagicType.AwakenedBladeStorm;
                 CanBladeStorm = false; ;
-                Enqueue(new S.MagicToggle { Magic = MagicType.BladeStorm, CanUse = CanBladeStorm });
+                Enqueue(new S.MagicToggle { Magic = type, CanUse = CanBladeStorm });
 
-                Connection.ReceiveChat(string.Format(Connection.Language.ChargeExpire, Magics[MagicType.BladeStorm].Info.Name), MessageType.System);
+                Connection.ReceiveChat(string.Format(Connection.Language.ChargeExpire, Magics[type].Info.Name), MessageType.System);
                 foreach (SConnection con in Connection.Observers)
-                    con.ReceiveChat(string.Format(con.Language.ChargeExpire, Magics[MagicType.BladeStorm].Info.Name), MessageType.System);
+                    con.ReceiveChat(string.Format(con.Language.ChargeExpire, Magics[type].Info.Name), MessageType.System);
             }
 
             if (Dead && SEnvir.Now >= RevivalTime)
@@ -11303,10 +11306,14 @@ namespace Server.Models
                 case MagicType.IceBlades:
                 case MagicType.Cyclone:
                 case MagicType.ScortchedEarth:
+                case MagicType.EnhancedScorchedEarth:
+                case MagicType.AwakenedScorchedEarth:
                 case MagicType.LightningBeam:
                 case MagicType.FrozenEarth:
                 case MagicType.BlowEarth:
                 case MagicType.FireWall:
+                case MagicType.EnhancedFireWall:
+                case MagicType.AwakenedFireWall:
                 case MagicType.FireStorm:
                 case MagicType.LightningWave:
                 case MagicType.ExpelUndead:
@@ -11326,6 +11333,7 @@ namespace Server.Models
                 case MagicType.MirrorImage:
                 case MagicType.Teleportation:
                 case MagicType.Asteroid:
+                case MagicType.AwakenedAsteroid:
 
                 case MagicType.Heal:
                 case MagicType.PoisonDust:
@@ -11711,6 +11719,8 @@ namespace Server.Models
                         new List<UserMagic> { magic }));
                     break;
                 case MagicType.ScortchedEarth:
+                case MagicType.EnhancedScorchedEarth:
+                case MagicType.AwakenedScorchedEarth:
                 case MagicType.FrozenEarth:
                     ob = null;
 
@@ -11951,7 +11961,96 @@ namespace Server.Models
                         CurrentMap.GetCell(Functions.Move(p.Location, MirDirection.Right)),
                         power));
                     break;
+                case MagicType.EnhancedFireWall:
+                case MagicType.AwakenedFireWall:
+                    ob = null;
+
+                    if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
+                    {
+                        cast = false;
+                        break;
+                    }
+
+                    foreach (ConquestWar war in SEnvir.ConquestWars)
+                    {
+                        if (war.Map != CurrentMap) continue;
+
+                        for (int i = SpellList.Count - 1; i >= 0; i--)
+                        {
+                            if (SpellList[i].Effect != SpellEffect.FireWall) continue;
+
+                            SpellList[i].Despawn();
+                        }
+
+                        break;
+                    }
+                    power = (magic.Level + 2) * 5;
+
+                    cells = CurrentMap.GetCells(p.Location, 0, 1);
+
+                    foreach (Cell cell in cells)
+                    {
+                        ActionList.Add(new DelayedAction(
+                            SEnvir.Now.AddMilliseconds(500),
+                            ActionType.DelayMagic,
+                            new List<UserMagic> { magic },
+                            cell,
+                            power));
+                    }
+                    break;
                 case MagicType.FireStorm:
+                    ob = null;
+
+                    if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
+                    {
+                        cast = false;
+                        break;
+                    }
+
+                    locations.Add(p.Location);
+                    cells = CurrentMap.GetCells(p.Location, 0, 1);
+
+                    foreach (Cell cell in cells)
+                    {
+                        ActionList.Add(new DelayedAction(
+                            SEnvir.Now.AddMilliseconds(500),
+                            ActionType.DelayMagic,
+                            new List<UserMagic> { magic },
+                            cell));
+                    }
+                    if (Magics.TryGetValue(MagicType.AwakenedFireWall, out augMagic) && augMagic.Info.NeedLevel1 > Level)
+                        augMagic = null;
+
+                    if (augMagic != null)
+                    {
+                        foreach (ConquestWar war in SEnvir.ConquestWars)
+                        {
+                            if (war.Map != CurrentMap) continue;
+
+                            for (int i = SpellList.Count - 1; i >= 0; i--)
+                            {
+                                if (SpellList[i].Effect != SpellEffect.FireWall) continue;
+
+                                SpellList[i].Despawn();
+                            }
+                            break;
+                        }
+
+                        power = (magic.Level + 2) * 5;
+
+                        foreach (Cell cell in cells)
+                        {
+                            if (Math.Abs(cell.Location.X - p.Location.X) + Math.Abs(cell.Location.Y - p.Location.Y) >= 3) continue;
+
+                            ActionList.Add(new DelayedAction(
+                                SEnvir.Now.AddMilliseconds(2250),
+                                ActionType.DelayMagic,
+                                new List<UserMagic> { augMagic },
+                                cell,
+                                power));
+                        }
+                    }
+                    break;
                 case MagicType.LightningWave:
                 case MagicType.IceStorm:
 
@@ -11976,7 +12075,6 @@ namespace Server.Models
                     }
                     break;
                 case MagicType.Asteroid:
-
                     ob = null;
 
                     if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
@@ -11997,10 +12095,8 @@ namespace Server.Models
                             cell));
                     }
 
-
-                    if (Magics.TryGetValue(MagicType.FireWall, out augMagic) && augMagic.Info.NeedLevel1 > Level)
+                    if (Magics.TryGetValue(MagicType.AwakenedFireWall, out augMagic) && augMagic.Info.NeedLevel1 > Level)
                         augMagic = null;
-
 
                     if (augMagic != null)
                     {
@@ -12014,7 +12110,6 @@ namespace Server.Models
 
                                 SpellList[i].Despawn();
                             }
-
                             break;
                         }
 
@@ -12022,9 +12117,7 @@ namespace Server.Models
 
                         foreach (Cell cell in cells)
                         {
-
                             if (Math.Abs(cell.Location.X - p.Location.X) + Math.Abs(cell.Location.Y - p.Location.Y) >= 3) continue;
-
 
                             ActionList.Add(new DelayedAction(
                                 SEnvir.Now.AddMilliseconds(2250),
@@ -12034,9 +12127,138 @@ namespace Server.Models
                                 power));
                         }
                     }
+                    break;
+                case MagicType.AwakenedAsteroid:
+                    ob = null;
 
+                    if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
+                    {
+                        cast = false;
+                        break;
+                    }
 
+                    locations.Add(p.Location);
+                    cells = CurrentMap.GetCells(p.Location, 0, 3);
 
+                    foreach (Cell cell in cells)
+                    {
+                        ActionList.Add(new DelayedAction(
+                            SEnvir.Now.AddMilliseconds(1200),
+                            ActionType.DelayMagic,
+                            new List<UserMagic> { magic },
+                            cell));
+                    }
+                    UserMagic scorchedEarth = null;
+                    if (!Magics.TryGetValue(MagicType.ScortchedEarth, out scorchedEarth))
+                        if (!Magics.TryGetValue(MagicType.EnhancedScorchedEarth, out scorchedEarth))
+                            if (!Magics.TryGetValue(MagicType.AwakenedScorchedEarth, out scorchedEarth))
+                                scorchedEarth = null;
+
+                    if(scorchedEarth != null)
+                    {
+                        List<Point> seLocations = new List<Point>();
+                        MirDirection StartDirection = MirDirection.Up;
+                        for (int j = 0; j < 8; j++)
+                        {
+                            MirDirection Direction = Functions.ShiftDirection(StartDirection, j);
+                            for (int i = 1; i <= 8; i++)
+                            {
+                                location = Functions.Move(CurrentLocation, Direction, i);
+                                Cell cell = CurrentMap.GetCell(location);
+
+                                if (cell == null) continue;
+                                seLocations.Add(cell.Location);
+
+                                ActionList.Add(new DelayedAction(
+                                    SEnvir.Now.AddMilliseconds(2000),
+                                    ActionType.DelayMagic,
+                                    new List<UserMagic> { scorchedEarth },
+                                    cell,
+                                    true));
+
+                                switch (Direction)
+                                {
+                                    case MirDirection.Up:
+                                    case MirDirection.Right:
+                                    case MirDirection.Down:
+                                    case MirDirection.Left:
+                                        ActionList.Add(new DelayedAction(
+                                            SEnvir.Now.AddMilliseconds(2000),
+                                            ActionType.DelayMagic,
+                                            new List<UserMagic> { scorchedEarth },
+                                            CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -2))),
+                                            scorchedEarth.Info.Magic == MagicType.AwakenedScorchedEarth));
+                                        ActionList.Add(new DelayedAction(
+                                            SEnvir.Now.AddMilliseconds(2000),
+                                            ActionType.DelayMagic,
+                                            new List<UserMagic> { magic },
+                                            CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 2))),
+                                            scorchedEarth.Info.Magic == MagicType.AwakenedScorchedEarth));
+                                        break;
+                                    case MirDirection.UpRight:
+                                    case MirDirection.DownRight:
+                                    case MirDirection.DownLeft:
+                                    case MirDirection.UpLeft:
+                                        ActionList.Add(new DelayedAction(
+                                            SEnvir.Now.AddMilliseconds(2000),
+                                            ActionType.DelayMagic,
+                                            new List<UserMagic> { scorchedEarth },
+                                            CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 1))),
+                                            scorchedEarth.Info.Magic == MagicType.AwakenedScorchedEarth));
+                                        ActionList.Add(new DelayedAction(
+                                            SEnvir.Now.AddMilliseconds(2000),
+                                            ActionType.DelayMagic,
+                                            new List<UserMagic> { scorchedEarth },
+                                            CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -1))),
+                                            scorchedEarth.Info.Magic == MagicType.AwakenedScorchedEarth));
+                                        break;
+                                }
+                            }
+                        }
+                        Broadcast(new S.ObjectMagic
+                        {
+                            ObjectID = ObjectID,
+                            Direction = Direction,
+                            CurrentLocation = CurrentLocation,
+                            Type = scorchedEarth.Info.Magic,
+                            Targets = targets,
+                            Locations = seLocations,
+                            Cast = cast,
+                        });
+                    }
+                    
+                    if (Magics.TryGetValue(MagicType.AwakenedFireWall, out augMagic) && augMagic.Info.NeedLevel1 > Level)
+                        augMagic = null;
+
+                    if (augMagic != null)
+                    {
+                        foreach (ConquestWar war in SEnvir.ConquestWars)
+                        {
+                            if (war.Map != CurrentMap) continue;
+
+                            for (int i = SpellList.Count - 1; i >= 0; i--)
+                            {
+                                if (SpellList[i].Effect != SpellEffect.FireWall) continue;
+
+                                SpellList[i].Despawn();
+                            }
+                            break;
+                        }
+
+                        power = (magic.Level + 2) * 5;
+
+                        foreach (Cell cell in cells)
+                        {
+                            if (Math.Abs(cell.Location.X - p.Location.X) + Math.Abs(cell.Location.Y - p.Location.Y) >= 3) continue;
+
+                            ActionList.Add(new DelayedAction(
+                                SEnvir.Now.AddMilliseconds(2250),
+                                ActionType.DelayMagic,
+                                new List<UserMagic> { augMagic },
+                                cell,
+                                power));
+                        }
+                    }
                     break;
                 case MagicType.DragonTornado:
 
@@ -12208,10 +12430,8 @@ namespace Server.Models
                             magics,
                             target));
                     }
-
                     break;
                 case MagicType.Tempest:
-
                     ob = null;
 
                     if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
@@ -12232,7 +12452,6 @@ namespace Server.Models
 
                             SpellList[i].Despawn();
                         }
-
                         break;
                     }
 
@@ -12249,7 +12468,6 @@ namespace Server.Models
                     }
                     break;
                 case MagicType.ThunderStrike:
-
                     ob = null;
 
                     cells = CurrentMap.GetCells(CurrentLocation, 0, 6);
@@ -13115,7 +13333,6 @@ namespace Server.Models
                     break;
             }
 
-
             switch (magic.Info.Magic)
             {
                 case MagicType.Cloak:
@@ -13321,7 +13538,6 @@ namespace Server.Models
                         magic.Cooldown = SEnvir.Now.AddSeconds(2);
                         Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = 2000 });
                     }
-
                     break;
                 case MagicType.DragonRise:
                 case MagicType.EnhancedDragonRise:
@@ -14092,6 +14308,7 @@ namespace Server.Models
             int slow = 0, slowLevel = 0, repel = 0, silence = 0;
 
             bool canStuck = true;
+            int burnChance = 0;
 
             int power = 0;
             UserMagic asteroid = null;
@@ -14102,21 +14319,33 @@ namespace Server.Models
                 {
                     case MagicType.FireBall:
                     case MagicType.ScortchedEarth:
+                    case MagicType.EnhancedScorchedEarth:
                     case MagicType.FireStorm:
                     case MagicType.AdamantineFireBall:
                     case MagicType.MeteorShower:
                         element = Element.Fire;
+                        power += (magic.GetPower() * GetMC()) / 10;
+                        burnChance = 5;
+                        break;
+                    case MagicType.AwakenedScorchedEarth:
+                        element = Element.Fire;
                         power += magic.GetPower() + GetMC();
+                        burnChance = 10;
                         break;
                     case MagicType.Asteroid:
+                    case MagicType.AwakenedAsteroid:
                         element = Element.Fire;
                         asteroid = magic;
                         canStuck = false;
+                        burnChance = 5;
                         break;
                     case MagicType.FireWall:
+                    case MagicType.EnhancedFireWall:
+                    case MagicType.AwakenedFireWall:
                         element = Element.Fire;
                         power += magic.GetPower() + GetMC();
                         canStuck = false;
+                        burnChance = 5;
                         break;
                     case MagicType.HellFire:
                         element = Element.Fire;
@@ -14179,7 +14408,6 @@ namespace Server.Models
                         repel = 5;
                         canStuck = false;
                         break;
-
                     case MagicType.ExplosiveTalisman:
                         element = Element.Dark;
                         power += magic.GetPower() + GetSC();
@@ -14219,7 +14447,6 @@ namespace Server.Models
                                 if (ob.Pushed(Functions.ShiftDirection(dir, i * -rotation), 1) > 0) break;
                             }
                         }
-
                         break;
                     case MagicType.FlashOfLight:
                         element = Element.None;
@@ -14284,7 +14511,6 @@ namespace Server.Models
                                     break;
                             }
                         }
-
                         break;
                     case MagicType.DemonExplosion:
                         power = extra;
@@ -14292,7 +14518,6 @@ namespace Server.Models
                         break;
                 }
             }
-
 
             foreach (UserMagic magic in magics)
             {
@@ -14307,6 +14532,8 @@ namespace Server.Models
                             power = (int)(power * 0.3F);
                         break;
                     case MagicType.FireWall:
+                    case MagicType.EnhancedFireWall:
+                    case MagicType.AwakenedFireWall:
                         power = (int)(power * 0.60F);
                         break;
                     case MagicType.Tempest:
@@ -14368,7 +14595,6 @@ namespace Server.Models
 
             power -= ob.GetMR();
 
-
             /* if (Buffs.Any(x => x.Type == BuffType.Renounce))
              {
                  if (ob.Race == ObjectType.Player)
@@ -14419,7 +14645,6 @@ namespace Server.Models
                 ob.Blocked();
                 return 0;
             }
-
 
             int damage = ob.Attacked(this, power, element, false, false, true, canStuck);
 
@@ -14855,25 +15080,20 @@ namespace Server.Models
                     {
                         case AttackMode.Peace:
                             return true;
-
                         case AttackMode.Group:
                             if (InGroup(mob.PetOwner))
                                 return true;
                             break;
-
                         case AttackMode.Guild:
                             if (InGuild(mob.PetOwner))
                                 return true;
                             break;
-
                         case AttackMode.WarRedBrown:
                             if (mob.PetOwner.Stats[Stat.Brown] == 0 && mob.PetOwner.Stats[Stat.PKPoint] < Config.RedPoint && !AtWar(mob.PetOwner))
                                 return true;
                             break;
                     }
-
                     return false;
-
                 default:
                     return false;
             }
@@ -14884,10 +15104,8 @@ namespace Server.Models
             List<UserMagic> magics = (List<UserMagic>)data[0];
             foreach (UserMagic magic in magics)
             {
-
                 switch (magic.Info.Magic)
                 {
-
                     #region Warrior
                     case MagicType.Interchange:
                         InterchangeEnd(magic, (MapObject)data[1]);
@@ -14974,6 +15192,8 @@ namespace Server.Models
                         RepulsionEnd(magic, (Cell)data[1], (MirDirection)data[2]);
                         break;
                     case MagicType.ScortchedEarth:
+                    case MagicType.EnhancedScorchedEarth:
+                    case MagicType.AwakenedScorchedEarth:
                     case MagicType.LightningBeam:
                     case MagicType.FrozenEarth:
                     case MagicType.BlowEarth:
@@ -14985,6 +15205,7 @@ namespace Server.Models
                     case MagicType.IceStorm:
                     case MagicType.DragonTornado:
                     case MagicType.Asteroid:
+                    case MagicType.AwakenedAsteroid:
                         AttackCell(magics, (Cell)data[1], true);
                         break;
                     case MagicType.ChainLightning:
@@ -15000,6 +15221,8 @@ namespace Server.Models
                         ExpelUndeadEnd(magic, (MonsterObject)data[1]);
                         break;
                     case MagicType.FireWall:
+                    case MagicType.EnhancedFireWall:
+                    case MagicType.AwakenedFireWall:
                         FireWallEnd(magic, (Cell)data[1], (int)data[2]);
                         break;
                     case MagicType.MagicShield:
@@ -16248,7 +16471,10 @@ namespace Server.Models
                 [Stat.MaxDC] = 150 * magic.Level,
                 [Stat.MinAC] = -100 * magic.Level,
                 [Stat.MaxAC] = -100 * magic.Level,
-                [Stat.ACPercent] = -15 + magic.Level
+                [Stat.ACPercent] = -15 + magic.Level,
+                [Stat.MinMR] = -100 * magic.Level,
+                [Stat.MaxMR] = -100 * magic.Level,
+                [Stat.MRPercent] = -15 + magic.Level
             };
 
             BuffAdd(BuffType.Might, TimeSpan.FromSeconds(60 + magic.Level * 30), buffStats, false, false, TimeSpan.Zero);

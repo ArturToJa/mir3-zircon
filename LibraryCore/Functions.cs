@@ -204,6 +204,8 @@ namespace Library
                 case MagicType.LightningBall:
                 case MagicType.GustBlast:
                 case MagicType.ScortchedEarth:
+                case MagicType.EnhancedScorchedEarth:
+                case MagicType.AwakenedScorchedEarth:
                 case MagicType.LightningBeam:
                 case MagicType.AdamantineFireBall:
                 case MagicType.IceBlades:
@@ -237,6 +239,8 @@ namespace Library
                 case MagicType.Cyclone:
                 case MagicType.Teleportation:
                 case MagicType.FireWall:
+                case MagicType.EnhancedFireWall:
+                case MagicType.AwakenedFireWall:
                 case MagicType.FireStorm:
                 case MagicType.BlowEarth:
                 case MagicType.ExpelUndead:
@@ -254,6 +258,7 @@ namespace Library
                 case MagicType.ThunderStrike:
                 case MagicType.MirrorImage:
                 case MagicType.Asteroid:
+                case MagicType.AwakenedAsteroid:
 
                 case MagicType.Heal:
                 case MagicType.PoisonDust:

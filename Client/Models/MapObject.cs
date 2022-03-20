@@ -1094,6 +1094,8 @@ namespace Client.Models
                         #region Scortched Earth
 
                         case MagicType.ScortchedEarth:
+                        case MagicType.EnhancedScorchedEarth:
+                        case MagicType.AwakenedScorchedEarth:
                             if (Config.DrawEffects && Race != ObjectType.Monster)
                                 foreach (Point point in MagicLocations)
                                 {
@@ -1381,6 +1383,56 @@ namespace Client.Models
                                 };
                             }
                             break;
+
+                        case MagicType.AwakenedAsteroid:
+                            foreach (Point point in MagicLocations)
+                            {
+                                MirProjectile eff;
+                                Point p = new Point(point.X + 4, point.Y - 10);
+                                Effects.Add(eff = new MirProjectile(1300, 10, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx5, 50, 80, Globals.FireColour, p)
+                                {
+                                    MapTarget = point,
+                                    Skip = 0,
+                                    Explode = true,
+                                    Blend = true,
+                                });
+
+                                eff.CompleteAction = () =>
+                                {
+                                    Effects.Add(new MirEffect(1320, 8, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx5, 100, 100, Globals.NoneColour)
+                                    {
+                                        MapTarget = eff.MapTarget,
+                                        Blend = true,
+                                    });
+                                };
+
+                                Effects.Add(new MirEffect(220, 1, TimeSpan.FromMilliseconds(2500), LibraryFile.ProgUse, 0, 0, Globals.NoneColour)
+                                {
+                                    MapTarget = point,
+                                    StartTime = CEnvir.Now.AddMilliseconds(1700 + Functions.Distance(point, CurrentLocation) * 50),
+                                    Opacity = 0.8F,
+                                    DrawType = DrawType.Floor,
+                                });
+
+                                Effects.Add(new MirEffect(2450 + CEnvir.Random.Next(5) * 10, 10, TimeSpan.FromMilliseconds(250), LibraryFile.Magic, 0, 0, Globals.NoneColour, 1200)
+                                {
+                                    Blend = true,
+                                    MapTarget = point,
+                                    StartTime = CEnvir.Now.AddMilliseconds(1700 + Functions.Distance(point, CurrentLocation) * 50),
+                                    DrawType = DrawType.Floor,
+                                });
+
+                                Effects.Add(new MirEffect(1900, 30, TimeSpan.FromMilliseconds(50), LibraryFile.Magic, 20, 70, Globals.FireColour)
+                                {
+                                    Blend = true,
+                                    MapTarget = point,
+                                    StartTime = CEnvir.Now.AddMilliseconds(1200 + Functions.Distance(point, CurrentLocation) * 50),
+                                    BlendRate = 1F,
+                                });
+                            }
+                            break;
+
+                            
 
                         //Meteor Shower -> Adam Fire Ball
 
@@ -2810,7 +2862,7 @@ namespace Client.Models
 
                         #endregion
 
-                        #region Lightning Beam
+                        #region SeismicSlam
 
                         case MagicType.SeismicSlam:
                         case MagicType.EnhancedSeismicSlam:
@@ -3017,6 +3069,8 @@ namespace Client.Models
                         #region Scortched Earth
 
                         case MagicType.ScortchedEarth:
+                        case MagicType.EnhancedScorchedEarth:
+                        case MagicType.AwakenedScorchedEarth:
                             if (Config.DrawEffects && Race != ObjectType.Monster)
                             {
                                 Effects.Add(spell = new MirEffect(1820, 8, TimeSpan.FromMilliseconds(60), LibraryFile.Magic, 10, 35, Globals.FireColour)
@@ -3075,6 +3129,8 @@ namespace Client.Models
                         #region Fire Wall
 
                         case MagicType.FireWall:
+                        case MagicType.EnhancedFireWall:
+                        case MagicType.AwakenedFireWall:
                             Effects.Add(new MirEffect(910, 10, TimeSpan.FromMilliseconds(60), LibraryFile.Magic, 10, 35, Globals.FireColour)
                             {
                                 Blend = true,
