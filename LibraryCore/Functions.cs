@@ -209,6 +209,7 @@ namespace Library
                 case MagicType.LightningBeam:
                 case MagicType.AdamantineFireBall:
                 case MagicType.IceBlades:
+                case MagicType.AwakenedIceBlades:
                 case MagicType.FrozenEarth:
                 case MagicType.MeteorShower:
 
@@ -219,6 +220,7 @@ namespace Library
                 case MagicType.MassInvisibility:
                 case MagicType.GreaterEvilSlayer:
                 case MagicType.GreaterFrozenEarth:
+                case MagicType.AwakenedFrozenEarth:
                 case MagicType.Infection:
 
                 case MagicType.ElementalSuperiority:
@@ -246,6 +248,8 @@ namespace Library
                 case MagicType.ExpelUndead:
                 case MagicType.MagicShield:
                 case MagicType.IceStorm:
+                case MagicType.EnhancedIceStorm:
+                case MagicType.AwakenedIceStorm:
                 case MagicType.DragonTornado:
                 case MagicType.ChainLightning:
                 case MagicType.GeoManipulation:

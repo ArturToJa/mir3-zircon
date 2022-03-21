@@ -180,6 +180,8 @@ namespace Library.Network.ServerPackets
         public MagicType Type { get; set; }
         public List<uint> Targets { get; set; } = new List<uint>();
         public List<Point> Locations { get; set; } = new List<Point>();
+        public List<Point> SubLocations { get; set; } = new List<Point>();
+        public int Multicast { get; set; }
         public bool Cast { get; set; }
 
         public TimeSpan Slow { get; set; }

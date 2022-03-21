@@ -80,6 +80,8 @@ namespace Client.Models
         public Element AttackElement;
         public List<MapObject> AttackTargets;
         public List<Point> MagicLocations;
+        public List<Point> MagicSubLocations;
+        public int Multicast;
         public bool MagicCast;
         public MirGender Gender;
         public bool MiningEffect;
@@ -999,44 +1001,50 @@ namespace Client.Models
                         #region Ice Blades
 
                         case MagicType.IceBlades:
-                            foreach (Point point in MagicLocations)
+                        case MagicType.AwakenedIceBlades:
+                            for (int i = 0; i < Multicast; i++)
                             {
-                                Effects.Add(spell = new MirProjectile(2960, 6, TimeSpan.FromMilliseconds(50), LibraryFile.Magic, 35, 35, Globals.IceColour, CurrentLocation, typeof(IceBladesTrail))
+                                foreach (Point point in MagicLocations)
                                 {
-                                    Blend = true,
-                                    MapTarget = point,
-                                    Skip = 0,
-                                    BlendRate = 1F,
-                                });
-                                spell.Process();
-                            }
-
-                            foreach (MapObject attackTarget in AttackTargets)
-                            {
-                                Effects.Add(spell = new MirProjectile(2960, 6, TimeSpan.FromMilliseconds(50), LibraryFile.Magic, 35, 35, Globals.IceColour, CurrentLocation, typeof(IceBladesTrail))
-                                {
-                                    Blend = true,
-                                    Target = attackTarget,
-                                    Skip = 0,
-                                    BlendRate = 1F,
-                                });
-
-                                spell.CompleteAction += () =>
-                                {
-                                    attackTarget.Effects.Add(spell = new MirEffect(2970, 10, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 10, 35, Globals.IceColour)
+                                    Effects.Add(spell = new MirProjectile(2960, 6, TimeSpan.FromMilliseconds(50), LibraryFile.Magic, 35, 35, Globals.IceColour, CurrentLocation, typeof(IceBladesTrail))
                                     {
                                         Blend = true,
-                                        Target = attackTarget
+                                        MapTarget = point,
+                                        Skip = 0,
+                                        BlendRate = 1F,
+                                        StartTime = CEnvir.Now.AddMilliseconds(300 * i)
                                     });
                                     spell.Process();
+                                }
 
-                                    DXSoundManager.Play(SoundIndex.GreaterIceBoltEnd);
-                                };
-                                spell.Process();
+                                foreach (MapObject attackTarget in AttackTargets)
+                                {
+                                    Effects.Add(spell = new MirProjectile(2960, 6, TimeSpan.FromMilliseconds(50), LibraryFile.Magic, 35, 35, Globals.IceColour, CurrentLocation, typeof(IceBladesTrail))
+                                    {
+                                        Blend = true,
+                                        Target = attackTarget,
+                                        Skip = 0,
+                                        BlendRate = 1F,
+                                        StartTime = CEnvir.Now.AddMilliseconds(300 * i)
+                                    });
+
+                                    spell.CompleteAction += () =>
+                                    {
+                                        attackTarget.Effects.Add(spell = new MirEffect(2970, 10, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 10, 35, Globals.IceColour)
+                                        {
+                                            Blend = true,
+                                            Target = attackTarget,
+                                        });
+                                        spell.Process();
+
+                                        DXSoundManager.Play(SoundIndex.GreaterIceBoltEnd);
+                                    };
+                                    spell.Process();
+                                }
+
+                                if (MagicLocations.Count > 0 || AttackTargets.Count > 0)
+                                    DXSoundManager.Play(SoundIndex.GreaterIceBoltTravel);
                             }
-
-                            if (MagicLocations.Count > 0 || AttackTargets.Count > 0)
-                                DXSoundManager.Play(SoundIndex.GreaterIceBoltTravel);
                             break;
 
                         #endregion
@@ -1277,6 +1285,8 @@ namespace Client.Models
                         #region Ice Storm
 
                         case MagicType.IceStorm:
+                        case MagicType.EnhancedIceStorm:
+                        case MagicType.AwakenedIceStorm:
                             foreach (Point point in MagicLocations)
                             {
                                 spell = new MirEffect(780, 7, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 10, 35, Globals.IceColour)
@@ -1285,8 +1295,32 @@ namespace Client.Models
                                     MapTarget = point,
                                 };
                                 spell.Process();
-                            }
+                                foreach (Point subOffset in MagicSubLocations)
+                                {
+                                    Point subPoint = Functions.Move(point, (MirDirection)subOffset.X, subOffset.Y);
+                                    Effects.Add(spell = new MirEffect(90, 20, TimeSpan.FromMilliseconds(50), LibraryFile.MagicEx, 20, 70, Globals.IceColour)
+                                    {
+                                        Blend = true,
+                                        MapTarget = subPoint,
+                                        StartTime = CEnvir.Now.AddMilliseconds(500 + Functions.Distance(point, subPoint) * 50),
+                                        Opacity = 0.5F,
+                                    });
 
+                                    spell.CompleteAction = () =>
+                                    {
+                                        Effects.Add(spell = new MirEffect(260, 1, TimeSpan.FromMilliseconds(2500), LibraryFile.ProgUse, 0, 0, Globals.IceColour)
+                                        {
+                                            MapTarget = subPoint,
+                                            Opacity = 0.8F,
+                                            DrawType = DrawType.Floor,
+                                        });
+                                        spell.Process();
+                                    };
+                                    spell.Process();
+                                }
+                                if (MagicSubLocations.Count > 0)
+                                    DXSoundManager.Play(SoundIndex.FrozenEarthEnd);
+                            }
                             DXSoundManager.Play(SoundIndex.IceStormEnd);
                             break;
 
@@ -1313,6 +1347,7 @@ namespace Client.Models
                         #region Greater Frozen Earth
 
                         case MagicType.GreaterFrozenEarth:
+                        case MagicType.AwakenedFrozenEarth:
                             foreach (Point point in MagicLocations)
                             {
                                 Effects.Add(spell = new MirEffect(90, 20, TimeSpan.FromMilliseconds(50), LibraryFile.MagicEx, 20, 70, Globals.IceColour)
@@ -1385,6 +1420,7 @@ namespace Client.Models
                             break;
 
                         case MagicType.AwakenedAsteroid:
+                            Point center = CurrentLocation;
                             foreach (Point point in MagicLocations)
                             {
                                 MirProjectile eff;
@@ -1405,11 +1441,14 @@ namespace Client.Models
                                         Blend = true,
                                     });
                                 };
-
+                                center = point;
+                            }
+                            foreach(Point point in MagicSubLocations)
+                            {
                                 Effects.Add(new MirEffect(220, 1, TimeSpan.FromMilliseconds(2500), LibraryFile.ProgUse, 0, 0, Globals.NoneColour)
                                 {
                                     MapTarget = point,
-                                    StartTime = CEnvir.Now.AddMilliseconds(1700 + Functions.Distance(point, CurrentLocation) * 50),
+                                    StartTime = CEnvir.Now.AddMilliseconds(1700 + Functions.Distance(point, center) * 50),
                                     Opacity = 0.8F,
                                     DrawType = DrawType.Floor,
                                 });
@@ -1418,7 +1457,7 @@ namespace Client.Models
                                 {
                                     Blend = true,
                                     MapTarget = point,
-                                    StartTime = CEnvir.Now.AddMilliseconds(1700 + Functions.Distance(point, CurrentLocation) * 50),
+                                    StartTime = CEnvir.Now.AddMilliseconds(1700 + Functions.Distance(point, center) * 50),
                                     DrawType = DrawType.Floor,
                                 });
 
@@ -1426,7 +1465,7 @@ namespace Client.Models
                                 {
                                     Blend = true,
                                     MapTarget = point,
-                                    StartTime = CEnvir.Now.AddMilliseconds(1200 + Functions.Distance(point, CurrentLocation) * 50),
+                                    StartTime = CEnvir.Now.AddMilliseconds(1200 + Functions.Distance(point, center) * 50),
                                     BlendRate = 1F,
                                 });
                             }
@@ -3041,14 +3080,19 @@ namespace Client.Models
                         #region Ice Blades
 
                         case MagicType.IceBlades:
-                            Effects.Add(spell = new MirEffect(2880, 6, TimeSpan.FromMilliseconds(115), LibraryFile.Magic, 10, 35, Globals.IceColour)
+                        case MagicType.AwakenedIceBlades:
+                            for (int i = 0; i < Multicast; i++)
                             {
-                                Blend = true,
-                                Target = this,
-                                Direction = action.Direction
+                                Effects.Add(spell = new MirEffect(2880, 6, TimeSpan.FromMilliseconds(115), LibraryFile.Magic, 10, 35, Globals.IceColour)
+                                {
+                                    Blend = true,
+                                    Target = this,
+                                    Direction = action.Direction,
+                                    StartTime = CEnvir.Now.AddMilliseconds(300 * i)
                             });
 
-                            DXSoundManager.Play(SoundIndex.GreaterIceBoltStart);
+                                DXSoundManager.Play(SoundIndex.GreaterIceBoltStart);
+                            }
                             break;
 
                         #endregion
@@ -3209,6 +3253,8 @@ namespace Client.Models
                         #region Ice Storm
 
                         case MagicType.IceStorm:
+                        case MagicType.EnhancedIceStorm:
+                        case MagicType.AwakenedIceStorm:
                             Effects.Add(spell = new MirEffect(770, 10, TimeSpan.FromMilliseconds(60), LibraryFile.Magic, 10, 35, Globals.IceColour)
                             {
                                 Blend = true,
@@ -3235,6 +3281,7 @@ namespace Client.Models
                         #region Greater Frozen Earth
 
                         case MagicType.GreaterFrozenEarth:
+                        case MagicType.AwakenedFrozenEarth:
                             Effects.Add(spell = new MirEffect(0, 10, TimeSpan.FromMilliseconds(50), LibraryFile.MagicEx, 10, 35, Globals.IceColour)
                             {
                                 Blend = true,

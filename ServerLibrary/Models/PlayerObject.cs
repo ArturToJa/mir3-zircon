@@ -11304,6 +11304,7 @@ namespace Server.Models
                 case MagicType.AdamantineFireBall:
                 case MagicType.ThunderBolt:
                 case MagicType.IceBlades:
+                case MagicType.AwakenedIceBlades:
                 case MagicType.Cyclone:
                 case MagicType.ScortchedEarth:
                 case MagicType.EnhancedScorchedEarth:
@@ -11322,8 +11323,11 @@ namespace Server.Models
                 case MagicType.MagicShield:
                 case MagicType.FrostBite:
                 case MagicType.IceStorm:
+                case MagicType.EnhancedIceStorm:
+                case MagicType.AwakenedIceStorm:
                 case MagicType.DragonTornado:
                 case MagicType.GreaterFrozenEarth:
+                case MagicType.AwakenedFrozenEarth:
                 case MagicType.ChainLightning:
                 case MagicType.MeteorShower:
                 case MagicType.Renounce:
@@ -11443,6 +11447,8 @@ namespace Server.Models
             bool cast = true;
             List<uint> targets = new List<uint>();
             List<Point> locations = new List<Point>();
+            List<Point> subLocations = new List<Point>();
+            int multicast = 1;
 
             List<Cell> cells;
             Stats stats;
@@ -11651,6 +11657,25 @@ namespace Server.Models
                         ActionType.DelayMagic,
                         new List<UserMagic> { magic },
                         ob));
+                    break;
+                case MagicType.AwakenedIceBlades:
+                    if (!CanAttackTarget(ob))
+                    {
+                        locations.Add(p.Location);
+                        ob = null;
+                        break;
+                    }
+
+                    targets.Add(ob.ObjectID);
+                    multicast = SEnvir.Random.Next(2, 6);
+                    for(int i = 0; i < multicast; i++)
+                    {
+                        ActionList.Add(new DelayedAction(
+                        SEnvir.Now.AddMilliseconds((300 * i) + 500 + Functions.Distance(CurrentLocation, ob.CurrentLocation) * 48),
+                        ActionType.DelayMagic,
+                        new List<UserMagic> { magic },
+                        ob));
+                    }
                     break;
                 case MagicType.ThunderBolt:
                 case MagicType.Cyclone:
@@ -12053,7 +12078,6 @@ namespace Server.Models
                     break;
                 case MagicType.LightningWave:
                 case MagicType.IceStorm:
-
                     ob = null;
 
                     if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
@@ -12072,6 +12096,222 @@ namespace Server.Models
                             ActionType.DelayMagic,
                             new List<UserMagic> { magic },
                             cell));
+                    }
+                    break;
+                case MagicType.EnhancedIceStorm:
+                    ob = null;
+
+                    if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
+                    {
+                        cast = false;
+                        break;
+                    }
+
+                    locations.Add(p.Location);
+                    cells = CurrentMap.GetCells(p.Location, 0, 1);
+
+                    foreach (Cell cell in cells)
+                    {
+                        ActionList.Add(new DelayedAction(
+                            SEnvir.Now.AddMilliseconds(500),
+                            ActionType.DelayMagic,
+                            new List<UserMagic> { magic },
+                            cell));
+                    }
+
+                    UserMagic frozenEarth = null;
+                    if (!Magics.TryGetValue(MagicType.FrozenEarth, out frozenEarth))
+                        if (!Magics.TryGetValue(MagicType.GreaterFrozenEarth, out frozenEarth))
+                            if (!Magics.TryGetValue(MagicType.AwakenedFrozenEarth, out frozenEarth))
+                                frozenEarth = null;
+
+                    if (frozenEarth != null)
+                    {
+                        MirDirection StartDirection = MirDirection.Up;
+                        for (int j = 0; j < 8; j++)
+                        {
+                            MirDirection Direction = Functions.ShiftDirection(StartDirection, j);
+                            for (int i = 1; i <= 8; i++)
+                            {
+                                location = Functions.Move(p.Location, Direction, i);
+                                Cell cell = CurrentMap.GetCell(location);
+
+                                if (cell == null) continue;
+                                subLocations.Add(new Point((int)Direction, i));
+
+                                ActionList.Add(new DelayedAction(
+                                    SEnvir.Now.AddMilliseconds(1300),
+                                    ActionType.DelayMagic,
+                                    new List<UserMagic> { frozenEarth },
+                                    cell,
+                                    true));
+
+                                switch (Direction)
+                                {
+                                    case MirDirection.Up:
+                                    case MirDirection.Right:
+                                    case MirDirection.Down:
+                                    case MirDirection.Left:
+                                        ActionList.Add(new DelayedAction(
+                                            SEnvir.Now.AddMilliseconds(1300),
+                                            ActionType.DelayMagic,
+                                            new List<UserMagic> { frozenEarth },
+                                            CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -2))),
+                                            false));
+                                        ActionList.Add(new DelayedAction(
+                                            SEnvir.Now.AddMilliseconds(1300),
+                                            ActionType.DelayMagic,
+                                            new List<UserMagic> { magic },
+                                            CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 2))),
+                                            false));
+                                        break;
+                                    case MirDirection.UpRight:
+                                    case MirDirection.DownRight:
+                                    case MirDirection.DownLeft:
+                                    case MirDirection.UpLeft:
+                                        ActionList.Add(new DelayedAction(
+                                            SEnvir.Now.AddMilliseconds(1300),
+                                            ActionType.DelayMagic,
+                                            new List<UserMagic> { frozenEarth },
+                                            CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 1))),
+                                            false));
+                                        ActionList.Add(new DelayedAction(
+                                            SEnvir.Now.AddMilliseconds(1300),
+                                            ActionType.DelayMagic,
+                                            new List<UserMagic> { frozenEarth },
+                                            CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -1))),
+                                            false));
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case MagicType.AwakenedIceStorm:
+                    ob = null;
+
+                    if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
+                    {
+                        cast = false;
+                        break;
+                    }
+
+                    magics = new List<UserMagic> { magic };
+
+                    realTargets = new HashSet<MapObject>();
+
+                    possibleTargets = GetTargets(CurrentMap, p.Location, 3);
+
+                    while (realTargets.Count < 6 + magic.Level)
+                    {
+                        if (possibleTargets.Count == 0) break;
+
+                        MapObject target = possibleTargets[SEnvir.Random.Next(possibleTargets.Count)];
+
+                        possibleTargets.Remove(target);
+
+                        if (!Functions.InRange(CurrentLocation, target.CurrentLocation, Globals.MagicRange)) continue;
+
+                        realTargets.Add(target);
+                    }
+                    bool shouldUseFrozenEarth = SEnvir.Random.Next(6) == 0;
+                    frozenEarth = null;
+                    if (shouldUseFrozenEarth)
+                    {
+                        
+                        if (!Magics.TryGetValue(MagicType.FrozenEarth, out frozenEarth))
+                            if (!Magics.TryGetValue(MagicType.GreaterFrozenEarth, out frozenEarth))
+                                if (!Magics.TryGetValue(MagicType.AwakenedFrozenEarth, out frozenEarth))
+                                    frozenEarth = null;
+
+                        if (frozenEarth != null)
+                        {
+                            MirDirection StartDirection = MirDirection.Up;
+                            for (int j = 0; j < 8; j++)
+                            {
+                                MirDirection Direction = Functions.ShiftDirection(StartDirection, j);
+                                for (int i = 1; i <= 8; i++)
+                                {
+                                    subLocations.Add(new Point((int)Direction, i));
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (MapObject target in realTargets)
+                    {
+                        locations.Add(target.CurrentLocation);
+                        cells = CurrentMap.GetCells(target.CurrentLocation, 0, 1);
+
+                        foreach (Cell cell in cells)
+                        {
+                            ActionList.Add(new DelayedAction(
+                                SEnvir.Now.AddMilliseconds(500),
+                                ActionType.DelayMagic,
+                                new List<UserMagic> { magic },
+                                cell));
+                        }
+                        if (frozenEarth != null)
+                        {
+                            MirDirection StartDirection = MirDirection.Up;
+                            for (int j = 0; j < 8; j++)
+                            {
+                                MirDirection Direction = Functions.ShiftDirection(StartDirection, j);
+                                for (int i = 1; i <= 8; i++)
+                                {
+                                    location = Functions.Move(target.CurrentLocation, Direction, i);
+                                    Cell cell = CurrentMap.GetCell(location);
+
+                                    if (cell == null) continue;
+                                    //subLocations.Add(new Point((int)Direction, i));
+
+                                    ActionList.Add(new DelayedAction(
+                                        SEnvir.Now.AddMilliseconds(1300),
+                                        ActionType.DelayMagic,
+                                        new List<UserMagic> { frozenEarth },
+                                        cell,
+                                        true));
+
+                                    switch (Direction)
+                                    {
+                                        case MirDirection.Up:
+                                        case MirDirection.Right:
+                                        case MirDirection.Down:
+                                        case MirDirection.Left:
+                                            ActionList.Add(new DelayedAction(
+                                                SEnvir.Now.AddMilliseconds(1300),
+                                                ActionType.DelayMagic,
+                                                new List<UserMagic> { frozenEarth },
+                                                CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -2))),
+                                                false));
+                                            ActionList.Add(new DelayedAction(
+                                                SEnvir.Now.AddMilliseconds(1300),
+                                                ActionType.DelayMagic,
+                                                new List<UserMagic> { magic },
+                                                CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 2))),
+                                                false));
+                                            break;
+                                        case MirDirection.UpRight:
+                                        case MirDirection.DownRight:
+                                        case MirDirection.DownLeft:
+                                        case MirDirection.UpLeft:
+                                            ActionList.Add(new DelayedAction(
+                                                SEnvir.Now.AddMilliseconds(1300),
+                                                ActionType.DelayMagic,
+                                                new List<UserMagic> { frozenEarth },
+                                                CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 1))),
+                                                false));
+                                            ActionList.Add(new DelayedAction(
+                                                SEnvir.Now.AddMilliseconds(1300),
+                                                ActionType.DelayMagic,
+                                                new List<UserMagic> { frozenEarth },
+                                                CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -1))),
+                                                false));
+                                            break;
+                                    }
+                                }
+                            }
+                        }
                     }
                     break;
                 case MagicType.Asteroid:
@@ -12156,18 +12396,17 @@ namespace Server.Models
 
                     if(scorchedEarth != null)
                     {
-                        List<Point> seLocations = new List<Point>();
                         MirDirection StartDirection = MirDirection.Up;
                         for (int j = 0; j < 8; j++)
                         {
                             MirDirection Direction = Functions.ShiftDirection(StartDirection, j);
                             for (int i = 1; i <= 8; i++)
                             {
-                                location = Functions.Move(CurrentLocation, Direction, i);
+                                location = Functions.Move(p.Location, Direction, i);
                                 Cell cell = CurrentMap.GetCell(location);
 
                                 if (cell == null) continue;
-                                seLocations.Add(cell.Location);
+                                subLocations.Add(cell.Location);
 
                                 ActionList.Add(new DelayedAction(
                                     SEnvir.Now.AddMilliseconds(2000),
@@ -12187,13 +12426,13 @@ namespace Server.Models
                                             ActionType.DelayMagic,
                                             new List<UserMagic> { scorchedEarth },
                                             CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -2))),
-                                            scorchedEarth.Info.Magic == MagicType.AwakenedScorchedEarth));
+                                            scorchedEarth.Info.Magic != MagicType.ScortchedEarth));
                                         ActionList.Add(new DelayedAction(
                                             SEnvir.Now.AddMilliseconds(2000),
                                             ActionType.DelayMagic,
                                             new List<UserMagic> { magic },
                                             CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 2))),
-                                            scorchedEarth.Info.Magic == MagicType.AwakenedScorchedEarth));
+                                            scorchedEarth.Info.Magic != MagicType.ScortchedEarth));
                                         break;
                                     case MirDirection.UpRight:
                                     case MirDirection.DownRight:
@@ -12204,27 +12443,17 @@ namespace Server.Models
                                             ActionType.DelayMagic,
                                             new List<UserMagic> { scorchedEarth },
                                             CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 1))),
-                                            scorchedEarth.Info.Magic == MagicType.AwakenedScorchedEarth));
+                                            scorchedEarth.Info.Magic != MagicType.ScortchedEarth));
                                         ActionList.Add(new DelayedAction(
                                             SEnvir.Now.AddMilliseconds(2000),
                                             ActionType.DelayMagic,
                                             new List<UserMagic> { scorchedEarth },
                                             CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -1))),
-                                            scorchedEarth.Info.Magic == MagicType.AwakenedScorchedEarth));
+                                            scorchedEarth.Info.Magic != MagicType.ScortchedEarth));
                                         break;
                                 }
                             }
                         }
-                        Broadcast(new S.ObjectMagic
-                        {
-                            ObjectID = ObjectID,
-                            Direction = Direction,
-                            CurrentLocation = CurrentLocation,
-                            Type = scorchedEarth.Info.Magic,
-                            Targets = targets,
-                            Locations = seLocations,
-                            Cast = cast,
-                        });
                     }
                     
                     if (Magics.TryGetValue(MagicType.AwakenedFireWall, out augMagic) && augMagic.Info.NeedLevel1 > Level)
@@ -12316,6 +12545,7 @@ namespace Server.Models
                         p.Location));
                     break;
                 case MagicType.GreaterFrozenEarth:
+                case MagicType.AwakenedFrozenEarth:
                     ob = null;
 
                     for (int d = -1; d <= 1; d++)
@@ -13461,8 +13691,10 @@ namespace Server.Models
                 Type = p.Type,
                 Targets = targets,
                 Locations = locations,
+                SubLocations = subLocations,
                 Cast = cast,
-                Slow = slow
+                Slow = slow,
+                Multicast = multicast
             });
         }
         public void MagicToggle(C.MagicToggle p)
@@ -14308,7 +14540,7 @@ namespace Server.Models
             int slow = 0, slowLevel = 0, repel = 0, silence = 0;
 
             bool canStuck = true;
-            int burnChance = 0;
+            int burnChance = 0, burnPower = 1;
 
             int power = 0;
             UserMagic asteroid = null;
@@ -14325,19 +14557,20 @@ namespace Server.Models
                     case MagicType.MeteorShower:
                         element = Element.Fire;
                         power += (magic.GetPower() * GetMC()) / 10;
-                        burnChance = 5;
+                        burnChance = 20;
                         break;
                     case MagicType.AwakenedScorchedEarth:
                         element = Element.Fire;
                         power += magic.GetPower() + GetMC();
                         burnChance = 10;
+                        burnPower = 3;
                         break;
                     case MagicType.Asteroid:
                     case MagicType.AwakenedAsteroid:
                         element = Element.Fire;
                         asteroid = magic;
                         canStuck = false;
-                        burnChance = 5;
+                        burnChance = 20;
                         break;
                     case MagicType.FireWall:
                     case MagicType.EnhancedFireWall:
@@ -14345,7 +14578,7 @@ namespace Server.Models
                         element = Element.Fire;
                         power += magic.GetPower() + GetMC();
                         canStuck = false;
-                        burnChance = 5;
+                        burnChance = 20;
                         break;
                     case MagicType.HellFire:
                         element = Element.Fire;
@@ -14353,24 +14586,33 @@ namespace Server.Models
                         break;
                     case MagicType.IceBolt:
                     case MagicType.FrozenEarth:
-                        slowLevel = 3;
-                        element = Element.Ice;
-                        power += magic.GetPower() + GetMC();
-                        slow = 10;
-                        break;
-                    case MagicType.IceBlades:
-                    case MagicType.GreaterFrozenEarth:
-                    case MagicType.IceStorm:
                         slowLevel = 5;
                         element = Element.Ice;
                         power += magic.GetPower() + GetMC();
-                        slow = 5;
+                        slow = 20;
+                        break;
+                    case MagicType.IceBlades:
+                    case MagicType.AwakenedIceBlades:
+                    case MagicType.GreaterFrozenEarth:
+                    case MagicType.IceStorm:
+                    case MagicType.EnhancedIceStorm:
+                    case MagicType.AwakenedIceStorm:
+                        slowLevel = 5;
+                        element = Element.Ice;
+                        power += magic.GetPower() + GetMC();
+                        slow = 20;
+                        break;
+                    case MagicType.AwakenedFrozenEarth:
+                        slowLevel = 10;
+                        element = Element.Ice;
+                        power += magic.GetPower() + GetMC();
+                        slow = 10;
                         break;
                     case MagicType.FrostBite:
                         slowLevel = 5;
                         element = Element.Ice;
                         power += Math.Min(stats[Stat.FrostBiteDamage], stats[Stat.FrostBiteMaxDamage]) - Stats[Stat.IceAttack] * 2;
-                        slow = 5;
+                        slow = 20;
                         break;
                     case MagicType.LightningBall:
                     case MagicType.ThunderBolt:
@@ -14665,7 +14907,7 @@ namespace Server.Models
                 });
             }
 
-            if (ob.Race != ObjectType.Player && SEnvir.Random.Next(psnRate) < Stats[Stat.SlowChance])
+            if (SEnvir.Random.Next(psnRate) < Stats[Stat.SlowChance])
             {
                 ob.ApplyPoison(new Poison
                 {
@@ -14688,92 +14930,61 @@ namespace Server.Models
                 });
             }
 
-            switch (ob.Race)
+            if (slow > 0 && SEnvir.Random.Next(slow) == 0 && !((MonsterObject)ob).MonsterInfo.IsBoss)
             {
-                case ObjectType.Player:
-                    /*   if (slow > 0 && SEnvir.Random.Next(slow) == 0 && Level > ob.Level)
-                       {
-                           TimeSpan duration = TimeSpan.FromSeconds(3 + SEnvir.Random.Next(3));
-                           if (ob.Race == ObjectType.Monster)
-                           {
-                               slowLevel *= 2;
-                               duration += duration;
-                           }
+                TimeSpan duration = TimeSpan.FromSeconds(3 + SEnvir.Random.Next(3));
 
+                slowLevel *= 2;
+                duration += duration;
 
-                           ob.ApplyPoison(new Poison
-                           {
-                               Type = PoisonType.Slow,
-                               Value = slowLevel,
-                               TickCount = 1,
-                               TickFrequency = duration,
-                               Owner = this,
-                           });*/
-                    /*
-
-                    if (repel > 0 && ob.CurrentMap == CurrentMap && Level  > ob.Level && SEnvir.Random.Next(repel) == 0)
-                    {
-                        MirDirection dir = Functions.DirectionFromPoint(CurrentLocation, ob.CurrentLocation);
-                        if (ob.Pushed(dir, 1) == 0)
-                        {
-                            int rotation = SEnvir.Random.Next(2) == 0 ? 1 : -1;
-
-                            for (int i = 1; i < 2; i++)
-                            {
-                                if (ob.Pushed(Functions.ShiftDirection(dir, i * rotation), 1) > 0) break;
-                                if (ob.Pushed(Functions.ShiftDirection(dir, i * -rotation), 1) > 0) break;
-                            }
-                        }
-                    }*/
-                    break;
-                case ObjectType.Monster:
-                    if (slow > 0 && SEnvir.Random.Next(slow) == 0 && !((MonsterObject)ob).MonsterInfo.IsBoss)
-                    {
-                        TimeSpan duration = TimeSpan.FromSeconds(3 + SEnvir.Random.Next(3));
-
-                        slowLevel *= 2;
-                        duration += duration;
-
-                        ob.ApplyPoison(new Poison
-                        {
-                            Type = PoisonType.Slow,
-                            Value = slowLevel,
-                            TickCount = 1,
-                            TickFrequency = duration,
-                            Owner = this,
-                        });
-                    }
-
-                    if (repel > 0 && ob.CurrentMap == CurrentMap && Level > ob.Level && SEnvir.Random.Next(repel) == 0)
-                    {
-                        MirDirection dir = Functions.DirectionFromPoint(CurrentLocation, ob.CurrentLocation);
-                        if (ob.Pushed(dir, 1) == 0)
-                        {
-                            int rotation = SEnvir.Random.Next(2) == 0 ? 1 : -1;
-
-                            for (int i = 1; i < 2; i++)
-                            {
-                                if (ob.Pushed(Functions.ShiftDirection(dir, i * rotation), 1) > 0) break;
-                                if (ob.Pushed(Functions.ShiftDirection(dir, i * -rotation), 1) > 0) break;
-                            }
-                        }
-                    }
-
-                    if (silence > 0 && !((MonsterObject)ob).MonsterInfo.IsBoss)
-                    {
-                        ob.ApplyPoison(new Poison
-                        {
-                            Type = PoisonType.Silenced,
-                            Value = slowLevel,
-                            TickCount = 1,
-                            TickFrequency = TimeSpan.FromSeconds(silence),
-                            Owner = this,
-                        });
-                    }
-
-                    break;
+                ob.ApplyPoison(new Poison
+                {
+                    Type = PoisonType.Slow,
+                    Value = slowLevel,
+                    TickCount = 1,
+                    TickFrequency = duration,
+                    Owner = this,
+                });
             }
 
+            if (repel > 0 && ob.CurrentMap == CurrentMap && Level > ob.Level && SEnvir.Random.Next(repel) == 0)
+            {
+                MirDirection dir = Functions.DirectionFromPoint(CurrentLocation, ob.CurrentLocation);
+                if (ob.Pushed(dir, 1) == 0)
+                {
+                    int rotation = SEnvir.Random.Next(2) == 0 ? 1 : -1;
+
+                    for (int i = 1; i < 2; i++)
+                    {
+                        if (ob.Pushed(Functions.ShiftDirection(dir, i * rotation), 1) > 0) break;
+                        if (ob.Pushed(Functions.ShiftDirection(dir, i * -rotation), 1) > 0) break;
+                    }
+                }
+            }
+
+            if (silence > 0 && !((MonsterObject)ob).MonsterInfo.IsBoss)
+            {
+                ob.ApplyPoison(new Poison
+                {
+                    Type = PoisonType.Silenced,
+                    Value = slowLevel,
+                    TickCount = 1,
+                    TickFrequency = TimeSpan.FromSeconds(silence),
+                    Owner = this,
+                });
+            }
+
+            if (burnChance > 0 && SEnvir.Random.Next(burnChance) == 0)
+            {
+                ob.ApplyPoison(new Poison
+                {
+                    Type = PoisonType.Burn,
+                    Value = burnPower * ob.Stats[Stat.Health] / 100,
+                    TickCount = 3,
+                    TickFrequency = TimeSpan.FromSeconds(1),
+                    Owner = this,
+                });
+            }
             CheckBrown(ob);
 
             /*foreach (UserMagic magic in magics)
@@ -15182,6 +15393,7 @@ namespace Server.Models
                     case MagicType.GustBlast:
                     case MagicType.AdamantineFireBall:
                     case MagicType.IceBlades:
+                    case MagicType.AwakenedIceBlades:
                     case MagicType.Cyclone:
                     case MagicType.MeteorShower:
                     case MagicType.ThunderStrike:
@@ -15203,6 +15415,8 @@ namespace Server.Models
                     case MagicType.FireStorm:
                     case MagicType.LightningWave:
                     case MagicType.IceStorm:
+                    case MagicType.EnhancedIceStorm:
+                    case MagicType.AwakenedIceStorm:
                     case MagicType.DragonTornado:
                     case MagicType.Asteroid:
                     case MagicType.AwakenedAsteroid:

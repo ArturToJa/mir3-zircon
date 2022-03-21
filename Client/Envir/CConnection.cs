@@ -1069,6 +1069,8 @@ namespace Client.Envir
                 }
 
                 MapObject.User.MagicLocations = p.Locations;
+                MapObject.User.MagicSubLocations = p.SubLocations;
+                MapObject.User.Multicast = p.Multicast;
                 MapObject.User.MagicCast = p.Cast;
                 MapObject.User.NextActionTime += p.Slow;
                 return;
