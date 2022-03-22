@@ -8216,7 +8216,6 @@ namespace Server.Models
         {
             if (SEnvir.FortuneCheckerInfo == null) return;
 
-
             long count = GetItemCount(SEnvir.FortuneCheckerInfo);
 
             if (count == 0)

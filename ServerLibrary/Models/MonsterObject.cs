@@ -2677,7 +2677,6 @@ namespace Server.Models
             if (PetOwner == null && CurrentMap != null)
                 rate *= 1 + MapDropRate / 100M;
 
-
             bool result = false;
 
             List<UserItem> drops = null;
@@ -2712,27 +2711,8 @@ namespace Server.Models
                     chance = (long)(int.MaxValue / (drop.Chance * players) * rate);
                 }
 
-
-                UserDrop userDrop = owner.Character.Account.UserDrops.FirstOrDefault(x => x.Item == drop.Item);
-
-                if (userDrop == null)
-                {
-                    userDrop = SEnvir.UserDropList.CreateNewObject();
-                    userDrop.Item = drop.Item;
-                    userDrop.Account = owner.Character.Account;
-                }
-
-                decimal progress = chance / (decimal)int.MaxValue;
-
-                progress *= amount;
-
-                if (!drop.PartOnly)
-                    userDrop.Progress += progress;
-
-                if (drop.PartOnly ||
-                    ((SEnvir.Random.Next() > chance ||
-                      (drop.Item.Effect != ItemEffect.Gold && owner.Character.Account.ItemBot)) &&
-                     ((long)userDrop.Progress <= userDrop.DropCount || drop.Item.Effect == ItemEffect.Gold)))
+                if (SEnvir.Random.Next() > chance ||
+                      (drop.Item.Effect != ItemEffect.Gold && owner.Character.Account.ItemBot))
                 {
                     if (drop.Item.PartCount <= 1) continue;
 
@@ -2740,15 +2720,12 @@ namespace Server.Models
                             ? chance
                             : (chance * drop.Item.PartCount))) continue;
 
-
                     result = true;
-
 
                     UserItem item = SEnvir.CreateDropItem(SEnvir.ItemPartInfo);
 
                     item.AddStat(Stat.ItemIndex, drop.Item.Index, StatSource.Added);
                     item.StatsChanged();
-
 
                     item.IsTemporary = true;
 
@@ -2772,9 +2749,7 @@ namespace Server.Models
                         continue;
                     }
 
-
                     Cell cell = GetDropLocation(Config.DropDistance, owner) ?? CurrentCell;
-
 
                     ItemObject ob = new ItemObject
                     {
@@ -2797,17 +2772,10 @@ namespace Server.Models
                             ob.Item.ExpireTime);
 
                         if (owner.Companion.CanGainItems(true, check)) ob.PickUpItem(owner.Companion);
-
                     }
-
                     continue;
                 }
 
-
-                if (drop.Item.Effect != ItemEffect.Gold && Math.Floor(userDrop.Progress) > userDrop.DropCount + amount)
-                    amount = (long)(userDrop.Progress - userDrop.DropCount);
-
-                userDrop.DropCount += amount;
                 if(Config.AutoPickGold && drop.Item.Effect == ItemEffect.Gold)
                 {
                     owner.Gold += amount;
@@ -2848,7 +2816,6 @@ namespace Server.Models
                         MonsterDrop = true,
                     };
 
-
                     ob.Spawn(CurrentMap, cell.Location);
 
                     if (owner.Stats[Stat.CompanionCollection] > 0 && owner.Companion != null)
@@ -2863,7 +2830,6 @@ namespace Server.Models
                             ob.Item.ExpireTime);
 
                         if (owner.Companion.CanGainItems(true, check)) ob.PickUpItem(owner.Companion);
-
                     }
                 }
             }
