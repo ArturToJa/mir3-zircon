@@ -150,7 +150,7 @@ namespace PatchManager
                 PatchInformation file = current[i];
                 PatchInformation lFile = live?.FirstOrDefault(x => x.FileName == file.FileName);
 
-                if (lFile != null && DateTime.Compare(lFile.ModifiedDate, file.ModifiedDate) == 0)//IsMatch(lFile.CheckSum, file.CheckSum))
+                if (lFile != null && IsMatch(lFile.CheckSum, file.CheckSum))
                 {
                     file.CompressedLength = lFile.CompressedLength;
                     return;
