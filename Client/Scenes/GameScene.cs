@@ -3039,7 +3039,7 @@ namespace Client.Scenes
             if (MouseObject != null && MouseObject.Race == ObjectType.Monster)
                 FocusObject = (MonsterObject) MouseObject;
 
-            User.MagicAction = new ObjectAction(MirAction.Spell, direction, MapObject.User.CurrentLocation, magic.Info.Magic, new List<uint> { targetID }, new List<Point> { targetLocation }, false);
+            User.MagicAction = new ObjectAction(MirAction.Spell, direction, MapObject.User.CurrentLocation, magic.Info.Magic, new List<uint> { targetID }, new List<Point> { targetLocation }, false, new List<Point>());
         }
         private bool CanAttackTarget(MapObject ob)
         {
