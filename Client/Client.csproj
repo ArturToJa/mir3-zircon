@@ -103,6 +103,11 @@
     <Compile Include="Envir\Translations\ChineseMessages.cs" />
     <Compile Include="Envir\Translations\EnglishMessages.cs" />
     <Compile Include="Envir\Translations\StringMessages.cs" />
+    <Compile Include="Models\ClassSpecific\Assassin\AssassinSoundPlayer.cs" />
+    <Compile Include="Models\ClassSpecific\BaseSoundPlayer.cs" />
+    <Compile Include="Models\ClassSpecific\CommonSoundPlayer.cs" />
+    <Compile Include="Models\ClassSpecific\FemaleSoundPlayer.cs" />
+    <Compile Include="Models\ClassSpecific\MaleSoundPlayer.cs" />
     <Compile Include="Models\MirLibrary.cs" />
     <Compile Include="Models\DamageInfo.cs" />
     <Compile Include="Models\ItemObject.cs" />
@@ -212,6 +217,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Zircon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\ClassSpecific\Taoist\" />
+    <Folder Include="Models\ClassSpecific\Warrior\" />
+    <Folder Include="Models\ClassSpecific\Wizard\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

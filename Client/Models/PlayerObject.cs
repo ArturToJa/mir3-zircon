@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Client.Controls;
 using Client.Envir;
+using Client.Models.ClassSpecific;
 using Client.Scenes;
 using Library;
 using SlimDX;
@@ -19,6 +20,8 @@ namespace Client.Models
 {
     public class PlayerObject : MapObject
     {
+        public SoundPlayer soundPlayer;
+
         public override ObjectType Race => ObjectType.Player;
 
         public const int FemaleOffSet = 5000, AssassinOffSet = 50000, RightHandOffSet = 50;
@@ -173,7 +176,6 @@ namespace Client.Models
         };
         #endregion
 
-
         public string GuildRank
         {
             get { return _GuildRank; }
@@ -187,7 +189,6 @@ namespace Client.Models
             }
         }
         private string _GuildRank;
-
 
         public virtual MirClass Class { get; set; }
 
@@ -228,7 +229,6 @@ namespace Client.Models
 
         public bool DrawWeapon;
 
-
         public int CharacterIndex;
 
         public string FiltersClass;
@@ -250,6 +250,8 @@ namespace Client.Models
 
             Class = info.Class;
             Gender = info.Gender;
+
+            soundPlayer = new SoundPlayer(Gender, Class);
 
             Poison = info.Poison;
 
@@ -997,7 +999,6 @@ namespace Client.Models
 
                 if (!CEnvir.LibraryList.TryGetValue(LibraryFile.Interface, out library)) return;
 
-
                 float percent = Math.Min(1, Math.Max(0, data.Health / (float)data.MaxHealth));
 
                 if (percent == 0) return;
@@ -1016,7 +1017,6 @@ namespace Client.Models
 
                 if (!CEnvir.LibraryList.TryGetValue(LibraryFile.Interface, out library)) return;
 
-
                 float percent = Math.Min(1, Math.Max(0, data.Mana / (float)data.MaxMana));
 
                 if (percent == 0) return;
@@ -1024,7 +1024,6 @@ namespace Client.Models
                 Size size = library.GetSize(79);
 
                 Color color = Color.DodgerBlue;
-
 
                 library.Draw(80, DrawX, DrawY - 51, Color.White, false, 1F, ImageType.Image);
                 library.Draw(79, DrawX + 1, DrawY - 51 + 1, color, new Rectangle(0, 0, (int)(size.Width * percent), size.Height), 1F, ImageType.Image);
@@ -1166,7 +1165,6 @@ namespace Client.Models
                         break;
                 }
             }
-
         }
 
         public override bool MouseOver(Point p)
@@ -1186,8 +1184,6 @@ namespace Client.Models
             if (LibraryWeaponShape >= 0 && WeaponLibrary2 != null && WeaponLibrary2.VisiblePixel(WeaponFrame, new Point(p.X - DrawX, p.Y - DrawY), false, true))
                 return true;
 
-
-
             switch (CurrentAnimation)
             {
                 case MirAnimation.HorseStanding:
@@ -1198,65 +1194,20 @@ namespace Client.Models
                         return true;
                     break;
             }
-
             return false;
         }
 
         public override void PlayStruckSound()
         {
-            DXSoundManager.Play(Gender == MirGender.Male ? SoundIndex.MaleStruck : SoundIndex.FemaleStruck);
-            DXSoundManager.Play(SoundIndex.GenericStruckPlayer);
+            soundPlayer.PlayStruckSound();
         }
         public override void PlayDieSound()
         {
-            DXSoundManager.Play(Gender == MirGender.Male ? SoundIndex.MaleDie : SoundIndex.FemaleDie);
+            soundPlayer.PlayDieSound();
         }
         public override void PlayAttackSound()
         {
-            if (Class != MirClass.Assassin)
-                PlayCommonSounds();
-            else
-                PlayAssassinSounds();
-        }
-
-        private void PlayAssassinSounds()
-        {
-
-            if (LibraryWeaponShape >= 1200)
-                DXSoundManager.Play(SoundIndex.ClawAttack);
-            else if (LibraryWeaponShape >= 1100)
-                DXSoundManager.Play(SoundIndex.GlaiveAttack);
-            else
-                PlayCommonSounds(); //?
-        }
-        private void PlayCommonSounds()
-        {
-            switch (LibraryWeaponShape)
-            {
-                case 100:
-                    DXSoundManager.Play(SoundIndex.WandSwing);
-                    break;
-                case 9:
-                case 101:
-                    DXSoundManager.Play(SoundIndex.WoodSwing);
-                    break;
-                case 102:
-                    DXSoundManager.Play(SoundIndex.AxeSwing);
-                    break;
-                case 103:
-                    DXSoundManager.Play(SoundIndex.DaggerSwing);
-                    break;
-                case 104:
-                    DXSoundManager.Play(SoundIndex.ShortSwordSwing);
-                    break;
-                case 26:
-                case 105:
-                    DXSoundManager.Play(SoundIndex.IronSwordSwing);
-                    break;
-                default:
-                    DXSoundManager.Play(SoundIndex.FistSwing);
-                    break;
-            }
+            soundPlayer.PlayAttackSound(LibraryWeaponShape);
         }
     }
 }

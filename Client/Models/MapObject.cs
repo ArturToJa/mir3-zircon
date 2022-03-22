@@ -859,6 +859,8 @@ namespace Client.Models
                         #region Electric Shock
 
                         case MagicType.ElectricShock:
+                        case MagicType.EnhancedElectricShock:
+                        case MagicType.AwakenedElectricShock:
                             foreach (Point point in MagicLocations)
                             {
                                 spell = new MirEffect(10, 10, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 10, 35, Globals.LightningColour)
@@ -1139,7 +1141,20 @@ namespace Client.Models
                         #region Lightning Beam
 
                         case MagicType.LightningBeam:
+                        case MagicType.EnhancedThunderBeam:
+                        case MagicType.AwakenedThunderBeam:
                             if (Config.DrawEffects && Race != ObjectType.Monster)
+                            {
+                                foreach (MapObject attackTarget in AttackTargets)
+                                {
+                                    spell = new MirEffect(1450, 3, TimeSpan.FromMilliseconds(150), LibraryFile.Magic, 150, 50, Globals.LightningColour)
+                                    {
+                                        Blend = true,
+                                        Target = attackTarget
+                                    };
+                                    spell.Process();
+                                }
+
                                 foreach (Point point in MagicLocations)
                                 {
                                     Effects.Add(spell = new MirEffect(1180, 4, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx, 150, 150, Globals.LightningColour)
@@ -1150,8 +1165,10 @@ namespace Client.Models
                                     });
                                     spell.Process();
                                 }
-
+                            }
                             DXSoundManager.Play(SoundIndex.LightningBeamEnd);
+                            if (AttackTargets.Count > 0)
+                                DXSoundManager.Play(SoundIndex.LightningStrikeEnd);
                             break;
 
                         #endregion
@@ -1379,6 +1396,7 @@ namespace Client.Models
                         #region Chain Lightning
 
                         case MagicType.ChainLightning:
+                        case MagicType.AwakenedChainLightning:
                             foreach (Point point in MagicLocations)
                             {
                                 spell = new MirEffect(470, 10, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 50, 80, Globals.LightningColour)
@@ -3026,6 +3044,8 @@ namespace Client.Models
                         #region Electric Shock
 
                         case MagicType.ElectricShock:
+                        case MagicType.EnhancedElectricShock:
+                        case MagicType.AwakenedElectricShock:
                             Effects.Add(spell = new MirEffect(0, 10, TimeSpan.FromMilliseconds(60), LibraryFile.Magic, 10, 35, Globals.LightningColour)
                             {
                                 Blend = true,
@@ -3134,6 +3154,8 @@ namespace Client.Models
                         #region Lightning Beam
 
                         case MagicType.LightningBeam:
+                        case MagicType.EnhancedThunderBeam:
+                        case MagicType.AwakenedThunderBeam:
                             Effects.Add(spell = new MirEffect(1970, 10, TimeSpan.FromMilliseconds(30), LibraryFile.Magic, 10, 35, Globals.LightningColour)
                             {
                                 Blend = true,
@@ -3297,6 +3319,7 @@ namespace Client.Models
                         #region Chain Lightning
 
                         case MagicType.ChainLightning:
+                        case MagicType.AwakenedChainLightning:
                             Effects.Add(spell = new MirEffect(1430, 12, TimeSpan.FromMilliseconds(50), LibraryFile.Magic, 10, 35, Globals.LightningColour)
                             {
                                 Blend = true,

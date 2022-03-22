@@ -1079,10 +1079,6 @@ namespace Client.Envir
             if (!GameScene.Game.MapControl.Objects.TryGetValue(p.ObjectID, out ob)) return;
             ob.ActionQueue.Add(new ObjectAction(MirAction.Spell, p.Direction, p.CurrentLocation, p.Type, p.Targets, p.Locations, p.Cast, p.SubLocations));
         }
-        public void Process(S.PlayerMagic p)
-        {
-            MapObject.User.ActionQueue.Add(new ObjectAction(MirAction.Spell, p.Direction, p.CurrentLocation, p.Type, p.Targets, p.Locations, p.Cast));
-        }
         public void Process(S.ObjectDied p)
         {
             MapObject ob = null;

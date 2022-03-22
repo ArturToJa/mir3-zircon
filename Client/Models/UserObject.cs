@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Client.Controls;
 using Client.Envir;
+using Client.Models.ClassSpecific;
 using Client.Scenes;
 using Client.Scenes.Views;
 using Library;
@@ -204,7 +205,6 @@ namespace Client.Models
         private int _HuntGold;
         #endregion
         
-
         public int BagWeight, WearWeight, HandWeight;
 
         public bool InSafeZone
@@ -223,8 +223,6 @@ namespace Client.Models
 
         public int HermitPoints;
         
-
-
         public List<ClientBuffInfo> Buffs = new List<ClientBuffInfo>();
         
         public Dictionary<MagicInfo, ClientUserMagic> Magics = new Dictionary<MagicInfo, ClientUserMagic>();
@@ -305,7 +303,6 @@ namespace Client.Models
         }
         private bool _CanFlameSplash;
 
-
         public UserObject(StartInformation info)
         {
             CharacterIndex = info.Index;
@@ -317,6 +314,8 @@ namespace Client.Models
 
             Class = info.Class;
             Gender = info.Gender;
+
+            soundPlayer = new SoundPlayer(Gender, Class);
 
             Title = info.GuildName;
             GuildRank = info.GuildRank;
@@ -371,7 +370,6 @@ namespace Client.Models
                 VisibleBuffs.Add(buff.Type);
             }
             
-
             FiltersClass = info.FiltersClass;
             FiltersRarity = info.FiltersRarity;
             FiltersItemType = info.FiltersItemType;
@@ -400,7 +398,6 @@ namespace Client.Models
             GameScene.Game.AutoPotionBox.UpdateLinks();
 
             GameScene.Game.MapControl.AddObject(ObjectID, this);
-
         }
         public override void LocationChanged()
         {
@@ -497,7 +494,6 @@ namespace Client.Models
                             else 
                                 if (pair.Value.Cost > CurrentMP) break;
 
-
                             attackMagic = AttackMagic;
                             break;
                         }
@@ -571,7 +567,6 @@ namespace Client.Models
                             break;
                         }
                     }
-
 
                     if (CanDestructiveBlow &&// (TargetObject != null || (GameScene.Game.MapControl.CanDestructiveBlow(action.Direction) &&
                                                                         (GameScene.Game.MapControl.HasTarget(Functions.Move(CurrentLocation, action.Direction)) || (attackMagic != MagicType.Thrusting &&
@@ -725,7 +720,6 @@ namespace Client.Models
                             DXSoundManager.Play((SoundIndex)((int)SoundIndex.Foot1 + CEnvir.Random.Next((int)SoundIndex.Foot4 - (int)SoundIndex.Foot1) + 1));
                             break;
                     }
-
                     break;
             }
         }
@@ -734,7 +728,6 @@ namespace Client.Models
             base.MovingOffSetChanged();
             GameScene.Game.MapControl.FLayer.TextureValid = false;
         }
-
 
         public override void NameChanged()
         {

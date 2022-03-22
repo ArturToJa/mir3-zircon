@@ -105,7 +105,6 @@ namespace Client.Scenes.Views
 
         #endregion
         
-
         #region MouseLocation
 
         public Point MouseLocation
@@ -141,7 +140,6 @@ namespace Client.Scenes.Views
             if (LLayer != null)
                 LLayer.Size = Size;
 
-
             OffSetX = Size.Width/2/CellWidth;
             OffSetY = Size.Height/2/CellHeight;
         }
@@ -170,7 +168,6 @@ namespace Client.Scenes.Views
 
         public static int OffSetX;
         public static int OffSetY;
-
 
         #endregion
 
@@ -248,8 +245,6 @@ namespace Client.Scenes.Views
             if (MapObject.MouseObject != null && MapObject.MouseObject.Race != ObjectType.Item)
                 MapObject.MouseObject.DrawName();
 
-
-
             foreach (MapObject ob in ObjectsList)
             {
                 ob.DrawChat();
@@ -282,7 +277,6 @@ namespace Client.Scenes.Views
 
             DXManager.Sprite.End();
             DXManager.Sprite.Begin(SpriteFlags.AlphaBlend);
-            
         }
         public override void Draw()
         {
@@ -339,8 +333,6 @@ namespace Client.Scenes.Views
                         }
                     }
 
-
-
                     if (Libraries.KROrder.TryGetValue(cell.FrontFile, out file) && file != LibraryFile.Tilesc && CEnvir.LibraryList.TryGetValue(file, out library))
                     {
                         int index = cell.FrontImage - 1;
@@ -353,7 +345,6 @@ namespace Client.Scenes.Views
                         }
                     
                         Size s = library.GetSize(index);
-
 
                         if ((s.Width != CellWidth || s.Height != CellHeight) && (s.Width != CellWidth*2 || s.Height != CellHeight*2))
                         {
@@ -425,9 +416,7 @@ namespace Client.Scenes.Views
                     ob.Draw();
                 }
             }
-
         }
-
 
         private void LoadMap()
         {
@@ -505,7 +494,6 @@ namespace Client.Scenes.Views
         }
         public override void OnMouseDown(MouseEventArgs e)
         {
-
             base.OnMouseDown(e);
 
             if (GameScene.Game.Observer) return;
@@ -519,7 +507,6 @@ namespace Client.Scenes.Views
             }
             
             if (e.Button != MouseButtons.Left) return;
-
 
             DXItemCell cell = DXItemCell.SelectedCell;
             if (cell != null)
@@ -546,7 +533,6 @@ namespace Client.Scenes.Views
                     GameScene.Game.AutoPotionBox.Rows[cell.Slot].SendUpdate();
                     return;
                 }
-
 
                 if ((cell.Item.Flags & UserItemFlags.Locked) == UserItemFlags.Locked || (cell.GridType != GridType.Inventory && cell.GridType != GridType.CompanionInventory))
                 {
@@ -714,7 +700,6 @@ namespace Client.Scenes.Views
                     mouseOb = User;
             }
 
-
             MapObject.MouseObject = mouseOb;
         }
 
@@ -723,7 +708,6 @@ namespace Client.Scenes.Views
             if (GameScene.Game.Observer) return;
 
             if (User.Dead || (User.Poison & PoisonType.Paralysis) == PoisonType.Paralysis || User.Buffs.Any(x => x.Type == BuffType.DragonRepulse || x.Type == BuffType.FrostBite)) return; //Para or Frozen??
-
 
             if (User.MagicAction != null)
             {

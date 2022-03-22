@@ -95,6 +95,8 @@ namespace Server.Models
         public int MaxMinions = 20;
 
         public PlayerObject PetOwner;
+        public PlayerObject TempPetOwner;
+        public DateTime PetReturnTime;
         public HashSet<UserMagic> Magics = new HashSet<UserMagic>();
         public int SummonLevel;
 
@@ -961,7 +963,17 @@ namespace Server.Models
             if (Target != null && Target.Buffs.Any(x => x.Type == BuffType.Transparency))
                 Target = null;
 
-            ProcessAI();
+            if (TempPetOwner != null)
+            {
+                if(SEnvir.Now > PetReturnTime)
+                {
+                    PetOwner = TempPetOwner;
+                    TempPetOwner = null;
+                    Broadcast(new S.ObjectPetOwnerChanged { ObjectID = ObjectID, PetOwner = PetOwner.Name });
+                }
+            }
+
+        ProcessAI();
         }
         public override void ProcessNameColour()
         {

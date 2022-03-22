@@ -207,6 +207,8 @@ namespace Library
                 case MagicType.EnhancedScorchedEarth:
                 case MagicType.AwakenedScorchedEarth:
                 case MagicType.LightningBeam:
+                case MagicType.EnhancedThunderBeam:
+                case MagicType.AwakenedThunderBeam:
                 case MagicType.AdamantineFireBall:
                 case MagicType.IceBlades:
                 case MagicType.AwakenedIceBlades:
@@ -237,6 +239,8 @@ namespace Library
 
                 case MagicType.Repulsion:
                 case MagicType.ElectricShock:
+                case MagicType.EnhancedElectricShock:
+                case MagicType.AwakenedElectricShock:
                 case MagicType.LightningWave:
                 case MagicType.Cyclone:
                 case MagicType.Teleportation:
@@ -252,6 +256,7 @@ namespace Library
                 case MagicType.AwakenedIceStorm:
                 case MagicType.DragonTornado:
                 case MagicType.ChainLightning:
+                case MagicType.AwakenedChainLightning:
                 case MagicType.GeoManipulation:
                 case MagicType.Transparency:
                 case MagicType.ThunderBolt:

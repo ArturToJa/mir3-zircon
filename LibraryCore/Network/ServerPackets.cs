@@ -187,19 +187,6 @@ namespace Library.Network.ServerPackets
         public TimeSpan Slow { get; set; }
     }
 
-    public sealed class PlayerMagic : Packet
-    {
-        public MirDirection Direction { get; set; }
-        public Point CurrentLocation { get; set; }
-
-        public MagicType Type { get; set; }
-        public List<uint> Targets { get; set; } = new List<uint>();
-        public List<Point> Locations { get; set; } = new List<Point>();
-        public bool Cast { get; set; }
-
-        public TimeSpan Slow { get; set; }
-    }
-
     public sealed class ObjectMining : Packet
     {
         public uint ObjectID { get; set; }

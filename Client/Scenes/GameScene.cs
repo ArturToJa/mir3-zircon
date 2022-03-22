@@ -2822,6 +2822,8 @@ namespace Client.Scenes
                 case MagicType.LightningBall:
                 case MagicType.GustBlast:
                 case MagicType.ElectricShock:
+                case MagicType.EnhancedElectricShock:
+                case MagicType.AwakenedElectricShock:
                 case MagicType.AdamantineFireBall:
                 case MagicType.ThunderBolt:
                 case MagicType.IceBlades:
@@ -2932,6 +2934,8 @@ namespace Client.Scenes
                 case MagicType.EnhancedScorchedEarth:
                 case MagicType.AwakenedScorchedEarth:
                 case MagicType.LightningBeam:
+                case MagicType.EnhancedThunderBeam:
+                case MagicType.AwakenedThunderBeam:
                 case MagicType.Teleportation:
                 case MagicType.FrozenEarth:
                 case MagicType.BlowEarth:
@@ -2978,6 +2982,7 @@ namespace Client.Scenes
                 case MagicType.GeoManipulation:
                 case MagicType.Transparency:
                 case MagicType.ChainLightning:
+                case MagicType.AwakenedChainLightning:
                 case MagicType.MeteorShower:
                 case MagicType.Tempest:
                 case MagicType.Asteroid:

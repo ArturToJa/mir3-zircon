@@ -1209,7 +1209,6 @@ namespace Server.Models
 
             List<BuffInfo> buffs = new List<BuffInfo>();
 
-
             if (CanHelpTarget(ob))
             {
                 result += ob.PoisonList.Count;
@@ -1232,7 +1231,6 @@ namespace Server.Models
                         default:
                             continue;
                     }
-
                 }
             }
 
@@ -1356,7 +1354,6 @@ namespace Server.Models
                     break;
             }
 
-
             if (!info.Visible) return info;
 
             Broadcast(new S.ObjectBuffAdd { ObjectID = ObjectID, Type = type });
@@ -1408,7 +1405,6 @@ namespace Server.Models
 
                         mob.SearchTime = DateTime.MinValue;
                     }
-
                     break;
             }
         }
