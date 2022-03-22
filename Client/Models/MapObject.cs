@@ -2813,6 +2813,7 @@ namespace Client.Models
                     }
                     MagicLocations = (List<Point>)action.Extra[2];
                     MagicCast = (bool)action.Extra[3];
+                    MagicSubLocations = (List<Point>)action.Extra[4];
 
                     Point location;
                     switch (MagicType)
