@@ -337,7 +337,6 @@ namespace Server.Models
                     Mount();
                     break;
             }
-
             base.ProcessAction(action);
         }
 
@@ -401,7 +400,6 @@ namespace Server.Models
         {
             if (SEnvir.Now < UseItemTime || Buffs.Any(x => x.Type == BuffType.Cloak || x.Type == BuffType.Transparency || x.Type == BuffType.DragonRepulse)) return; //Can't auto Pot
 
-
             if (DelayItemUse != null)
             {
                 ItemUse(DelayItemUse);
@@ -453,9 +451,7 @@ namespace Server.Models
                     AutoPotionCheckTime = UseItemTime;
                     return;
                 }
-
             }
-
             AutoPotionCheckTime = SEnvir.Now.AddMilliseconds(200);
         }
 
@@ -553,7 +549,6 @@ namespace Server.Models
             if (Stats[Stat.Rebirth] > 0)
                 NameColour = Color.DeepPink;
 
-
             if (Stats[Stat.PKPoint] >= Config.RedPoint)
                 NameColour = Globals.RedNameColour;
             else if (Stats[Stat.Brown] > 0)
@@ -643,9 +638,7 @@ namespace Server.Models
             if (Character.Partner?.Player != null)
                 Character.Partner.Player.Enqueue(new S.MarriageOnlineChanged());
 
-
             Despawn();
-
 
             Connection.Player = null;
             Character.Player = null;
@@ -670,7 +663,6 @@ namespace Server.Models
             ShoutTime = SEnvir.Now.AddSeconds(10);
 
             //Broadcast Appearance(?)
-
             Enqueue(new S.StartGame { Result = StartGameResult.Success, StartInformation = GetStartInformation() });
             //Send Items
 
@@ -792,7 +784,6 @@ namespace Server.Models
             foreach (ConquestWar conquest in SEnvir.ConquestWars)
                 Enqueue(new S.GuildConquestStarted { Index = conquest.Castle.Index });
 
-
             Enqueue(new S.FortuneUpdate { Fortunes = Character.Account.Fortunes.Select(x => x.ToClientInfo()).ToList() });
         }
         public void SetUpObserver(SConnection con)
@@ -824,7 +815,6 @@ namespace Server.Models
             if (refines.Count > 0)
                 con.Enqueue(new S.RefineList { List = refines });
 
-
             con.Enqueue(new S.StatsUpdate { Stats = Stats, HermitStats = Character.HermitStats, HermitPoints = Math.Min(Config.MaxHermitPoints - Character.SpentPoints, Math.Max(0, Level - 39 - Character.SpentPoints)) });
 
             con.Enqueue(new S.WeightUpdate { BagWeight = BagWeight, WearWeight = WearWeight, HandWeight = HandWeight });
@@ -840,7 +830,6 @@ namespace Server.Models
 
                 foreach (KeyValuePair<UserItem, CellLinkInfo> pair in TradeItems)
                     con.Enqueue(new S.TradeAddItem { Cell = pair.Value, Success = true });
-
 
                 if (TradePartner.TradeGold > 0)
                     con.Enqueue(new S.TradeGoldAdded { Gold = TradePartner.TradeGold });
@@ -925,7 +914,6 @@ namespace Server.Models
             }
 
             ApplyObserverBuff();
-
         }
 
         private void NewCharacter()
@@ -985,7 +973,6 @@ namespace Server.Models
                         if ((info.StartClass & RequiredClass.Assassin) != RequiredClass.Assassin) continue;
                         break;
                 }
-
                 spawnPoints.Add(info);
             }
 
@@ -1036,7 +1023,6 @@ namespace Server.Models
 
             if (!CurrentMap.Info.CanHorse)
                 RemoveMount();
-
 
             ApplyMapBuff();
         }
@@ -1332,18 +1318,15 @@ namespace Server.Models
 
                         int result = SEnvir.Random.Next(count) + 1;
 
-
                         foreach (PlayerObject member in GroupMembers)
                             member.Connection.ReceiveChat(string.Format(member.Connection.Language.DiceRoll, Name, result, count), MessageType.Group);
                         break;
                     case "EXTRACTORLOCK":
                         ExtractorLock = !ExtractorLock;
-
                         Connection.ReceiveChat(ExtractorLock ? "Extraction Enabled" : "Extraction Locked", MessageType.System);
                         break;
                     case "ENABLELEVEL3":
                         CompanionLevelLock3 = !CompanionLevelLock3;
-
                         Connection.ReceiveChat(string.Format(CompanionLevelLock3 ? Connection.Language.CompanionSkillEnabled : Connection.Language.CompanionSkillDisabled, 3), MessageType.System);
                         break;
                     case "ENABLELEVEL5":
@@ -1402,7 +1385,6 @@ namespace Server.Models
                         break;
                     case "GROUPRECALL":
                         if (Stats[Stat.RecallSet] <= 0) return;
-
 
                         if (GroupMembers == null)
                         {
@@ -1471,8 +1453,6 @@ namespace Server.Models
                                     con.ReceiveChat(string.Format(con.Language.GroupRecallMemberNotAllowed, member.Name), MessageType.System);
                                 continue;
                             }
-
-
                             member.Teleport(CurrentMap, CurrentMap.GetRandomLocation(CurrentLocation, 10));
                         }
 
@@ -1649,7 +1629,6 @@ namespace Server.Models
                         if (parts.Length < 3 || !int.TryParse(parts[2], out value) || value == 0)
                             value = 1;
 
-                        
                         var point = Functions.Move(CurrentLocation, Direction);
                         while (value > 0)
                         {
@@ -1686,7 +1665,6 @@ namespace Server.Models
 
                             GainItem(userItem);
                         }
-
                         break;
                     case "GCCOLLECT":
                         if (!Character.Account.TempAdmin) return;
@@ -1767,7 +1745,6 @@ namespace Server.Models
                                     character.Account.Referral.Connection.Player.Enqueue(new S.HuntGoldChanged { HuntGold = character.Account.Referral.HuntGold });
                             }
                         }
-
                         Connection.ReceiveChat(string.Format("[REMOVE GAME GOLD] {0} Amount: {1}", character.CharacterName, count), MessageType.System);
                         break;
                     case "TAKEGAMEGOLD":
@@ -2038,7 +2015,6 @@ namespace Server.Models
                         Enqueue(new S.AdminPanel());
                         break;
                 }
-
             }
             else if (text.StartsWith("#"))
             {
@@ -2230,7 +2206,6 @@ namespace Server.Models
                 HermitStats = target.HermitStats,
                 HermitPoints = Math.Max(0, Math.Min(Config.MaxHermitPoints - target.SpentPoints, target.Level - 39 - target.SpentPoints)),
                 Level = target.Level,
-
                 Hair = target.HairType,
                 HairColour = target.HairColour,
                 Items = new List<ClientUserItem>(),
@@ -2248,7 +2223,6 @@ namespace Server.Models
                 packet.WearWeight = target.Player.WearWeight;
                 packet.HandWeight = target.Player.HandWeight;
             }
-
 
             foreach (UserItem item in target.Items)
             {
@@ -2292,13 +2266,11 @@ namespace Server.Models
             });
         }
 
-
         public void GainExperience(decimal amount, bool huntGold, int gainLevel = Int32.MaxValue, bool rateEffected = true)
         {
             if (rateEffected)
             {
                 amount *= 1M + Stats[Stat.ExperienceRate] / 100M;
-
                 amount *= 1M + Stats[Stat.BaseExperienceRate] / 100M;
             }
 
@@ -2413,34 +2385,35 @@ namespace Server.Models
             switch (Character.Account.Horse)
             {
                 case HorseType.Brown:
-                    Stats[Stat.BagWeight] += 50;
+                    Stats[Stat.Comfort] += 50;
+                    Stats[Stat.BagWeight] += 1000;
                     break;
                 case HorseType.White:
-                    Stats[Stat.Comfort] += 2;
-                    Stats[Stat.BagWeight] += 100;
-                    Stats[Stat.MaxAC] += 5;
-                    Stats[Stat.MaxMR] += 5;
-                    Stats[Stat.MaxDC] += 5;
-                    Stats[Stat.MaxMC] += 5;
-                    Stats[Stat.MaxSC] += 5;
+                    Stats[Stat.Comfort] += 150;
+                    Stats[Stat.BagWeight] += 2000;
+                    Stats[Stat.MaxAC] += 500;
+                    Stats[Stat.MaxMR] += 500;
+                    Stats[Stat.MaxDC] += 500;
+                    Stats[Stat.MaxMC] += 500;
+                    Stats[Stat.MaxSC] += 500;
                     break;
                 case HorseType.Red:
-                    Stats[Stat.Comfort] += 5;
-                    Stats[Stat.BagWeight] += 150;
-                    Stats[Stat.MaxAC] += 12;
-                    Stats[Stat.MaxMR] += 12;
-                    Stats[Stat.MaxDC] += 12;
-                    Stats[Stat.MaxMC] += 12;
-                    Stats[Stat.MaxSC] += 12;
+                    Stats[Stat.Comfort] += 250;
+                    Stats[Stat.BagWeight] += 3000;
+                    Stats[Stat.MaxAC] += 1200;
+                    Stats[Stat.MaxMR] += 1200;
+                    Stats[Stat.MaxDC] += 1200;
+                    Stats[Stat.MaxMC] += 1200;
+                    Stats[Stat.MaxSC] += 1200;
                     break;
                 case HorseType.Black:
-                    Stats[Stat.Comfort] += 7;
-                    Stats[Stat.BagWeight] += 200;
-                    Stats[Stat.MaxAC] += 25;
-                    Stats[Stat.MaxMR] += 25;
-                    Stats[Stat.MaxDC] += 25;
-                    Stats[Stat.MaxMC] += 25;
-                    Stats[Stat.MaxSC] += 25;
+                    Stats[Stat.Comfort] += 400;
+                    Stats[Stat.BagWeight] += 4000;
+                    Stats[Stat.MaxAC] += 2500;
+                    Stats[Stat.MaxMR] += 2500;
+                    Stats[Stat.MaxDC] += 2500;
+                    Stats[Stat.MaxMC] += 2500;
+                    Stats[Stat.MaxSC] += 2500;
                     break;
             }
 
@@ -2527,7 +2500,7 @@ namespace Server.Models
                         Stats[Stat.ReflectDamage] = 5 + pair.Value.Level * 3;
                         break;
                     case MagicType.AwakenedReflectDamage:
-                        Stats[Stat.AwakenedReflectDamage] = 5 + pair.Value.Level * 3;
+                        Stats[Stat.ReflectDamage] = 5 + pair.Value.Level * 3;
                         break;
                 }
             }
@@ -2601,7 +2574,6 @@ namespace Server.Models
             Stats[Stat.PhantomResistance] = Math.Min(5, Stats[Stat.PhantomResistance]);
             Stats[Stat.PhysicalResistance] = Math.Min(5, Stats[Stat.PhysicalResistance]);
 
-
             Stats[Stat.Comfort] = Math.Min(20, Stats[Stat.Comfort]);
             Stats[Stat.AttackSpeed] = Math.Min(15, Stats[Stat.AttackSpeed]);
 
@@ -2639,8 +2611,6 @@ namespace Server.Models
                 Stats[Stat.MinMR] = 0;
                 Stats[Stat.MaxMR] = 0;
             }
-
-
 
             Stats[Stat.MinAC] = Math.Max(0, Stats[Stat.MinAC]);
             Stats[Stat.MaxAC] = Math.Max(0, Stats[Stat.MaxAC]);
@@ -2792,7 +2762,7 @@ namespace Server.Models
             AddStatsRange(Level, stat.Level - 1, stat);
             Stats[Stat.PickUpRadius] = 1;
             Stats[Stat.SkillRate] = 1;
-            Stats[Stat.CriticalChance] = 1;
+            Stats[Stat.CriticalChance] = 0;
 
             Stats.Add(Character.HermitStats);
 
@@ -14999,7 +14969,6 @@ namespace Server.Models
             if (Magics.TryGetValue(MagicType.AdvancedRenounce, out temp))
                 LevelMagic(temp);*/
 
-
             return damage;
         }
 
@@ -15028,8 +14997,6 @@ namespace Server.Models
                 }
             }
 
-
-
             CombatTime = SEnvir.Now;
 
             if (attacker.Race == ObjectType.Player)
@@ -15037,7 +15004,6 @@ namespace Server.Models
                 PvPTime = SEnvir.Now;
                 ((PlayerObject)attacker).PvPTime = SEnvir.Now;
             }
-
 
             if (Stats[Stat.Comfort] < 20)
                 RegenTime = SEnvir.Now + RegenDelay;
@@ -15083,10 +15049,10 @@ namespace Server.Models
                     Enqueue(new S.BuffTime { Index = buff.Index, Time = buff.RemainingTime });
                 }
 
-                power -= power * Stats[Stat.MagicShield] / 100;
+                int ReclectDamageValue = Magics.ContainsKey(MagicType.AwakenedReflectDamage) ? Stats[Stat.ReflectDamage] : 0;
+
+                power -= power * (Stats[Stat.MagicShield] + ReclectDamageValue) / 100;
             }
-
-
 
             //STRUCKDONE
             if (StruckTime != DateTime.MaxValue && SEnvir.Now > StruckTime.AddMilliseconds(500) && canStruck) //&&!Buffs.Any(x => x.Type == BuffType.DragonRepulse)) 
@@ -15096,7 +15062,6 @@ namespace Server.Models
                 //if (StruckTime.AddMilliseconds(300) > ActionTime) ActionTime = StruckTime.AddMilliseconds(300);
                 Broadcast(new S.ObjectStruck { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, AttackerID = attacker.ObjectID, Element = element });
             }
-
 
             #region Conquest Stats
 
@@ -15132,9 +15097,7 @@ namespace Server.Models
                         break;
                 }
             }
-
             #endregion
-
 
             LastHitter = attacker;
             ChangeHP(-power);
@@ -15142,15 +15105,10 @@ namespace Server.Models
 
             if (canReflect && CanAttackTarget(attacker) && attacker.Race != ObjectType.Player)
             {
-                attacker.Attacked(this, power * (Stats[Stat.ReflectDamage] + Stats[Stat.AwakenedReflectDamage]) / 100, Element.None, false);
+                attacker.Attacked(this, power * Stats[Stat.ReflectDamage] / 100, Element.None, false);
 
 /*                if (Buffs.Any(x => x.Type == BuffType.ReflectDamage) && Magics.TryGetValue(MagicType.ReflectDamage, out magic))
                     LevelMagic(magic);*/
-            }
-
-            if (!ignoreShield)
-            {
-                power -= power * Stats[Stat.AwakenedReflectDamage] / 100;
             }
 
             if (canReflect && CanAttackTarget(attacker) && SEnvir.Random.Next(100) < Stats[Stat.JudgementOfHeaven] && !(attacker is CastleLord))
@@ -15164,7 +15122,6 @@ namespace Server.Models
 /*                if (Buffs.Any(x => x.Type == BuffType.JudgementOfHeaven) && Magics.TryGetValue(MagicType.JudgementOfHeaven, out magic))
                     LevelMagic(magic);*/
             }
-
 /*            if (Buffs.Any(x => x.Type == BuffType.Defiance) && Magics.TryGetValue(MagicType.Defiance, out magic))
                 LevelMagic(magic);
 
@@ -15176,7 +15133,6 @@ namespace Server.Models
 
             if (Magics.TryGetValue(MagicType.AdventOfDevil, out magic) && element != Element.None)
                 LevelMagic(magic);*/
-
             return power;
         }
 
