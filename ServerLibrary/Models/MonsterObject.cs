@@ -790,9 +790,6 @@ namespace Server.Models
                 }
             }
 
-
-
-
             /*
             Stats[Stat.FireResistance] = Math.Min(5, Stats[Stat.FireResistance]);
             Stats[Stat.IceResistance] = Math.Min(5, Stats[Stat.IceResistance]);
@@ -1017,8 +1014,10 @@ namespace Server.Models
             Master?.MinionList.Remove(this);
             Master = null;
 
+            TempPetOwner?.Pets.Remove(this);
             PetOwner?.Pets.Remove(this);
             PetOwner = null;
+            TempPetOwner = null;
 
             if (MinionList != null)
             {
@@ -1042,8 +1041,10 @@ namespace Server.Models
 
         public void UnTame()
         {
+            TempPetOwner?.Pets.Remove(this);
             PetOwner?.Pets.Remove(this);
             PetOwner = null;
+            TempPetOwner = null;
             Target = null;
             SearchTime = DateTime.MinValue;
             Magics.Clear();
@@ -2443,8 +2444,10 @@ namespace Server.Models
             Master?.MinionList.Remove(this);
             Master = null;
 
+            TempPetOwner?.Pets.Remove(this);
             PetOwner?.Pets.Remove(this);
             PetOwner = null;
+            TempPetOwner = null;
 
             for (int i = MinionList.Count - 1; i >= 0; i--)
                 MinionList[i].Master = null;

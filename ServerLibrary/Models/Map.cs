@@ -319,12 +319,13 @@ namespace Server.Models
                     if (Info.Delay >= 1000000)
                     {
                         foreach (SConnection con in SEnvir.Connections)
-                            con.ReceiveChat($"{mob.MonsterInfo.MonsterName} has appeared.", MessageType.System);
+                            con.ReceiveChat($"{mob.MonsterInfo.MonsterName} has appeared in {CurrentMap.Info.Description}.", MessageType.System);
                     }
                     else
                     {
                         foreach (SConnection con in SEnvir.Connections)
-                            con.ReceiveChat(string.Format(con.Language.BossSpawn, CurrentMap.Info.Description), MessageType.System);
+                            con.ReceiveChat($"{mob.MonsterInfo.MonsterName} has appeared in {CurrentMap.Info.Description}.", MessageType.System);
+                        //con.ReceiveChat(string.Format(con.Language.BossSpawn, CurrentMap.Info.Description), MessageType.System);
                     }
                 }
 

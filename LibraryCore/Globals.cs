@@ -31,7 +31,6 @@ namespace Library
         public static DBCollection<CompanionInfo> CompanionInfoList;
         public static DBCollection<CompanionLevelInfo> CompanionLevelInfoList;
 
-
         public static Random Random = new Random();
 
         public static readonly Regex EMailRegex = new Regex(@"\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", RegexOptions.Compiled);
@@ -92,7 +91,6 @@ namespace Library
 
         public static decimal MarketPlaceTax = 0.07M;  //2.5x Item cost
 
-
         public static long
             GuildCreationCost = 7500000,
             GuildMemberCost = 1000000,
@@ -102,7 +100,6 @@ namespace Library
         public static long
             MasterRefineCost = 50000,
             MasterRefineEvaluateCost = 250000;
-
 
         public static List<Size> ValidResolutions = new List<Size>
         {
@@ -119,7 +116,6 @@ namespace Library
             "English",
             "Chinese",
         };
-
 
         public struct RebirthData
         {
@@ -210,7 +206,6 @@ namespace Library
                 {Stat.HolyAttack, 40},
                 {Stat.PhantomAttack, 40}})
         };
-
 
         public struct ExperienceData
         {
@@ -306,16 +301,83 @@ namespace Library
             },
         };
 
-        public static List<string> UpgradeSacrificeItems = new List<string>
+        public static List<EquipmentUpgradeCost> SpecialEquipmentUpgradeList = new List<EquipmentUpgradeCost>
         {
-            "Demonic Items",
-            "Striker Items",
-            "Angelic Items",
-            "Hazardous Items",
-            "Vintage Items",
-            "Gods Items",
-            "Mystical Items",
-            "Kings Items",
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 0,
+                GoldMultiplier = 5,
+                SpecialItem = -1
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 0,
+                GoldMultiplier = 10,
+                SpecialItem = -1
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 0,
+                GoldMultiplier = 15,
+                SpecialItem = 4
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 1,
+                GoldMultiplier = 25,
+                SpecialItem = -1
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 1,
+                GoldMultiplier = 35,
+                SpecialItem = -1
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 1,
+                GoldMultiplier = 50,
+                SpecialItem = 4
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 1,
+                GoldMultiplier = 65,
+                SpecialItem = 5
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 2,
+                GoldMultiplier = 80,
+                SpecialItem = 5
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 2,
+                GoldMultiplier = 100,
+                SpecialItem = 6
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 3,
+                GoldMultiplier = 125,
+                SpecialItem = 6
+            },
+        };
+
+        public static Dictionary<int, string> UpgradeSacrificeItems = new Dictionary<int, string>
+        {
+            { 10, "Demonic Items" },
+            { 11, "Striker Items" },
+            { 12, "Angelic Items" },
+            { 13, "Hazardous Items" },
+            { 14, "Vintage Items" },
+            { 15, "Gods Items" },
+            { 16, "Mystical Items" },
+            { 17, "Kings Items" },
+            { 120, "Cosmos Parts" },
+            { 140, "Chaos Parts" },
+            { 160, "Life Parts" },
         };
 
         public static List<string> UpgradeSpecialItems = new List<string>
@@ -323,7 +385,10 @@ namespace Library
             "null",
             "Iron",
             "Black Iron",
-            "Forged Steel"
+            "Forged Steel",
+            "Dark Essence",
+            "Heaven Essence",
+            "Chaotic Essence",
         };
 
         public static Dictionary<MagicType, MagicType> MagicEnhancement = new Dictionary<MagicType, MagicType>

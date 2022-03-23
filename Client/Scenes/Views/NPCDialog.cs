@@ -1451,8 +1451,9 @@ namespace Client.Scenes.Views
             }
             if(item != null)
             {
-                goldCost = (int)((float)item.Info.Price * Globals.EquipmentUpgradeList[item.Level].GoldMultiplier);
-                int specialItemIndex = Globals.EquipmentUpgradeList[item.Level].SpecialItem;
+                List<Globals.EquipmentUpgradeCost> equipmentList = item.Info.SetValue > 100 ? Globals.SpecialEquipmentUpgradeList : Globals.EquipmentUpgradeList;
+                goldCost = (int)((float)item.Info.Price * equipmentList[item.Level].GoldMultiplier);
+                int specialItemIndex = equipmentList[item.Level].SpecialItem;
                 if (specialItemIndex != -1)
                 {
                     special = Globals.UpgradeSpecialItems[specialItemIndex];
@@ -1462,9 +1463,9 @@ namespace Client.Scenes.Views
                     special = "None";
                 }
 
-                if (Globals.EquipmentUpgradeList[item.Level].NumberOfItems > 0)
+                if (equipmentList[item.Level].NumberOfItems > 0)
                 {
-                    sacrifice = Globals.UpgradeSacrificeItems[item.Info.SetValue - 2] + String.Format(": required {0}", Globals.EquipmentUpgradeList[item.Level].NumberOfItems);
+                    sacrifice = Globals.UpgradeSacrificeItems[item.Info.SetValue] + String.Format(": required {0}", equipmentList[item.Level].NumberOfItems);
                 }
                 else
                 {
@@ -1512,7 +1513,8 @@ namespace Client.Scenes.Views
             }
             if(item != null)
             {
-                Globals.EquipmentUpgradeCost cost = Globals.EquipmentUpgradeList[item.Level];
+                List<Globals.EquipmentUpgradeCost> equipmentList = item.Info.SetValue > 100 ? Globals.SpecialEquipmentUpgradeList : Globals.EquipmentUpgradeList;
+                Globals.EquipmentUpgradeCost cost = equipmentList[item.Level];
                 SubmitButton.Enabled = (cost.NumberOfItems == sacrificeItems) && (cost.SpecialItem != -1 ? specialItems : true);
             }
             else

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -1240,8 +1241,8 @@ namespace Client.Controls
                         default:
                             return false;
                     }
-
-                    if ((Item.Level >= Globals.EquipmentUpgradeList.Count)) return false;
+                    List<Globals.EquipmentUpgradeCost> equipmentList = Item.Info.SetValue > 100 ? Globals.SpecialEquipmentUpgradeList : Globals.EquipmentUpgradeList;
+                    if ((Item.Level >= equipmentList.Count)) return false;
                     break;
                 case GridType.EquipmentUpgradeItems:
                     if (GridType != GridType.Inventory && GridType != GridType.Equipment && GridType != GridType.CompanionInventory && GridType != GridType.Storage) return false;
@@ -1255,6 +1256,7 @@ namespace Client.Controls
                         case ItemType.Weapon:
                         case ItemType.Helmet:
                         case ItemType.Shield:
+                        case ItemType.Nothing:
                             break;
                         default:
                             return false;
@@ -1269,7 +1271,8 @@ namespace Client.Controls
                         if(cell.Item == null) continue;
                         countItems++;
                     }
-                    if(Globals.EquipmentUpgradeList[item.Level].NumberOfItems <= countItems) return false;
+                    equipmentList = item.Info.SetValue > 100 ? Globals.SpecialEquipmentUpgradeList : Globals.EquipmentUpgradeList;
+                    if (equipmentList[item.Level].NumberOfItems <= countItems) return false;
                     if (Item.Info.SetValue != item.Info.SetValue - 1) return false;
                     break;
                 case GridType.EquipmentUpgradeSpecial:
@@ -1286,7 +1289,8 @@ namespace Client.Controls
                     if (GameScene.Game.NPCUpgradeBox == null) return false;
                     item = GameScene.Game.NPCUpgradeBox.ItemToUpgradeGrid.Grid[0].Item;
                     if (item == null) return false;
-                    if (Globals.EquipmentUpgradeList[item.Level].SpecialItem != Item.Info.SetValue) return false;
+                    equipmentList = item.Info.SetValue > 100 ? Globals.SpecialEquipmentUpgradeList : Globals.EquipmentUpgradeList;
+                    if (equipmentList[item.Level].SpecialItem != Item.Info.SetValue) return false;
                     break;
                 case GridType.SkillStoneItem:
                     if (Item.Info.Effect != ItemEffect.SkillStone && Item.Info.Effect != ItemEffect.SkillEnhancement && Item.Info.Effect != ItemEffect.SkillAwakening) return false;

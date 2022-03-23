@@ -9770,7 +9770,8 @@ namespace Server.Models
             UserItem[] targetArray = null;
             UserItem targetItem = FindUserItem(p.Item, out targetArray);
             if (targetItem == null || p.Item.Count > targetItem.Count) return;
-            if (targetItem.Level >= Globals.EquipmentUpgradeList.Count) return;
+            List<Globals.EquipmentUpgradeCost> equipmentList = targetItem.Info.SetValue > 100 ? Globals.SpecialEquipmentUpgradeList : Globals.EquipmentUpgradeList;
+            if (targetItem.Level >= equipmentList.Count) return;
             if (targetItem.Info.SetValue <= 1) return;
 
             switch (targetItem.Info.ItemType)
@@ -9788,7 +9789,7 @@ namespace Server.Models
                     return;
             }
 
-            long UpgradeCost = (long)(Globals.EquipmentUpgradeList[targetItem.Level].GoldMultiplier * (float)targetItem.Info.Price);
+            long UpgradeCost = (long)(equipmentList[targetItem.Level].GoldMultiplier * (float)targetItem.Info.Price);
             if (Gold < UpgradeCost)
             {
                 Connection.ReceiveChat(Connection.Language.NPCRefinementGold, MessageType.System);
@@ -9798,7 +9799,7 @@ namespace Server.Models
                 return;
             }
 
-            int numberOfItems = Globals.EquipmentUpgradeList[targetItem.Level].NumberOfItems;
+            int numberOfItems = equipmentList[targetItem.Level].NumberOfItems;
             int requiredSetValue = targetItem.Info.SetValue - 1;
             int collectedItems = 0;
 
@@ -9809,7 +9810,7 @@ namespace Server.Models
                 if(sacrificeArray == null || link.Count > sacrificeItem.Count) continue;
                 if (sacrificeItem.Info.SetValue != requiredSetValue) continue;
 
-                switch (targetItem.Info.ItemType)
+                switch (sacrificeItem.Info.ItemType)
                 {
                     case ItemType.Weapon:
                     case ItemType.Armour:
@@ -9819,6 +9820,7 @@ namespace Server.Models
                     case ItemType.Bracelet:
                     case ItemType.Ring:
                     case ItemType.Shield:
+                    case ItemType.Nothing:
                         collectedItems++;
                         break;
                     default:
@@ -9830,12 +9832,12 @@ namespace Server.Models
             UserItem[] specialArray = null;
             UserItem specialItem = null;
 
-            if (Globals.EquipmentUpgradeList[targetItem.Level].SpecialItem > -1)
+            if (equipmentList[targetItem.Level].SpecialItem > -1)
             {
                 if (p.SpecialItem == null) return;
                 specialItem = FindUserItem(p.SpecialItem, out specialArray);
                 if (specialItem == null || p.SpecialItem.Count > specialItem.Count) return;
-                if (specialItem.Info.SetValue != Globals.EquipmentUpgradeList[targetItem.Level].SpecialItem) return;
+                if (specialItem.Info.SetValue != equipmentList[targetItem.Level].SpecialItem) return;
 
                 switch (specialItem.Info.ItemType)
                 {
@@ -9897,6 +9899,13 @@ namespace Server.Models
                         int statDelta = statNow - statBefore;
                         targetItem.AddStat(statPair.Key, statDelta, StatSource.Refine);
                         targetResult.NewStats[statPair.Key] += statDelta;
+                        break;
+                    case Stat.ItemReviveTime:
+                        statNow = (statPair.Value / 2) * targetItem.Level / 10;
+                        statBefore = (statPair.Value / 2) * (targetItem.Level - 1) / 10;
+                        statDelta = statNow - statBefore;
+                        targetItem.AddStat(statPair.Key, -statDelta, StatSource.Refine);
+                        targetResult.NewStats[statPair.Key] += -statDelta;
                         break;
                     default:
                         break;
@@ -15013,7 +15022,7 @@ namespace Server.Models
                 });
             }
 
-            if (slow > 0 && SEnvir.Random.Next(slow) == 0 && !((MonsterObject)ob).MonsterInfo.IsBoss)
+            if (slow > 0 && SEnvir.Random.Next(slow) == 0)
             {
                 TimeSpan duration = TimeSpan.FromSeconds(3 + SEnvir.Random.Next(3));
 
@@ -15045,7 +15054,7 @@ namespace Server.Models
                 }
             }
 
-            if (silence > 0 && !((MonsterObject)ob).MonsterInfo.IsBoss)
+            if (silence > 0)
             {
                 ob.ApplyPoison(new Poison
                 {
@@ -15057,7 +15066,7 @@ namespace Server.Models
                 });
             }
 
-            if (burnChance > 0 && SEnvir.Random.Next(burnChance) == 0 && !((MonsterObject)ob).MonsterInfo.IsBoss)
+            if (burnChance > 0 && SEnvir.Random.Next(burnChance) == 0)
             {
                 ob.ApplyPoison(new Poison
                 {
@@ -15068,7 +15077,7 @@ namespace Server.Models
                     Owner = this,
                 });
             }
-            if(paraChance > 0 && SEnvir.Random.Next(paraChance) == 0 && !((MonsterObject)ob).MonsterInfo.IsBoss)
+            if(paraChance > 0 && SEnvir.Random.Next(paraChance) == 0)
             {
                 ob.ApplyPoison(new Poison
                 {
