@@ -696,6 +696,12 @@ namespace Server.Envir
             while (value > 0)
             {
                 var monster = MonsterObject.GetMonster(monsterInfo);
+                if (p.IsPet)
+                {
+                    monster.PetOwner = Player;
+                    Player.Pets.Add(monster);
+                    monster.TameTime = SEnvir.Now.AddDays(365);
+                }
                 monster.Spawn(Player.CurrentMap, point);
                 value -= 1;
             }

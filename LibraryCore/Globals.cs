@@ -324,6 +324,12 @@ namespace Library
             new EquipmentUpgradeCost
             {
                 NumberOfItems = 1,
+                GoldMultiplier = 20,
+                SpecialItem = -1
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 1,
                 GoldMultiplier = 25,
                 SpecialItem = -1
             },
@@ -331,50 +337,44 @@ namespace Library
             {
                 NumberOfItems = 1,
                 GoldMultiplier = 35,
-                SpecialItem = -1
-            },
-            new EquipmentUpgradeCost
-            {
-                NumberOfItems = 1,
-                GoldMultiplier = 50,
                 SpecialItem = 4
             },
             new EquipmentUpgradeCost
             {
                 NumberOfItems = 1,
-                GoldMultiplier = 65,
+                GoldMultiplier = 45,
+                SpecialItem = 5
+            },
+            new EquipmentUpgradeCost
+            {
+                NumberOfItems = 2,
+                GoldMultiplier = 60,
                 SpecialItem = 5
             },
             new EquipmentUpgradeCost
             {
                 NumberOfItems = 2,
                 GoldMultiplier = 80,
-                SpecialItem = 5
-            },
-            new EquipmentUpgradeCost
-            {
-                NumberOfItems = 2,
-                GoldMultiplier = 100,
                 SpecialItem = 6
             },
             new EquipmentUpgradeCost
             {
                 NumberOfItems = 3,
-                GoldMultiplier = 125,
+                GoldMultiplier = 100,
                 SpecialItem = 6
             },
         };
 
         public static Dictionary<int, string> UpgradeSacrificeItems = new Dictionary<int, string>
         {
-            { 10, "Demonic Items" },
-            { 11, "Striker Items" },
-            { 12, "Angelic Items" },
-            { 13, "Hazardous Items" },
-            { 14, "Vintage Items" },
-            { 15, "Gods Items" },
-            { 16, "Mystical Items" },
-            { 17, "Kings Items" },
+            { 11, "Demonic Items" },
+            { 12, "Striker Items" },
+            { 13, "Angelic Items" },
+            { 14, "Hazardous Items" },
+            { 15, "Vintage Items" },
+            { 16, "Gods Items" },
+            { 17, "Mystical Items" },
+            { 18, "Kings Items" },
             { 120, "Cosmos Parts" },
             { 140, "Chaos Parts" },
             { 160, "Life Parts" },
