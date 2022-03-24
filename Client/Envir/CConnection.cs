@@ -758,6 +758,8 @@ namespace Client.Envir
 
                         scene.User = new UserObject(p.StartInformation);
 
+                        GameScene.Game.CharacterBox.AddClassSpecificLabels();
+
                         GameScene.Game.BuffBox.BuffsChanged();
                         GameScene.Game.RankingBox.Observable = p.StartInformation.Observable;
 
@@ -2369,6 +2371,8 @@ namespace Client.Envir
             GameScene.Game.Companion = GameScene.Game.NPCCompanionStorageBox.Companions.FirstOrDefault(x => x.Index == p.StartInformation.Companion);
 
             scene.User = new UserObject(p.StartInformation);
+
+            GameScene.Game.CharacterBox.AddClassSpecificLabels();
 
             GameScene.Game.StorageSize = p.StartInformation.StorageSize;
 

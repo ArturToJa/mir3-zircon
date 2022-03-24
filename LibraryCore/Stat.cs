@@ -791,8 +791,8 @@ namespace Library
         [StatDescription(Title = "Ignore Magic Shield", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent)]
         IgnoreMagicShield,
 
-        [StatDescription(Title = "Disperse Damage", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent)]
-        AwakenedReflectDamage,
+        [StatDescription(Title = "Protection Power", Format = "{0}", Mode = StatType.Default)]
+        ProtectionRingPower,
 
         [StatDescription(Title = "Duration", Mode = StatType.Time)]
         Duration = 10000,

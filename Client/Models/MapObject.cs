@@ -1208,6 +1208,8 @@ namespace Client.Models
                         #region Blow Earth
 
                         case MagicType.BlowEarth:
+                        case MagicType.EnhancedBlowEarth:
+                        case MagicType.AwakenedBlowEarth:
                             if (Config.DrawEffects && Race != ObjectType.Monster)
                                 foreach (Point point in MagicLocations)
                                 {
@@ -3059,6 +3061,8 @@ namespace Client.Models
                         #region Teleportation
 
                         case MagicType.Teleportation:
+                        case MagicType.EnhancedTeleportation:
+                        case MagicType.AwakenedTeleportation:
                             Effects.Add(new MirEffect(110, 10, TimeSpan.FromMilliseconds(60), LibraryFile.Magic, 10, 35, Globals.PhantomColour)
                             {
                                 Blend = true,
@@ -3183,6 +3187,8 @@ namespace Client.Models
                         #region Blow Earth
 
                         case MagicType.BlowEarth:
+                        case MagicType.EnhancedBlowEarth:
+                        case MagicType.AwakenedBlowEarth:
                             Effects.Add(spell = new MirEffect(1970, 10, TimeSpan.FromMilliseconds(60), LibraryFile.MagicEx, 10, 35, Globals.WindColour)
                             {
                                 Blend = true,
@@ -3224,6 +3230,8 @@ namespace Client.Models
                         #region GeoManipulation
 
                         case MagicType.GeoManipulation:
+                        case MagicType.EnhancedGeoManipulation:
+                        case MagicType.AwakenedGeoManipulation:
                             Effects.Add(new MirEffect(110, 10, TimeSpan.FromMilliseconds(60), LibraryFile.Magic, 10, 35, Globals.PhantomColour)
                             {
                                 Blend = true,
@@ -3237,6 +3245,8 @@ namespace Client.Models
                         #region Magic Shield
 
                         case MagicType.MagicShield:
+                        case MagicType.EnhancedMagicShield:
+                        case MagicType.AwakenedMagicShield:
                             Effects.Add(new MirEffect(830, 19, TimeSpan.FromMilliseconds(60), LibraryFile.Magic, 10, 35, Globals.PhantomColour)
                             {
                                 Blend = true,
@@ -3335,6 +3345,7 @@ namespace Client.Models
                         #region Renounce
 
                         case MagicType.Renounce:
+                        case MagicType.EnhancedRenounce:
                             Effects.Add(new MirEffect(80, 10, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 10, 35, Globals.PhantomColour)
                             {
                                 Blend = true,
@@ -3348,6 +3359,8 @@ namespace Client.Models
                         #region Tempest
 
                         case MagicType.Tempest:
+                        case MagicType.EnhancedTempest:
+                        case MagicType.AwakenedTempest:
                             Effects.Add(new MirEffect(910, 10, TimeSpan.FromMilliseconds(60), LibraryFile.MagicEx2, 10, 35, Globals.WindColour)
                             {
                                 Blend = true,

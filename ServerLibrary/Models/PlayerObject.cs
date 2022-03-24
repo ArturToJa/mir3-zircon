@@ -2489,7 +2489,7 @@ namespace Server.Models
                         Stats[Stat.LifeSteal] += pair.Value.GetPower();
                         break;
                     case MagicType.AdvancedRenounce:
-                        Stats[Stat.MCPercent] += (1 + pair.Value.Level) * 10;
+                        Stats[Stat.MCPercent] += (1 + pair.Value.Level) * 5;
                         break;
                     case MagicType.EnhancedReflectDamage:
                         Stats[Stat.ReflectDamage] = 5 + pair.Value.Level * 3;
@@ -2733,7 +2733,6 @@ namespace Server.Models
             Stats[Stat.MinSC] = 0;
             Stats[Stat.MaxSC] = 0;
 
-
             BaseStat stat = null;
 
             //Get best possible match.
@@ -2758,6 +2757,7 @@ namespace Server.Models
             Stats[Stat.PickUpRadius] = 1;
             Stats[Stat.SkillRate] = 1;
             Stats[Stat.CriticalChance] = 0;
+            Stats[Stat.ProtectionRingPower] = 1;
 
             Stats.Add(Character.HermitStats);
 
@@ -9629,6 +9629,7 @@ namespace Server.Models
             S.ItemsChanged skillStoneResult = new S.ItemsChanged { Links = new List<CellLinkInfo>(), Success = true };
             Enqueue(skillStoneResult);
             skillStoneResult.Links.Add(p.SkillStone);
+            RefreshStats();
         }
         public void NPCUpgradeGem(C.NPCUpgradeGem p)
         {
@@ -11279,6 +11280,8 @@ namespace Server.Models
                 case MagicType.AwakenedThunderBeam:
                 case MagicType.FrozenEarth:
                 case MagicType.BlowEarth:
+                case MagicType.EnhancedBlowEarth:
+                case MagicType.AwakenedBlowEarth:
                 case MagicType.FireWall:
                 case MagicType.EnhancedFireWall:
                 case MagicType.AwakenedFireWall:
@@ -11286,8 +11289,12 @@ namespace Server.Models
                 case MagicType.LightningWave:
                 case MagicType.ExpelUndead:
                 case MagicType.GeoManipulation:
+                case MagicType.EnhancedGeoManipulation:
+                case MagicType.AwakenedGeoManipulation:
                 case MagicType.Transparency:
                 case MagicType.MagicShield:
+                case MagicType.EnhancedMagicShield:
+                case MagicType.AwakenedMagicShield:
                 case MagicType.FrostBite:
                 case MagicType.IceStorm:
                 case MagicType.EnhancedIceStorm:
@@ -11299,11 +11306,16 @@ namespace Server.Models
                 case MagicType.AwakenedChainLightning:
                 case MagicType.MeteorShower:
                 case MagicType.Renounce:
+                case MagicType.EnhancedRenounce:
                 case MagicType.Tempest:
+                case MagicType.EnhancedTempest:
+                case MagicType.AwakenedTempest:
                 case MagicType.JudgementOfHeaven:
                 case MagicType.ThunderStrike:
                 case MagicType.MirrorImage:
                 case MagicType.Teleportation:
+                case MagicType.EnhancedTeleportation:
+                case MagicType.AwakenedTeleportation:
                 case MagicType.Asteroid:
                 case MagicType.AwakenedAsteroid:
 
@@ -11720,6 +11732,8 @@ namespace Server.Models
                     }
                     break;
                 case MagicType.Teleportation:
+                case MagicType.EnhancedTeleportation:
+                case MagicType.AwakenedTeleportation:
                     ob = null;
                     ActionList.Add(new DelayedAction(
                         SEnvir.Now.AddMilliseconds(500),
@@ -11923,6 +11937,7 @@ namespace Server.Models
                     }
                     break;
                 case MagicType.BlowEarth:
+                case MagicType.EnhancedBlowEarth:
                     ob = null;
 
                     Point lastLocation = CurrentLocation;
@@ -11943,6 +11958,81 @@ namespace Server.Models
                             cell,
                             true));
 
+                        switch (p.Direction)
+                        {
+                            case MirDirection.Up:
+                            case MirDirection.Right:
+                            case MirDirection.Down:
+                            case MirDirection.Left:
+                                ActionList.Add(new DelayedAction(
+                                    SEnvir.Now.AddMilliseconds(800),
+                                    ActionType.DelayMagic,
+                                    new List<UserMagic> { magic },
+                                    CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(p.Direction, -2))),
+                                    false));
+                                ActionList.Add(new DelayedAction(
+                                    SEnvir.Now.AddMilliseconds(800),
+                                    ActionType.DelayMagic,
+                                    new List<UserMagic> { magic },
+                                    CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(p.Direction, 2))),
+                                    false));
+                                break;
+                            case MirDirection.UpRight:
+                            case MirDirection.DownRight:
+                            case MirDirection.DownLeft:
+                            case MirDirection.UpLeft:
+                                ActionList.Add(new DelayedAction(
+                                    SEnvir.Now.AddMilliseconds(800),
+                                    ActionType.DelayMagic,
+                                    new List<UserMagic> { magic },
+                                    CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(p.Direction, 1))),
+                                    false));
+                                ActionList.Add(new DelayedAction(
+                                    SEnvir.Now.AddMilliseconds(800),
+                                    ActionType.DelayMagic,
+                                    new List<UserMagic> { magic },
+                                    CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(p.Direction, -1))),
+                                    false));
+                                break;
+                        }
+                    }
+
+                    locations.Add(lastLocation);
+
+                    if (lastLocation == CurrentLocation)
+                        cast = false;
+                    break;
+                case MagicType.AwakenedBlowEarth:
+                    ob = null;
+
+                    lastLocation = CurrentLocation;
+                    power = (magic.Level + 2) * 5;
+                    for (int i = 1; i <= 8; i++)
+                    {
+                        location = Functions.Move(CurrentLocation, p.Direction, i);
+                        Cell cell = CurrentMap.GetCell(location);
+
+                        if (cell == null) continue;
+
+                        lastLocation = location;
+
+                        ActionList.Add(new DelayedAction(
+                            SEnvir.Now.AddMilliseconds(800),
+                            ActionType.DelayMagic,
+                            new List<UserMagic> { magic },
+                            cell,
+                            true));
+
+                        UserMagic tempestMagic;
+                        if(Magics.TryGetValue(MagicType.Tempest, out tempestMagic) || Magics.TryGetValue(MagicType.EnhancedTempest, out tempestMagic) || Magics.TryGetValue(MagicType.AwakenedTempest, out tempestMagic))
+                        {
+                            ActionList.Add(new DelayedAction(
+                            SEnvir.Now.AddMilliseconds(1100),
+                            ActionType.DelayMagic,
+                            new List<UserMagic> { tempestMagic },
+                            cell,
+                            power));
+                        }
 
                         switch (p.Direction)
                         {
@@ -12574,6 +12664,8 @@ namespace Server.Models
                     }
                     break;
                 case MagicType.MagicShield:
+                case MagicType.EnhancedMagicShield:
+                case MagicType.AwakenedMagicShield:
                     ob = null;
 
                     ActionList.Add(new DelayedAction(
@@ -12582,6 +12674,7 @@ namespace Server.Models
                         new List<UserMagic> { magic }));
                     break;
                 case MagicType.Renounce:
+                case MagicType.EnhancedRenounce:
                 case MagicType.JudgementOfHeaven:
                 case MagicType.FrostBite:
                     ob = null;
@@ -12592,6 +12685,8 @@ namespace Server.Models
                         new List<UserMagic> { magic }));
                     break;
                 case MagicType.GeoManipulation:
+                case MagicType.EnhancedGeoManipulation:
+                case MagicType.AwakenedGeoManipulation:
                     ob = null;
 
                     if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
@@ -12769,6 +12864,80 @@ namespace Server.Models
                     }
 
                     cells = CurrentMap.GetCells(p.Location, 0, 1);
+
+                    foreach (Cell cell in cells)
+                    {
+                        ActionList.Add(new DelayedAction(
+                            SEnvir.Now.AddMilliseconds(500),
+                            ActionType.DelayMagic,
+                            new List<UserMagic> { magic },
+                            cell,
+                            power));
+                    }
+                    break;
+                case MagicType.EnhancedTempest:
+                    ob = null;
+
+                    if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
+                    {
+                        cast = false;
+                        break;
+                    }
+
+                    power = (magic.Level + 2) * 5;
+
+                    foreach (ConquestWar war in SEnvir.ConquestWars)
+                    {
+                        if (war.Map != CurrentMap) continue;
+
+                        for (int i = SpellList.Count - 1; i >= 0; i--)
+                        {
+                            if (SpellList[i].Effect != SpellEffect.Tempest) continue;
+
+                            SpellList[i].Despawn();
+                        }
+                        break;
+                    }
+
+                    cells = CurrentMap.GetCells(p.Location, 0, 2);
+
+                    foreach (Cell cell in cells)
+                    {
+                        if (Math.Abs(cell.Location.X - p.Location.X) + Math.Abs(cell.Location.Y - p.Location.Y) >= 3) continue;
+
+                        ActionList.Add(new DelayedAction(
+                            SEnvir.Now.AddMilliseconds(500),
+                            ActionType.DelayMagic,
+                            new List<UserMagic> { magic },
+                            cell,
+                            power));
+                    }
+                    break;
+                case MagicType.AwakenedTempest:
+                    ob = null;
+
+                    if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange))
+                    {
+                        cast = false;
+                        break;
+                    }
+
+                    power = (magic.Level + 2) * 5;
+
+                    foreach (ConquestWar war in SEnvir.ConquestWars)
+                    {
+                        if (war.Map != CurrentMap) continue;
+
+                        for (int i = SpellList.Count - 1; i >= 0; i--)
+                        {
+                            if (SpellList[i].Effect != SpellEffect.Tempest) continue;
+
+                            SpellList[i].Despawn();
+                        }
+                        break;
+                    }
+
+                    cells = CurrentMap.GetCells(p.Location, 0, 2);
 
                     foreach (Cell cell in cells)
                     {
@@ -13713,10 +13882,17 @@ namespace Server.Models
                 case MagicType.EnhancedElectricShock:
                 case MagicType.AwakenedElectricShock:
                 case MagicType.Teleportation:
+                case MagicType.EnhancedTeleportation:
+                case MagicType.AwakenedTeleportation:
                 case MagicType.GeoManipulation:
+                case MagicType.EnhancedGeoManipulation:
+                case MagicType.AwakenedGeoManipulation:
                 case MagicType.MagicShield:
+                case MagicType.EnhancedMagicShield:
+                case MagicType.AwakenedMagicShield:
                 case MagicType.FrostBite:
                 case MagicType.Renounce:
+                case MagicType.EnhancedRenounce:
                 case MagicType.JudgementOfHeaven:
                 case MagicType.MirrorImage:
 
@@ -14184,12 +14360,18 @@ namespace Server.Models
                         break;
                     case MagicType.SwiftBlade:
                     case MagicType.EnhancedSwiftBlade:
-                    case MagicType.AwakenedSwiftBlade:
                     case MagicType.SeismicSlam:
                         power = power * magic.GetPower() / 100;
 
                         if (ob.Race == ObjectType.Player)
                             power /= 2;
+                        break;
+                    case MagicType.AwakenedSwiftBlade:
+                        power = power * magic.GetPower() / 100;
+
+                        if (ob.Race == ObjectType.Player)
+                            power /= 4;
+                        break;
                         break;
                     case MagicType.EnhancedSeismicSlam:
                         power = power * magic.GetPower() / 100;
@@ -14723,18 +14905,26 @@ namespace Server.Models
                     case MagicType.BlowEarth:
                         element = Element.Wind;
                         power += magic.GetPower() + GetMC();
+                        repel = 20;
+                        break;
+                    case MagicType.EnhancedBlowEarth:
+                    case MagicType.AwakenedBlowEarth:
+                        element = Element.Wind;
+                        power += magic.GetPower() + GetMC();
                         repel = 10;
                         break;
                     case MagicType.Cyclone:
                     case MagicType.DragonTornado:
                         element = Element.Wind;
                         power += magic.GetPower() + GetMC();
-                        repel = 5;
+                        repel = 20;
                         break;
                     case MagicType.Tempest:
+                    case MagicType.EnhancedTempest:
+                    case MagicType.AwakenedTempest:
                         element = Element.Wind;
                         power += magic.GetPower() + GetMC();
-                        repel = 5;
+                        repel = 20;
                         canStuck = false;
                         break;
                     case MagicType.ExplosiveTalisman:
@@ -14871,6 +15061,8 @@ namespace Server.Models
                         power = (int)(power * 0.60F);
                         break;
                     case MagicType.Tempest:
+                    case MagicType.EnhancedTempest:
+                    case MagicType.AwakenedTempest:
                         power = (int)(power * 0.80F);
                         break;
 
@@ -15499,6 +15691,8 @@ namespace Server.Models
                     case MagicType.AwakenedThunderBeam:
                     case MagicType.FrozenEarth:
                     case MagicType.BlowEarth:
+                    case MagicType.EnhancedBlowEarth:
+                    case MagicType.AwakenedBlowEarth:
                     case MagicType.GreaterFrozenEarth:
                         AttackCell(magics, (Cell)data[1], (bool)data[2]);
                         break;
@@ -15517,6 +15711,8 @@ namespace Server.Models
                         ChainLightningEnd(magics, (Cell)data[1], (int)data[2]);
                         break;
                     case MagicType.Teleportation:
+                    case MagicType.EnhancedTeleportation:
+                    case MagicType.AwakenedTeleportation:
                         TeleportationEnd(magic);
                         break;
                     case MagicType.ElectricShock:
@@ -15539,22 +15735,34 @@ namespace Server.Models
                     case MagicType.MagicShield:
                         MagicShieldEnd(magic);
                         break;
+                    case MagicType.EnhancedMagicShield:
+                        EnhancedMagicShieldEnd(magic);
+                        break;
+                    case MagicType.AwakenedMagicShield:
+                        AwakenedMagicShieldEnd(magic);
+                        break;
                     case MagicType.FrostBite:
                         FrostBiteEnd(magic);
                         break;
                     case MagicType.GeoManipulation:
+                    case MagicType.EnhancedGeoManipulation:
+                    case MagicType.AwakenedGeoManipulation:
                         GeoManipulationEnd(magic, (Point)data[1]);
                         break;
                     case MagicType.Renounce:
                         RenounceEnd(magic);
                         break;
+                    case MagicType.EnhancedRenounce:
+                        EnhancedRenounceEnd(magic);
+                        break;
                     case MagicType.Tempest:
+                    case MagicType.EnhancedTempest:
+                    case MagicType.AwakenedTempest:
                         TempestEnd(magic, (Cell)data[1], (int)data[2]);
                         break;
                     case MagicType.JudgementOfHeaven:
                         JudgementOfHeavenEnd(magic);
                         break;
-
 
                     #endregion
 
@@ -17061,6 +17269,30 @@ namespace Server.Models
             Teleport(CurrentMap, CurrentMap.GetRandomLocation());
             //LevelMagic(magic);
         }
+        private void AwakenedTeleportationEnd(UserMagic magic, Point location)
+        {
+            if (CurrentMap.Info.SkillDelay > 0)
+            {
+                Connection.ReceiveChat(string.Format(Connection.Language.SkillBadMap, magic.Info.Name), MessageType.System);
+
+                foreach (SConnection con in Connection.Observers)
+                    con.ReceiveChat(string.Format(con.Language.SkillBadMap, magic.Info.Name), MessageType.System);
+                return;
+            }
+
+            if (!CurrentMap.Info.AllowRT)
+            {
+                Connection.ReceiveChat(Connection.Language.CannotRandomTeleport, MessageType.System);
+
+                foreach (SConnection con in Connection.Observers)
+                    con.ReceiveChat(con.Language.CannotRandomTeleport, MessageType.System);
+                return;
+            }
+            if (SEnvir.Random.Next(9) > 2 + magic.Level * 2) return;
+            MirDirection direction = Functions.DirectionFromPoint(CurrentLocation, location);
+            Teleport(CurrentMap, CurrentMap.GetRandomLocation());
+            //LevelMagic(magic);
+        }
         private void FireWallEnd(UserMagic magic, Cell cell, int power)
         {
             if (cell == null) return;
@@ -17136,11 +17368,38 @@ namespace Server.Models
 
         public void MagicShieldEnd(UserMagic magic)
         {
-            if (Buffs.Any(x => x.Type == BuffType.MagicShield)) return;
+            Buffs.RemoveAll(x => x.Type == BuffType.MagicShield);
 
             Stats buffStats = new Stats
             {
-                [Stat.MagicShield] = 50
+                [Stat.MagicShield] = 45
+            };
+
+            BuffAdd(BuffType.MagicShield, TimeSpan.FromSeconds(30 + magic.Level * 20 + GetMC() / 2 + Stats[Stat.PhantomAttack] * 2), buffStats, true, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+        public void EnhancedMagicShieldEnd(UserMagic magic)
+        {
+            Buffs.RemoveAll(x => x.Type == BuffType.MagicShield);
+
+            Stats buffStats = new Stats
+            {
+                [Stat.MagicShield] = 55
+            };
+
+            BuffAdd(BuffType.MagicShield, TimeSpan.FromSeconds(30 + magic.Level * 20 + GetMC() / 2 + Stats[Stat.PhantomAttack] * 2), buffStats, true, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+        public void AwakenedMagicShieldEnd(UserMagic magic)
+        {
+            Buffs.RemoveAll(x => x.Type == BuffType.MagicShield);
+
+            Stats buffStats = new Stats
+            {
+                [Stat.MagicShield] = 55,
+                [Stat.ProtectionRingPower] = 1
             };
 
             BuffAdd(BuffType.MagicShield, TimeSpan.FromSeconds(30 + magic.Level * 20 + GetMC() / 2 + Stats[Stat.PhantomAttack] * 2), buffStats, true, false, TimeSpan.Zero);
@@ -17167,7 +17426,24 @@ namespace Server.Models
             Stats buffStats = new Stats
             {
                 [Stat.HealthPercent] = -(1 + magic.Level) * 10,
-                [Stat.MCPercent] = (1 + magic.Level) * 10,
+                [Stat.MCPercent] = (1 + magic.Level) * 5,
+            };
+
+            int health = CurrentHP;
+
+            BuffInfo buff = BuffAdd(BuffType.Renounce, TimeSpan.FromSeconds(30 + magic.Level * 30), buffStats, false, false, TimeSpan.Zero);
+
+            buff.Stats[Stat.RenounceHPLost] = health - CurrentHP;
+            Enqueue(new S.BuffChanged() { Index = buff.Index, Stats = new Stats(buff.Stats) });
+
+            //LevelMagic(magic);
+        }
+        public void EnhancedRenounceEnd(UserMagic magic)
+        {
+            Stats buffStats = new Stats
+            {
+                [Stat.HealthPercent] = -(1 + magic.Level) * 5,
+                [Stat.MCPercent] = (1 + magic.Level) * 5,
             };
 
             int health = CurrentHP;

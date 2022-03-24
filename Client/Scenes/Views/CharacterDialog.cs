@@ -399,7 +399,7 @@ namespace Client.Scenes.Views
                 Parent = StatsTab,
                 Text = "AC:"
             };
-            label.Location = new Point(StatsTab.Size.Width / 4 - label.Size.Width + 25, y += 10);
+            label.Location = new Point(25, y += 10);
 
             DisplayStats[Stat.MaxAC] = new DXLabel
             {
@@ -414,7 +414,7 @@ namespace Client.Scenes.Views
                 Parent = StatsTab,
                 Text = "MR:"
             };
-            label.Location = new Point(StatsTab.Size.Width / 4 * 2 - label.Size.Width + 25, y);
+            label.Location = new Point(StatsTab.Size.Width / 4 * 2 - label.Size.Width + 40, y);
 
             DisplayStats[Stat.MaxMR] = new DXLabel
             {
@@ -429,7 +429,7 @@ namespace Client.Scenes.Views
                 Parent = StatsTab,
                 Text = "DC:"
             };
-            label.Location = new Point(StatsTab.Size.Width / 4 - label.Size.Width + 25, y += 20);
+            label.Location = new Point(25, y += 20);
 
             DisplayStats[Stat.MaxDC] = new DXLabel
             {
@@ -438,37 +438,6 @@ namespace Client.Scenes.Views
                 ForeColour = Color.White,
                 Text = "0-0"
             };
-
-            label = new DXLabel
-            {
-                Parent = StatsTab,
-                Text = "MC:"
-            };
-            label.Location = new Point(StatsTab.Size.Width / 4 * 2 - label.Size.Width + 25, y);
-
-            DisplayStats[Stat.MaxMC] = new DXLabel
-            {
-                Parent = StatsTab,
-                Location = new Point(label.Location.X + label.Size.Width - 5, y),
-                ForeColour = Color.White,
-                Text = "0-0"
-            };
-
-            label = new DXLabel
-            {
-                Parent = StatsTab,
-                Text = "SC:"
-            };
-            label.Location = new Point(StatsTab.Size.Width / 4 * 3 - label.Size.Width + 25, y);
-
-            DisplayStats[Stat.MaxSC] = new DXLabel
-            {
-                Parent = StatsTab,
-                Location = new Point(label.Location.X + label.Size.Width - 5, y),
-                ForeColour = Color.White,
-                Text = "0-0"
-            };
-
 
             label = new DXLabel
             {
@@ -491,7 +460,7 @@ namespace Client.Scenes.Views
                 Parent = StatsTab,
                 Text = "Agility:"
             };
-            label.Location = new Point(StatsTab.Size.Width / 4 * 2 - label.Size.Width + 25, y);
+            label.Location = new Point(StatsTab.Size.Width / 4 * 3 - label.Size.Width + 25, y);
 
             DisplayStats[Stat.Agility] = new DXLabel
             {
@@ -1681,6 +1650,46 @@ namespace Client.Scenes.Views
             int y = (cell.Size.Height - s.Height) / 2 + cell.DisplayArea.Y;
 
             InterfaceLibrary.Draw(index, x, y, Color.White, false, 0.2F, ImageType.Image);
+        }
+
+        public void AddClassSpecificLabels()
+        {
+            DXLabel label;
+            if (MapObject.User.Class == MirClass.Wizard)
+            {
+                label = new DXLabel
+                {
+                    Parent = StatsTab,
+                    Text = "MC:"
+                };
+                label.Location = new Point(StatsTab.Size.Width / 4 * 2 - label.Size.Width + 40, 30);
+
+                DisplayStats[Stat.MaxMC] = new DXLabel
+                {
+                    Parent = StatsTab,
+                    Location = new Point(label.Location.X + label.Size.Width - 5, 30),
+                    ForeColour = Color.White,
+                    Text = "0-0"
+                };
+            }
+
+            if (MapObject.User.Class == MirClass.Taoist)
+            {
+                label = new DXLabel
+                {
+                    Parent = StatsTab,
+                    Text = "SC:"
+                };
+                label.Location = new Point(StatsTab.Size.Width / 4 * 2 - label.Size.Width + 40, 30);
+
+                DisplayStats[Stat.MaxSC] = new DXLabel
+                {
+                    Parent = StatsTab,
+                    Location = new Point(label.Location.X + label.Size.Width - 5, 30),
+                    ForeColour = Color.White,
+                    Text = "0-0"
+                };
+            }
         }
         
         private void CharacterTab_BeforeChildrenDraw(object sender, EventArgs e)

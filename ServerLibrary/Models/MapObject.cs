@@ -1143,19 +1143,21 @@ namespace Server.Models
 
             if (amount < 0 && Stats[Stat.ProtectionRing] > 0)
             {
-                if (CurrentMP >= Math.Abs(amount))
+                int manaAmount = (int)(amount * 0.6f);
+                amount -= manaAmount;
+                manaAmount = (int)Math.Ceiling((float)manaAmount / (float)Stats[Stat.ProtectionRingPower]);
+                if (CurrentMP >= Math.Abs(manaAmount))
                 {
-                    ChangeMP(amount);
-                    return;
+                    ChangeMP(manaAmount);
                 }
-
-                if (CurrentMP > 0)
+                else
                 {
-                    amount += CurrentMP; //Amount is Negative so -100 + 15 Remaining mana = 85 Damage
+                    manaAmount += CurrentMP; //Amount is Negative so -100 + 15 Remaining mana = 85 Damage
+                    manaAmount *= Stats[Stat.ProtectionRingPower];
+                    amount += manaAmount;
                     SetMP(0);
                 }
             }
-
 
             if (CurrentHP + amount > Stats[Stat.Health])
                 amount = Stats[Stat.Health] - CurrentHP;
@@ -1174,7 +1176,6 @@ namespace Server.Models
                     ItemRevive();
                     return;
                 }
-
                 Die();
             }
         }
@@ -1198,7 +1199,6 @@ namespace Server.Models
         public virtual void ItemRevive()
         {
             CurrentHP = Stats[Stat.Health];
-            CurrentMP = Stats[Stat.Mana];
             ItemReviveTime = SEnvir.Now.AddSeconds(Stats[Stat.ItemReviveTime]);
         }
         public virtual int Purify(MapObject ob)

@@ -97,10 +97,6 @@ namespace Library
             GuildStorageCost = 350000,
             GuildWarCost = 200000;
 
-        public static long
-            MasterRefineCost = 50000,
-            MasterRefineEvaluateCost = 250000;
-
         public static List<Size> ValidResolutions = new List<Size>
         {
             new Size(1024, 768),
@@ -457,7 +453,7 @@ namespace Library
             {MagicType.IceBlades, MagicType.AwakenedIceBlades},
             {MagicType.GreaterFrozenEarth, MagicType.AwakenedFrozenEarth},
             {MagicType.EnhancedIceStorm, MagicType.AwakenedIceStorm},
-            {MagicType.ThunderBolt, MagicType.MassThunder},
+            {MagicType.ThunderBolt, MagicType.ThunderStrike},
             {MagicType.ChainLightning, MagicType.AwakenedChainLightning},
             {MagicType.EnhancedThunderBeam, MagicType.AwakenedThunderBeam},
             {MagicType.EnhancedElectricShock, MagicType.AwakenedElectricShock},
@@ -494,15 +490,6 @@ namespace Library
 
         public static bool RealNameRequired = false,
                            BirthDateRequired = false;
-
-        public static Dictionary<RefineQuality, TimeSpan> RefineTimes = new Dictionary<RefineQuality, TimeSpan>
-        {
-            [RefineQuality.Rush] = TimeSpan.FromMinutes(1),
-            [RefineQuality.Quick] = TimeSpan.FromMinutes(30),
-            [RefineQuality.Standard] = TimeSpan.FromHours(1),
-            [RefineQuality.Careful] = TimeSpan.FromHours(6),
-            [RefineQuality.Precise] = TimeSpan.FromDays(1),
-        };
     }
 
     public sealed class SelectInfo
@@ -692,13 +679,11 @@ namespace Library
             AddedStats = new Stats(item.AddedStats);
         }
 
-
         public long Price(long count)
         {
             if ((Flags & UserItemFlags.Worthless) == UserItemFlags.Worthless) return 0;
 
             decimal p = Info.Price;
-
 
             p = p * (AddedStats.Count * 0.1M + 1M);
 
@@ -945,7 +930,6 @@ namespace Library
         }
     }
 
-
     public class CellLinkInfo
     {
         public GridType GridType { get; set; }
@@ -983,7 +967,6 @@ namespace Library
         }
     }
 
-
     public sealed class RankInfo
     {
         public int Rank { get; set; }
@@ -1000,9 +983,7 @@ namespace Library
     {
         public int Index { get; set; }
         public ClientUserItem Item { get; set; }
-
         public int Price { get; set; }
-
         public string Seller { get; set; }
         public string Message { get; set; }
         public bool IsOwner { get; set; }
@@ -1016,11 +997,9 @@ namespace Library
         public bool Opened { get; set; }
         public bool HasItem { get; set; }
         public DateTime Date { get; set; }
-
         public string Sender { get; set; }
         public string Subject { get; set; }
         public string Message { get; set; }
-
         public int Gold { get; set; }
         public List<ClientUserItem> Items { get; set; }
     }
@@ -1077,7 +1056,6 @@ namespace Library
             else
                 LastOnline = Time.Now - Online;
         }
-
     }
 
     public class ClientUserQuest
@@ -1168,7 +1146,6 @@ namespace Library
         {
             CompanionInfo = Globals.CompanionInfoList.Binding.First(x => x.Index == CompanionIndex);
 
-
             foreach (ClientUserItem item in Items)
             {
                 if (item.Slot < Globals.EquipmentOffSet)
@@ -1176,9 +1153,7 @@ namespace Library
                 else
                     EquipmentArray[item.Slot - Globals.EquipmentOffSet] = item;
             }
-
         }
-
     }
 
     public class ClientPlayerInfo
@@ -1243,7 +1218,4 @@ namespace Library
         public string FilterRarity { get; set; }
         public string FilterItemType { get; set; }
     }
-
 }
-
-

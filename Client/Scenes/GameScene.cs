@@ -2912,10 +2912,13 @@ namespace Client.Scenes
                     direction = MirDirection.Down;                    
                     break;
                 case MagicType.Renounce:
+                case MagicType.EnhancedRenounce:
                     break;
                 case MagicType.StrengthOfFaith:
                     break;
                 case MagicType.MagicShield:
+                case MagicType.EnhancedMagicShield:
+                case MagicType.AwakenedMagicShield:
                     if (User.Buffs.Any(x => x.Type == BuffType.MagicShield)) return;
                     break;
                 case MagicType.FrostBite:
@@ -2937,8 +2940,12 @@ namespace Client.Scenes
                 case MagicType.EnhancedThunderBeam:
                 case MagicType.AwakenedThunderBeam:
                 case MagicType.Teleportation:
+                case MagicType.EnhancedTeleportation:
+                case MagicType.AwakenedTeleportation:
                 case MagicType.FrozenEarth:
                 case MagicType.BlowEarth:
+                case MagicType.EnhancedBlowEarth:
+                case MagicType.AwakenedBlowEarth:
                 case MagicType.GreaterFrozenEarth:
                 case MagicType.AwakenedFrozenEarth:
                 case MagicType.ThunderStrike:
@@ -2980,11 +2987,15 @@ namespace Client.Scenes
                 case MagicType.AwakenedIceStorm:
                 case MagicType.DragonTornado:
                 case MagicType.GeoManipulation:
+                case MagicType.EnhancedGeoManipulation:
+                case MagicType.AwakenedGeoManipulation:
                 case MagicType.Transparency:
                 case MagicType.ChainLightning:
                 case MagicType.AwakenedChainLightning:
                 case MagicType.MeteorShower:
                 case MagicType.Tempest:
+                case MagicType.EnhancedTempest:
+                case MagicType.AwakenedTempest:
                 case MagicType.Asteroid:
                 case MagicType.AwakenedAsteroid:
 

@@ -19,6 +19,8 @@ namespace Client.Scenes.Views
         public DXLabel CharacterNameLabel, GuildNameLabel, GuildRankLabel;
         public DXImageControl MarriageIcon;
 
+        private DXLabel WizardLabel, TaoistLabel;
+
 
         public DXItemCell[] Grid;
 
@@ -365,7 +367,7 @@ namespace Client.Scenes.Views
                 Parent = StatsTab,
                 Text = "AC:"
             };
-            label.Location = new Point(StatsTab.Size.Width / 4 - label.Size.Width + 25, y += 10);
+            label.Location = new Point(25, y += 10);
 
             DisplayStats[Stat.MaxAC] = new DXLabel
             {
@@ -380,7 +382,7 @@ namespace Client.Scenes.Views
                 Parent = StatsTab,
                 Text = "MR:"
             };
-            label.Location = new Point(StatsTab.Size.Width / 4 * 2 - label.Size.Width + 25, y);
+            label.Location = new Point(StatsTab.Size.Width / 4 * 2 - label.Size.Width + 40, y);
 
             DisplayStats[Stat.MaxMR] = new DXLabel
             {
@@ -395,7 +397,7 @@ namespace Client.Scenes.Views
                 Parent = StatsTab,
                 Text = "DC:"
             };
-            label.Location = new Point(StatsTab.Size.Width / 4 - label.Size.Width + 25, y += 20);
+            label.Location = new Point(25, y += 20);
 
             DisplayStats[Stat.MaxDC] = new DXLabel
             {
@@ -404,37 +406,6 @@ namespace Client.Scenes.Views
                 ForeColour = Color.White,
                 Text = "0-0"
             };
-
-            label = new DXLabel
-            {
-                Parent = StatsTab,
-                Text = "MC:"
-            };
-            label.Location = new Point(StatsTab.Size.Width / 4 * 2 - label.Size.Width + 25, y);
-
-            DisplayStats[Stat.MaxMC] = new DXLabel
-            {
-                Parent = StatsTab,
-                Location = new Point(label.Location.X + label.Size.Width - 5, y),
-                ForeColour = Color.White,
-                Text = "0-0"
-            };
-
-            label = new DXLabel
-            {
-                Parent = StatsTab,
-                Text = "SC:"
-            };
-            label.Location = new Point(StatsTab.Size.Width / 4 * 3 - label.Size.Width + 25, y);
-
-            DisplayStats[Stat.MaxSC] = new DXLabel
-            {
-                Parent = StatsTab,
-                Location = new Point(label.Location.X + label.Size.Width - 5, y),
-                ForeColour = Color.White,
-                Text = "0-0"
-            };
-
 
             label = new DXLabel
             {
@@ -451,13 +422,12 @@ namespace Client.Scenes.Views
                 Text = "0"
             };
 
-
             label = new DXLabel
             {
                 Parent = StatsTab,
                 Text = "Agility:"
             };
-            label.Location = new Point(StatsTab.Size.Width / 4 * 2 - label.Size.Width + 25, y);
+            label.Location = new Point(StatsTab.Size.Width / 4 * 3 - label.Size.Width + 25, y);
 
             DisplayStats[Stat.Agility] = new DXLabel
             {
@@ -1536,7 +1506,6 @@ namespace Client.Scenes.Views
                     break;
             }
 
-
             if (CEnvir.LibraryList.TryGetValue(LibraryFile.Equip, out library))
             {
                 if (Grid[(int)EquipmentSlot.Armour].Item != null)
@@ -1563,7 +1532,6 @@ namespace Client.Scenes.Views
                     library.Draw(index, DisplayArea.X + x, DisplayArea.Y + y, Grid[(int)EquipmentSlot.Shield].Item.Colour, true, 1F, ImageType.Overlay);
                 }
             }
-
 
             if (Grid[(int)EquipmentSlot.Helmet].Item != null && library != null)
             {
@@ -1604,17 +1572,84 @@ namespace Client.Scenes.Views
                         break;
                 }
             }
-
         }
+
+        private void CleanUnusedClassSpecificLabels()
+        {
+            if(WizardLabel != null && Class != MirClass.Wizard)
+            {
+                if(!WizardLabel.IsDisposed)
+                {
+                    WizardLabel.Dispose();
+                    WizardLabel = null;
+                }
+                if(!DisplayStats[Stat.MaxMC].IsDisposed)
+                {
+                    DisplayStats[Stat.MaxMC].Dispose();
+                    DisplayStats.Remove(Stat.MaxMC);
+                }
+            }
+            else if (TaoistLabel != null && Class != MirClass.Taoist)
+            {
+                if (!TaoistLabel.IsDisposed)
+                {
+                    TaoistLabel.Dispose();
+                    TaoistLabel = null;
+                }
+                if (!DisplayStats[Stat.MaxSC].IsDisposed)
+                {
+                    DisplayStats[Stat.MaxSC].Dispose();
+                    DisplayStats.Remove(Stat.MaxSC);
+                }
+            }
+        }
+
+        private void UpdateClassSpecificLabels()
+        {
+            CleanUnusedClassSpecificLabels();
+            if (WizardLabel == null && Class == MirClass.Wizard)
+            {
+                WizardLabel = new DXLabel
+                {
+                    Parent = StatsTab,
+                    Text = "MC:"
+                };
+                WizardLabel.Location = new Point(StatsTab.Size.Width / 4 * 2 - WizardLabel.Size.Width + 40, 30);
+
+                DisplayStats[Stat.MaxMC] = new DXLabel
+                {
+                    Parent = StatsTab,
+                    Location = new Point(WizardLabel.Location.X + WizardLabel.Size.Width - 5, 30),
+                    ForeColour = Color.White,
+                    Text = "0-0"
+                };
+            }
+            else if(TaoistLabel == null && Class == MirClass.Taoist)
+            {
+                TaoistLabel = new DXLabel
+                {
+                    Parent = StatsTab,
+                    Text = "SC:"
+                };
+                TaoistLabel.Location = new Point(StatsTab.Size.Width / 4 * 2 - TaoistLabel.Size.Width + 40, 30);
+
+                DisplayStats[Stat.MaxSC] = new DXLabel
+                {
+                    Parent = StatsTab,
+                    Location = new Point(TaoistLabel.Location.X + TaoistLabel.Size.Width - 5, 30),
+                    ForeColour = Color.White,
+                    Text = "0-0"
+                };
+            }
+        }
+
         public void UpdateStats()
         {
             foreach (KeyValuePair<Stat, DXLabel> pair in DisplayStats)
                 pair.Value.Text = Stats.GetFormat(pair.Key);
 
-
             foreach (KeyValuePair<Stat, DXLabel> pair in AttackStats)
             {
-
                 if (Stats[pair.Key] > 0)
                 {
                     pair.Value.Text = $"+{Stats[pair.Key]}";
@@ -1666,10 +1701,8 @@ namespace Client.Scenes.Views
             foreach (KeyValuePair<Stat, DXLabel> pair in HermitDisplayStats)
                 pair.Value.Text = HermitStats.GetFormat(pair.Key);
 
-
             foreach (KeyValuePair<Stat, DXLabel> pair in HermitAttackStats)
             {
-
                 if (HermitStats[pair.Key] > 0)
                 {
                     pair.Value.Text = $"+{HermitStats[pair.Key]}";
@@ -1683,9 +1716,7 @@ namespace Client.Scenes.Views
                     ((DXImageControl)pair.Value.Tag).ForeColour = Color.FromArgb(60, 60, 60);
                 }
             }
-
             RemainingLabel.Text = HermitPoints.ToString();
-
         }
 
         public void NewInformation(S.Inspect p)
@@ -1725,11 +1756,10 @@ namespace Client.Scenes.Views
             WearWeightLabel.ForeColour = p.WearWeight > Stats[Stat.WearWeight] ? Color.Red : Color.White;
             HandWeightLabel.ForeColour = p.HandWeight > Stats[Stat.HandWeight] ? Color.Red : Color.White;
 
-
+            UpdateClassSpecificLabels();
             UpdateStats();
         }
         #endregion
-
 
         #region IDisposable
 
@@ -1758,8 +1788,6 @@ namespace Client.Scenes.Views
                 HairType = 0;
                 HairColour = Color.Empty;
                 Level = 0;
-
-
 
                 if (TabControl != null)
                 {
@@ -1924,12 +1952,8 @@ namespace Client.Scenes.Views
 
                     RemainingLabel = null;
                 }
-
             }
-
         }
-
         #endregion
-
     }
 }

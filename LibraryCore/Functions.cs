@@ -244,13 +244,19 @@ namespace Library
                 case MagicType.LightningWave:
                 case MagicType.Cyclone:
                 case MagicType.Teleportation:
+                case MagicType.EnhancedTeleportation:
+                case MagicType.AwakenedTeleportation:
                 case MagicType.FireWall:
                 case MagicType.EnhancedFireWall:
                 case MagicType.AwakenedFireWall:
                 case MagicType.FireStorm:
                 case MagicType.BlowEarth:
+                case MagicType.EnhancedBlowEarth:
+                case MagicType.AwakenedBlowEarth:
                 case MagicType.ExpelUndead:
                 case MagicType.MagicShield:
+                case MagicType.EnhancedMagicShield:
+                case MagicType.AwakenedMagicShield:
                 case MagicType.IceStorm:
                 case MagicType.EnhancedIceStorm:
                 case MagicType.AwakenedIceStorm:
@@ -258,11 +264,16 @@ namespace Library
                 case MagicType.ChainLightning:
                 case MagicType.AwakenedChainLightning:
                 case MagicType.GeoManipulation:
+                case MagicType.EnhancedGeoManipulation:
+                case MagicType.AwakenedGeoManipulation:
                 case MagicType.Transparency:
                 case MagicType.ThunderBolt:
                 case MagicType.Renounce:
+                case MagicType.EnhancedRenounce:
                 case MagicType.FrostBite:
                 case MagicType.Tempest:
+                case MagicType.EnhancedTempest:
+                case MagicType.AwakenedTempest:
                 case MagicType.JudgementOfHeaven:
                 case MagicType.ThunderStrike:
                 case MagicType.MirrorImage:
