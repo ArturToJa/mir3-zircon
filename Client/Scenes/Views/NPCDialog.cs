@@ -3423,7 +3423,7 @@ namespace Client.Scenes.Views
 
         public NPCSkillStoneDialog()
         {
-            TitleLabel.Text = "Skill Stone Upgrade";
+            TitleLabel.Text = "Skill Upgrade";
             Movable = false;
             SetClientSize(new Size(160, 160));
 
@@ -3441,7 +3441,7 @@ namespace Client.Scenes.Views
 
             DXLabel label = new DXLabel
             {
-                Text = "Skill Stone",
+                Text = "Stone/Rune",
                 Parent = this,
                 Font = new Font(Config.FontName, CEnvir.FontSize(8F), FontStyle.Underline)
             };

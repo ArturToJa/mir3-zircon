@@ -137,8 +137,8 @@ namespace Library
             [LibraryFile.WM_WeaponAOH2] = @"Data\WM-WeaponAOH2.Zl",
             [LibraryFile.WM_WeaponAOH3] = @"Data\WM-WeaponAOH3.Zl",
             [LibraryFile.WM_WeaponAOH4] = @"Data\WM-WeaponAOH4.Zl",
-            [LibraryFile.WM_WeaponAOH5] = @"Data\WWM-WeaponAOH5.Zl",
-            [LibraryFile.WM_WeaponAOH6] = @"Data\WWM-WeaponAOH6.Zl",
+            [LibraryFile.WM_WeaponAOH5] = @"Data\WM-WeaponAOH5.Zl",
+            [LibraryFile.WM_WeaponAOH6] = @"Data\WM-WeaponAOH6.Zl",
 
 
             [LibraryFile.M_Helmet1] = @"Data\M-Helmet1.Zl",
@@ -256,6 +256,16 @@ namespace Library
             [LibraryFile.Mon_54] = @"Data\Mon-54.Zl",
             [LibraryFile.Mon_55] = @"Data\Mon-55.Zl",
             [LibraryFile.Mon_56] = @"Data\Mon-56.Zl",
+
+            [LibraryFile.Mon_57] = @"Data\Mon-57.Zl",
+            [LibraryFile.Mon_58] = @"Data\Mon-58.Zl",
+            [LibraryFile.Mon_59] = @"Data\Mon-59.Zl",
+            [LibraryFile.Mon_60] = @"Data\Mon-60.Zl",
+            [LibraryFile.Mon_61] = @"Data\Mon-61.Zl",
+            [LibraryFile.Mon_62] = @"Data\Mon-62.Zl",
+            [LibraryFile.Mon_63] = @"Data\Mon-63.Zl",
+            [LibraryFile.Mon_64] = @"Data\Mon-64.Zl",
+            [LibraryFile.Mon_65] = @"Data\Mon-65.Zl",
             
             [LibraryFile.Magic] = @"Data\Magic.Zl",
             [LibraryFile.MagicEx] = @"Data\MagicEx.Zl",
@@ -654,6 +664,16 @@ namespace Library
         Mon_54,
         Mon_55,
         Mon_56,
+
+        Mon_57,
+        Mon_58,
+        Mon_59,
+        Mon_60,
+        Mon_61,
+        Mon_62,
+        Mon_63,
+        Mon_64,
+        Mon_65,
 
 
         Magic, 

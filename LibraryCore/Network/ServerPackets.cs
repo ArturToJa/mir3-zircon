@@ -416,7 +416,7 @@ namespace Library.Network.ServerPackets
     public sealed class MagicUpgraded : Packet
     {
         public int OldMagicIndex { get; set; }
-        public MagicInfo OldMagicInfo { get; set; }
+        public MagicInfo OldMagicInfo;
         public ClientUserMagic NewMagic { get; set; }
         [CompleteObject]
         public void Complete()

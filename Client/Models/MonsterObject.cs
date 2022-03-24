@@ -2053,6 +2053,22 @@ namespace Client.Models
                     CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_48, out BodyLibrary);
                     BodyShape = 2;
                     break;
+                case MonsterImage.TempleGuardian:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_57, out BodyLibrary);
+                    BodyShape = 8;
+                    break;
+                case MonsterImage.DemonicBlack:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_29, out BodyLibrary);
+                    BodyShape = 4;
+                    break;
+                case MonsterImage.ForestTree:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_31, out BodyLibrary);
+                    BodyShape = 0;
+                    break;
+                case MonsterImage.DarkForestTree:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_24, out BodyLibrary);
+                    BodyShape = 4;
+                    break;
                 default:
                     CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_1, out BodyLibrary);
                     BodyShape = 0;

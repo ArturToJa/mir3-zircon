@@ -9586,7 +9586,7 @@ namespace Server.Models
                 foreach (SConnection con in Connection.Observers)
                     con.ReceiveChat(String.Format("Enhanced {0} to {1}", magic.Info.Name, newMagic.Info.Name), MessageType.System);
 
-                Enqueue(new S.MagicUpgraded { OldMagicIndex = magic.Info.Index, NewMagic = newMagic.ToClientInfo() });Magics.Remove(magic.Info.Magic);
+                Enqueue(new S.MagicUpgraded { OldMagicIndex = magic.Info.Index, NewMagic = newMagic.ToClientInfo() });
                 Magics.Remove(magic.Info.Magic);
 
                 magic.Character = null;

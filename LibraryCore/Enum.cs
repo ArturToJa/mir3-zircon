@@ -692,8 +692,8 @@ namespace Library
         AwakenedCyclone = 582,
         EnhancedBlowEarth = 583,
         AwakenedBlowEarth = 584,
-        EnhancedDragonTornado = 585,
-        AwakenedDragonTornado = 586,
+        ToRedo = 585,
+        ToRedo2 = 586,
         EnhancedTempest = 587,
         AwakenedTempest = 588,
         EnhancedRenounce = 589,
@@ -705,7 +705,6 @@ namespace Library
         AwakenedExpelUndead = 595,
         EnhancedMagicShield = 596,
         AwakenedMagicShield = 597,
-        MassThunder = 598,
     }
 
     public enum MonsterImage
@@ -995,7 +994,12 @@ namespace Library
 
         DarkChampion,
         DarkGuard,
-        DarkKing
+        DarkKing,
+
+        TempleGuardian,
+        DemonicBlack,
+        ForestTree,
+        DarkForestTree,
     }
 
     
