@@ -9895,6 +9895,7 @@ namespace Server.Models
                     case Stat.CriticalDamage:
                     case Stat.HealthPercent:
                     case Stat.ManaPercent:
+                    case Stat.PoisonResistance:
                         int statNow = statPair.Value * targetItem.Level / 10;
                         int statBefore = statPair.Value * (targetItem.Level - 1) / 10;
                         int statDelta = statNow - statBefore;
@@ -12996,7 +12997,6 @@ namespace Server.Models
                         ob));
                     break;
                 case MagicType.PoisonDust:
-
                     magics = new List<UserMagic> { magic };
                     Magics.TryGetValue(MagicType.GreaterPoisonDust, out augMagic);
 
@@ -13022,17 +13022,6 @@ namespace Server.Models
                             if (!Functions.InRange(CurrentLocation, target.CurrentLocation, Globals.MagicRange)) continue;
 
                             realTargets.Add(target);
-
-                            //Unsure why code was changed to this
-                            //if (target is PlayerObject)
-                            //{
-                            //    var player = (PlayerObject)target;
-                            //    if ((InGroup(player) || InGuild(player)) && target.Dead)
-                            //    {
-                            //        realTargets.Add(target);
-                            //    }
-                            //}
-
                         }
                     }
 
@@ -13043,7 +13032,6 @@ namespace Server.Models
 
                         if (!UsePoison(1, out shape))
                             break;
-
 
                         if (augMagic != null)
                             count++;
@@ -13135,7 +13123,6 @@ namespace Server.Models
 
                     if (CanAttackTarget(ob))
                         realTargets.Add(ob);
-
 
                     if (augMagic != null && SEnvir.Now > augMagic.Cooldown && Level >= augMagic.Info.NeedLevel1)
                     {
@@ -17521,27 +17508,44 @@ namespace Server.Models
         {
             if (ob?.Node == null || !CanHelpTarget(ob) || ob.CurrentHP >= ob.Stats[Stat.Health] || ob.Buffs.Any(x => x.Type == BuffType.Heal)) return;
 
-            UserMagic empowered;
-            int bonus = 0;
-            int cap = 30;
-
-            if (Magics.TryGetValue(MagicType.EmpoweredHealing, out empowered) && Level >= empowered.Info.NeedLevel1)
-            {
-                bonus = empowered.GetPower();
-                cap += (1 + empowered.Level) * 30;
-
-                //LevelMagic(empowered);
-            }
-
             Stats buffStats = new Stats
             {
-                [Stat.Healing] = magic.GetPower() + GetSC() + Stats[Stat.HolyAttack] * 2 + bonus,
-                [Stat.HealingCap] = cap, // empowered healing
+                [Stat.Healing] = Math.Min(magic.GetPower() + GetSC() + Stats[Stat.HolyAttack] * 2, magic.Level * 3 * 500),
+                [Stat.HealingCap] = magic.Level * 500,
             };
 
             ob.BuffAdd(BuffType.Heal, TimeSpan.FromSeconds(buffStats[Stat.Healing] / buffStats[Stat.HealingCap]), buffStats, false, false, TimeSpan.FromSeconds(1));
             //LevelMagic(magic);
         }
+
+        public void EmpoweredHealEnd(UserMagic magic, MapObject ob)
+        {
+            if (ob?.Node == null || !CanHelpTarget(ob) || ob.CurrentHP >= ob.Stats[Stat.Health] || ob.Buffs.Any(x => x.Type == BuffType.Heal)) return;
+
+            Stats buffStats = new Stats
+            {
+                [Stat.Healing] = Math.Min(magic.GetPower() + GetSC() + Stats[Stat.HolyAttack] * 2, magic.Level * 3 * 1000),
+                [Stat.HealingCap] = magic.Level * 1000,
+            };
+
+            ob.BuffAdd(BuffType.Heal, TimeSpan.FromSeconds(buffStats[Stat.Healing] / buffStats[Stat.HealingCap]), buffStats, false, false, TimeSpan.FromSeconds(1));
+            //LevelMagic(magic);
+        }
+
+        public void AwakenedHealEnd(UserMagic magic, MapObject ob)
+        {
+            if (ob?.Node == null || !CanHelpTarget(ob) || ob.CurrentHP >= ob.Stats[Stat.Health] || ob.Buffs.Any(x => x.Type == BuffType.Heal)) return;
+
+            Stats buffStats = new Stats
+            {
+                [Stat.Healing] = ob.Stats[Stat.Health] * 3 * magic.Level / 200,
+                [Stat.HealingCap] = ob.Stats[Stat.Health] * magic.Level / 200,
+            };
+
+            ob.BuffAdd(BuffType.Heal, TimeSpan.FromSeconds(buffStats[Stat.Healing] / buffStats[Stat.HealingCap]), buffStats, false, false, TimeSpan.FromSeconds(1));
+            //LevelMagic(magic);
+        }
+
         public void PoisonDustEnd(List<UserMagic> magics, MapObject ob, PoisonType type)
         {
             if (ob?.Node == null || !CanAttackTarget(ob)) return;

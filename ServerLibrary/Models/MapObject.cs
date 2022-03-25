@@ -1497,7 +1497,7 @@ namespace Server.Models
         {
             if (Dead) return false;
 
-            if (SEnvir.Random.Next(100) < Stats[Stat.PoisonResistance] * Stats[Stat.Endurance]) return false;
+            if (SEnvir.Random.Next(100) < Stats[Stat.PoisonResistance] + Stats[Stat.Endurance]) return false;
 
             foreach (Poison poison in PoisonList)
             {

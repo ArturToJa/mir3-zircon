@@ -3106,18 +3106,15 @@ namespace Client.Models
 
                         case MagicType.IceBlades:
                         case MagicType.AwakenedIceBlades:
-                            for (int i = 0; i < Multicast; i++)
+                            Effects.Add(spell = new MirEffect(2880, 6, TimeSpan.FromMilliseconds(115), LibraryFile.Magic, 10, 35, Globals.IceColour)
                             {
-                                Effects.Add(spell = new MirEffect(2880, 6, TimeSpan.FromMilliseconds(115), LibraryFile.Magic, 10, 35, Globals.IceColour)
-                                {
-                                    Blend = true,
-                                    Target = this,
-                                    Direction = action.Direction,
-                                    StartTime = CEnvir.Now.AddMilliseconds(300 * i)
+                                Blend = true,
+                                Target = this,
+                                Direction = action.Direction,
+                                StartTime = CEnvir.Now.AddMilliseconds(300)
                             });
 
-                                DXSoundManager.Play(SoundIndex.GreaterIceBoltStart);
-                            }
+                            DXSoundManager.Play(SoundIndex.GreaterIceBoltStart);
                             break;
 
                         #endregion

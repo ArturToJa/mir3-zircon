@@ -316,17 +316,8 @@ namespace Server.Models
 
                 if (Info.Announce)
                 {
-                    if (Info.Delay >= 1000000)
-                    {
-                        foreach (SConnection con in SEnvir.Connections)
-                            con.ReceiveChat($"{mob.MonsterInfo.MonsterName} has appeared in {CurrentMap.Info.Description}.", MessageType.System);
-                    }
-                    else
-                    {
-                        foreach (SConnection con in SEnvir.Connections)
-                            con.ReceiveChat($"{mob.MonsterInfo.MonsterName} has appeared in {CurrentMap.Info.Description}.", MessageType.System);
-                        //con.ReceiveChat(string.Format(con.Language.BossSpawn, CurrentMap.Info.Description), MessageType.System);
-                    }
+                    foreach (SConnection con in SEnvir.Connections)
+                        con.ReceiveChat($"{mob.MonsterInfo.MonsterName} has appeared in {CurrentMap.Info.Description}.", MessageType.System);
                 }
 
                 mob.DropSet = Info.DropSet;

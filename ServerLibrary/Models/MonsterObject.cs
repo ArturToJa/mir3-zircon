@@ -121,7 +121,6 @@ namespace Server.Models
         public override bool CanMove => base.CanMove && (Poison & PoisonType.Silenced) != PoisonType.Silenced && MoveDelay > 0 && (PetOwner == null || PetOwner.PetMode == PetMode.Both || PetOwner.PetMode == PetMode.Move || PetOwner.PetMode == PetMode.PvP);
         public override bool CanAttack => base.CanAttack && (Poison & PoisonType.Silenced) != PoisonType.Silenced && AttackDelay > 0 && (PetOwner == null || PetOwner.PetMode == PetMode.Both || PetOwner.PetMode == PetMode.Attack || PetOwner.PetMode == PetMode.PvP);
 
-
         public static MonsterObject GetMonster(MonsterInfo monsterInfo)
         {
             switch (monsterInfo.AI)
@@ -758,7 +757,6 @@ namespace Server.Models
                 Stats[Stat.Agility] += Stats[Stat.Agility] * SummonLevel / 6;
             }
 
-
             Stats[Stat.CriticalChance] = 1;
 
             if (Buffs.Any(x => x.Type == BuffType.MagicWeakness))
@@ -766,7 +764,6 @@ namespace Server.Models
                 Stats[Stat.MinMR] = 0;
                 Stats[Stat.MaxMR] = 0;
             }
-
 
             foreach (BuffInfo buff in Buffs)
             {
@@ -800,7 +797,6 @@ namespace Server.Models
             Stats[Stat.PhantomResistance] = Math.Min(5, Stats[Stat.PhantomResistance]);
             */
 
-
             Stats[Stat.Health] += (int)(Stats[Stat.Health] * (long)Stats[Stat.HealthPercent] / 100);
             Stats[Stat.Mana] += (int)(Stats[Stat.Mana] * (long)Stats[Stat.ManaPercent] / 100);
 
@@ -826,7 +822,6 @@ namespace Server.Models
                 Stats[Stat.MinDC] += (int)(Stats[Stat.MinDC] * (long)MapDamageRate / 100);
                 Stats[Stat.MaxDC] += (int)(Stats[Stat.MaxDC] * (long)MapDamageRate / 100);
             }
-
 
             Stats[Stat.Health] = Math.Max(1, Stats[Stat.Health]);
             Stats[Stat.Mana] = Math.Max(1, Stats[Stat.Mana]);
@@ -857,13 +852,11 @@ namespace Server.Models
             foreach (PlayerObject player in DataSeenByPlayers)
                 player.Enqueue(p);
 
-
             if (CurrentHP > Stats[Stat.Health]) SetHP(Stats[Stat.Health]);
             if (CurrentMP > Stats[Stat.Mana]) SetMP(Stats[Stat.Mana]);
         }
         public virtual void ApplyBonusStats()
         {
-
         }
 
         public override void CleanUp()
@@ -883,7 +876,6 @@ namespace Server.Models
             Magics?.Clear();
         }
 
-
         public override void Activate()
         {
             if (Activated) return;
@@ -902,8 +894,6 @@ namespace Server.Models
             Activated = false;
             SEnvir.ActiveObjects.Remove(this);
         }
-
-
 
         public override void ProcessAction(DelayedAction action)
         {
@@ -1027,7 +1017,6 @@ namespace Server.Models
                 MinionList.Clear();
             }
 
-
             if (SpawnInfo != null)
                 SpawnInfo.AliveCount--;
 
@@ -1037,7 +1026,6 @@ namespace Server.Models
 
             EXPOwner = null;
         }
-
 
         public void UnTame()
         {
@@ -1423,12 +1411,9 @@ namespace Server.Models
                                 return true;
                             break;
                     }
-
                     return true;
 
                 case ObjectType.Monster:
-
-
                     MonsterObject mob = (MonsterObject)ob;
 
                     if (PetOwner == null) return mob.PetOwner == null;
@@ -1455,7 +1440,6 @@ namespace Server.Models
                                 return true;
                             break;
                     }
-
                     return true;
 
                 default:
@@ -1584,7 +1568,6 @@ namespace Server.Models
                         //Is mob's Targets = master or group/guild member
 
                         if (mob.EXPOwner != null) return false; //Someone else's mob
-
 
                         if (mob.Target == null) return false;
 
@@ -1813,11 +1796,9 @@ namespace Server.Models
             List<uint> targetIDs = new List<uint>();
             List<Point> locations = new List<Point>();
 
-
             Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, CurrentLocation = CurrentLocation, Cast = true, Type = magic, Targets = targetIDs, Locations = locations });
 
             UpdateAttackTime();
-
 
             for (int d = min; d <= max; d++)
             {
@@ -2007,7 +1988,6 @@ namespace Server.Models
             };
 
             ob.Spawn(cell.Map, cell.Location);
-
         }
 
         public void DeathCloud(Point location)
@@ -2091,7 +2071,6 @@ namespace Server.Models
 
             UpdateAttackTime();
 
-
             List<Cell> cells = CurrentMap.GetCells(CurrentLocation, 0, Config.MaxViewRange);
             foreach (Cell cell in cells)
             {
@@ -2151,7 +2130,6 @@ namespace Server.Models
                     damage,
                     Element.Lightning));
             }
-
         }
 
         public void Purification()
@@ -2193,9 +2171,7 @@ namespace Server.Models
                     MagicType.Purification,
                     ob));
             }
-
         }
-
 
         public void MassCyclone()
         {
@@ -2289,7 +2265,6 @@ namespace Server.Models
 
                 ob.Spawn(CurrentMap, cell.Location);
             }
-
         }
 
         public void DragonRepulse()
@@ -2322,8 +2297,6 @@ namespace Server.Models
                     }
                 }
             }
-
-
         }
         #endregion
 
@@ -2357,8 +2330,6 @@ namespace Server.Models
             if (attacker?.Node == null || power == 0 || Dead || attacker.CurrentMap != CurrentMap || !Functions.InRange(attacker.CurrentLocation, CurrentLocation, Config.MaxViewRange)) return 0;
 
             PlayerObject player;
-
-
 
             switch (attacker.Race)
             {
@@ -2406,12 +2377,7 @@ namespace Server.Models
                 Critical();
             }
 
-
-
             ChangeHP(-power);
-
-
-
 
             if (Dead) return power;
 
@@ -2463,8 +2429,16 @@ namespace Server.Models
             if (SpawnInfo != null)
                 SpawnInfo.AliveCount--;
 
-            ProcessEvents();
+            //ProcessEvents();
 
+            if(MonsterInfo.IsBoss && MonsterInfo.Level >= 15000)
+            {
+                foreach (SConnection con in SEnvir.Connections)
+                {
+                    con.ReceiveChat(MonsterInfo.MonsterName + " has been slain by " + EXPOwner.Name + " in " + CurrentMap.Info.Description, MessageType.Announcement);
+                }
+            }
+            
             SpawnInfo = null;
 
             EXPOwner = null;
