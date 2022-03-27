@@ -1564,6 +1564,7 @@ namespace Client.Envir
                 });
 
             GameScene.Game.MapControl.FLayer.TextureValid = false;
+            GameScene.Game.ReviveBox.Visible = false;
 
 /*            foreach (MapObject ob in GameScene.Game.MapControl.Objects)
             {

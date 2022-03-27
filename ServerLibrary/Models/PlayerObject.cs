@@ -1005,6 +1005,8 @@ namespace Server.Models
             SetHP(Stats[Stat.Health] / 2);
             SetMP(Stats[Stat.Mana] / 2);
 
+            Enqueue(new S.LevelChanged { Level = Level, Experience = Experience, MaxExperience = MaxExperience });
+            Broadcast(new S.ObjectLeveled { ObjectID = ObjectID });
             Broadcast(new S.ObjectRevive { ObjectID = ObjectID, Location = CurrentLocation, Effect = false });
         }
 
