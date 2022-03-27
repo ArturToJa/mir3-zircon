@@ -413,7 +413,7 @@ namespace Server.Models.Monsters
 
                 if (value >= 0) continue;
 
-                lvStats[info.StatType] = SEnvir.Random.Next(Math.Max(CompanionOwner.Stats[Stat.Luck] * info.MaxAmount, 1), info.MaxAmount);
+                lvStats[info.StatType] = SEnvir.Random.Next(Math.Max(CompanionOwner.Stats[Stat.Luck] * info.MaxAmount / 10, 1), info.MaxAmount);
 
                 break;
             }
