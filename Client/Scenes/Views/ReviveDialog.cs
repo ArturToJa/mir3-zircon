@@ -16,7 +16,7 @@ namespace Client.Scenes.Views
     {
         #region Properties
 
-        public override WindowType Type => WindowType.StorageBox;
+        public override WindowType Type => WindowType.None;
         public override bool CustomSize => false;
         public override bool AutomaticVisiblity => true;
 

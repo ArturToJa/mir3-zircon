@@ -412,8 +412,8 @@ namespace Server.Models.Monsters
                 value -= info.Weight;
 
                 if (value >= 0) continue;
-
-                lvStats[info.StatType] = SEnvir.Random.Next(Math.Max(CompanionOwner.Stats[Stat.Luck] * info.MaxAmount / 10, 1), info.MaxAmount);
+                int ownerLuck = Math.Max(0, Math.Min(CompanionOwner.Stats[Stat.Luck], 10));
+                lvStats[info.StatType] = SEnvir.Random.Next(Math.Max(ownerLuck * info.MaxAmount / 10, 1), info.MaxAmount);
 
                 break;
             }
