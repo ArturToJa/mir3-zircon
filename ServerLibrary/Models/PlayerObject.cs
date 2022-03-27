@@ -989,10 +989,23 @@ namespace Server.Models
             AddAllObjects();
 
             Dead = false;
-            SetHP(Stats[Stat.Health]);
-            SetMP(Stats[Stat.Mana]);
+            SetHP(Stats[Stat.Health] / 2);
+            SetMP(Stats[Stat.Mana] / 2);
 
             Broadcast(new S.ObjectRevive { ObjectID = ObjectID, Location = CurrentLocation, Effect = true });
+        }
+
+        public void InPlaceRevive()
+        {
+            if (!Dead) return;
+            if (Level <= 50) return;
+            Level -= 50;
+            RefreshStats();
+            Dead = false;
+            SetHP(Stats[Stat.Health] / 2);
+            SetMP(Stats[Stat.Mana] / 2);
+
+            Broadcast(new S.ObjectRevive { ObjectID = ObjectID, Location = CurrentLocation, Effect = false });
         }
 
         protected override void OnMapChanged()
@@ -3298,7 +3311,6 @@ namespace Server.Models
                 return;
             }
 
-
             if (Teleport(Character.Partner.Player.CurrentMap, Character.Partner.Player.CurrentMap.GetRandomLocation(Character.Partner.Player.CurrentLocation, 10)))
                 Character.MarriageTeleportTime = SEnvir.Now.AddSeconds(120);
         }
@@ -3433,7 +3445,6 @@ namespace Server.Models
 
             if (NPCPage.DialogType != NPCDialogType.CompanionManage) return;
 
-
             UserCompanion info = Character.Account.Companions.FirstOrDefault(x => x.Index == index);
 
             if (info == null) return;
@@ -3452,7 +3463,6 @@ namespace Server.Models
 
             CompanionDespawn();
             CompanionSpawn();
-
         }
         public void CompanionStore(int index)
         {
@@ -5887,8 +5897,8 @@ namespace Server.Models
                             if (!Dead || SEnvir.Now < Character.ReincarnationPillTime) return;
 
                             Dead = false;
-                            SetHP(Stats[Stat.Health]);
-                            SetMP(Stats[Stat.Mana]);
+                            SetHP(Stats[Stat.Health] / 2);
+                            SetMP(Stats[Stat.Mana] / 2);
 
                             Character.ReincarnationPillTime = SEnvir.Now.AddSeconds(item.Info.Stats[Stat.ItemReviveTime]);
 
@@ -13519,7 +13529,7 @@ namespace Server.Models
                 case MagicType.Resurrection:
                     magics = new List<UserMagic> { magic };
 
-                    Magics.TryGetValue(MagicType.OathOfThePerished, out augMagic);
+                    Magics.TryGetValue(MagicType.EmpoweredRessurection, out augMagic);
 
                     realTargets = new HashSet<MapObject>();
 

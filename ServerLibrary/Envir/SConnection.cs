@@ -206,7 +206,6 @@ namespace Server.Envir
 
         public void ReceiveChat(string text, MessageType type, uint objectID = 0)
         {
-
             switch (Stage)
             {
                 case GameStage.Game:
@@ -236,7 +235,6 @@ namespace Server.Envir
                     Language = (StringMessages)ConfigReader.ConfigObjects[typeof(ChineseMessages)]; //Todo Language Selections
                     break;
             }
-
         }
         public void Process(G.Disconnect p)
         {
@@ -277,7 +275,6 @@ namespace Server.Envir
             Ping = ping;
             Enqueue(new G.PingResponse { Ping = Ping, ObserverPacket = false });
         }
-
         public void Process(C.NewAccount p)
         {
             if (Stage != GameStage.Login) return;
@@ -322,7 +319,6 @@ namespace Server.Envir
         }
         public void Process(C.Logout p)
         {
-
             switch (Stage)
             {
                 case GameStage.Select:
@@ -346,8 +342,6 @@ namespace Server.Envir
                     EndObservation();
                     break;
             }
-            ;
-
         }
 
         public void Process(C.NewCharacter p)
@@ -366,7 +360,6 @@ namespace Server.Envir
         {
             if (Stage != GameStage.Select) return;
 
-
             SEnvir.StartGame(p, this);
         }
         public void Process(C.TownRevive p)
@@ -374,6 +367,12 @@ namespace Server.Envir
             if (Stage != GameStage.Game) return;
 
             Player.TownRevive();
+        }
+
+        public void Process(C.InPlaceRevive p)
+        {
+            if (Stage != GameStage.Game) return;
+            Player.InPlaceRevive();
         }
         public void Process(C.Turn p)
         {
@@ -441,7 +440,6 @@ namespace Server.Envir
 
             Player.Mining(p.Direction);
         }
-
         public void Process(C.ItemMove p)
         {
             if (Stage != GameStage.Game) return;
@@ -472,7 +470,6 @@ namespace Server.Envir
 
             Player.ItemUse(p.Link);
         }
-
         public void Process(C.BeltLinkChanged p)
         {
             if (Stage != GameStage.Game) return;
@@ -520,7 +517,6 @@ namespace Server.Envir
 
             Player.NPCSell(p.Links);
         }
-
         public void Process(C.NPCItemUpgrade p)
         {
             if (Stage != GameStage.Game) return;
@@ -543,25 +539,21 @@ namespace Server.Envir
             if (Stage != GameStage.Game) return;
             Player.NPCFragment(p.Links);
         }
-
         public void Process(C.NPCSkillStone p)
         {
             if (Stage != GameStage.Game) return;
             Player.NPCSkillStone(p);
         }
-
         public void Process(C.NPCUpgradeGem p)
         {
             if (Stage != GameStage.Game) return;
             Player.NPCUpgradeGem(p);
         }
-
         public void Process(C.NPCLevelUpScroll p)
         {
             if (Stage != GameStage.Game) return;
             Player.NPCLevelUpScroll(p);
         }
-
         public void Process(C.MagicKey p)
         {
             if (Stage != GameStage.Game) return;
@@ -590,7 +582,6 @@ namespace Server.Envir
             magic.Set3Key = p.Set3Key;
             magic.Set4Key = p.Set4Key;
         }
-
         public void Process(C.GroupSwitch p)
         {
             if (Stage != GameStage.Game) return;
@@ -614,7 +605,6 @@ namespace Server.Envir
 
             Player.GroupInvitation = null;
         }
-
         public void Process(C.Inspect p)
         {
             if (Stage == GameStage.Game)

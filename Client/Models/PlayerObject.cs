@@ -310,7 +310,6 @@ namespace Client.Models
             else
                 WeaponShape = LibraryWeaponShape;
 
-
             switch (HorseShape)
             {
                 case 1:
@@ -331,7 +330,6 @@ namespace Client.Models
                     break;
             }
 
-
             switch (Class)
             {
                 case MirClass.Warrior:
@@ -344,7 +342,6 @@ namespace Client.Models
                     switch (Gender)
                     {
                         case MirGender.Male:
-
                             if (!ArmourList.TryGetValue(ArmourShape / 11, out file))
                             {
                                 file = LibraryFile.M_Hum;
@@ -457,7 +454,6 @@ namespace Client.Models
                     }
                     break;
             }
-
         }
 
         public override void SetAnimation(ObjectAction action)
@@ -663,7 +659,6 @@ namespace Client.Models
                     }
                     break;
             }
-
         }
 
         public override void SetAction(ObjectAction action)
@@ -707,11 +702,8 @@ namespace Client.Models
                             #endregion
                     }
                     break;
-
             }
         }
-
-
 
         public override void Draw()
         {
@@ -733,6 +725,14 @@ namespace Client.Models
                         //All
                         case 962:
                         case 972:
+                        case 944:
+                        case 954:
+                        case 984:
+                        case 994:
+                        case 985:
+                        case 995:
+                        case 986:
+                        case 996:
                             break;
                         default:
                             DrawWings();
@@ -761,6 +761,14 @@ namespace Client.Models
                         //All
                         case 962:
                         case 972:
+                        case 944:
+                        case 954:
+                        case 984:
+                        case 994:
+                        case 985:
+                        case 995:
+                        case 986:
+                        case 996:
                             DrawWings();
                             break;
                     }
@@ -784,7 +792,6 @@ namespace Client.Models
             DXManager.Sprite.Flush();
 
             int l = int.MaxValue, t = int.MaxValue, r = int.MinValue, b = int.MinValue;
-
 
             MirImage image;
             switch (Direction)
@@ -821,7 +828,6 @@ namespace Client.Models
                     break;
             }
 
-
             image = BodyLibrary?.GetImage(ArmourFrame);
             if (image != null)
             {
@@ -835,7 +841,6 @@ namespace Client.Models
                 r = Math.Max(r, image.Width + DrawX + image.OffSetX);
                 b = Math.Max(b, image.Height + DrawY + image.OffSetY);
             }
-
 
             if (HelmetShape > 0)
             {
@@ -919,14 +924,12 @@ namespace Client.Models
 
             if (oldOpacity != Opacity && !DXManager.Blending) DXManager.SetOpacity(Opacity);
 
-
             switch (CurrentAnimation)
             {
                 case MirAnimation.HorseStanding:
                 case MirAnimation.HorseWalking:
                 case MirAnimation.HorseRunning:
                 case MirAnimation.HorseStruck:
-
                     switch (HorseShape)
                     {
                         case 0:
@@ -945,18 +948,13 @@ namespace Client.Models
                             if (shadow)
                                 HorseShapeLibrary2?.DrawBlend(DrawFrame, DrawX, DrawY, Color.White, true, Opacity, ImageType.Image);
                             break;
-
                     }
-
                     break;
             }
-
-
 
             DXManager.Sprite.Draw(DXManager.ScratchTexture, Rectangle.FromLTRB(l, t, r, b), Vector3.Zero, new Vector3(l, t, 0), DrawColour);
             CEnvir.DPSCounter++;
             if (oldOpacity != Opacity && !DXManager.Blending) DXManager.SetOpacity(oldOpacity);
-
         }
         public void DrawShadow2(int l, int t, int r, int b)
         {

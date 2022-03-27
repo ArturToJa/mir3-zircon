@@ -260,6 +260,7 @@ namespace Client.Scenes.Views
             switch (action)
             {
                 case MessageAction.Revive:
+                    GameScene.Game.ReviveBox.Visible = true;
                     label = new DXLabel
                     {
                         AutoSize = false,

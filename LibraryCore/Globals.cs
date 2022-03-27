@@ -425,6 +425,8 @@ namespace Library
             {MagicType.GeoManipulation, MagicType.EnhancedGeoManipulation},
             {MagicType.ExpelUndead, MagicType.EnhancedExpelUndead},
             {MagicType.MagicShield, MagicType.EnhancedMagicShield},
+
+
         };
 
         public static Dictionary<MagicType, MagicType> MagicAwakening = new Dictionary<MagicType, MagicType>

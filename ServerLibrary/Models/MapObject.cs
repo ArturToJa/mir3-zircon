@@ -17,7 +17,6 @@ namespace Server.Models
         public uint ObjectID { get; }
         public LinkedListNode<MapObject> Node;
 
-
         public DateTime SpawnTime { get; set; }
         public abstract ObjectType Race { get; }
 
@@ -142,7 +141,6 @@ namespace Server.Models
 
             if (oldColour != NameColour)
                 Broadcast(new S.ObjectNameColour { ObjectID = ObjectID, Colour = NameColour });
-
         }
 
         public virtual void Process()
@@ -603,7 +601,6 @@ namespace Server.Models
                                     }
                                 }
                                 break;
-
                         }
                         break;
                     case BuffType.FrostBite:
@@ -641,7 +638,6 @@ namespace Server.Models
                                         0));
                                 }
                                 break;
-
                         }
 
                         FrostBiteImmunity = SEnvir.Now.AddSeconds(1);
@@ -663,7 +659,6 @@ namespace Server.Models
             foreach (BuffInfo buff in expiredBuffs)
                 BuffRemove(buff);
         }
-
 
         public virtual void ProcessAction(DelayedAction action)
         {
@@ -688,7 +683,6 @@ namespace Server.Models
             for (int i = 0; i < 20; i++)
                 if (Spawn(map, region.PointList[SEnvir.Random.Next(region.PointList.Count)])) break;
 
-
             return true;
         }
 
@@ -703,8 +697,6 @@ namespace Server.Models
 
             return Spawn(map, location);
         }
-
-
 
         public bool Spawn(Map map, Point location)
         {
@@ -1057,7 +1049,6 @@ namespace Server.Models
         {
             if (CurrentMap == null || CurrentCell == null) return null;
 
-
             Cell bestCell = null;
             int layers = 0;
 
@@ -1108,7 +1099,6 @@ namespace Server.Models
                     }
                 }
             }
-
 
             if (bestCell == null || layers >= Config.DropLayers) return null;
 
@@ -1650,5 +1640,4 @@ namespace Server.Models
         public DateTime TickTime;
         public object Extra;
     }
-
 }

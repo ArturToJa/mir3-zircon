@@ -180,6 +180,7 @@
     <Compile Include="Scenes\Views\QuestDialog.cs" />
     <Compile Include="Scenes\Views\QuestTrackerDialog.cs" />
     <Compile Include="Scenes\Views\RankingDialog.cs" />
+    <Compile Include="Scenes\Views\ReviveDialog.cs" />
     <Compile Include="Scenes\Views\StorageDialog.cs" />
     <Compile Include="Scenes\Views\TradeDialog.cs" />
     <Compile Include="TargetForm.cs">

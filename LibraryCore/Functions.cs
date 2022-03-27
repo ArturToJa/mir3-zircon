@@ -231,8 +231,6 @@ namespace Library
                 case MagicType.ImprovedExplosiveTalisman:
                     return MirAnimation.Combat1;
 
-
-
                 case MagicType.Interchange:
                 case MagicType.EnhancedInterchange:
                 case MagicType.AwakenedInterchange:

@@ -88,6 +88,7 @@ namespace Library.Network.ClientPackets
     }
 
     public sealed class TownRevive : Packet {}
+    public sealed class InPlaceRevive : Packet { }
 
     public sealed class Turn : Packet
     {

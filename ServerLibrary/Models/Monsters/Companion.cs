@@ -401,7 +401,6 @@ namespace Server.Models.Monsters
                 total += info.Weight;
             }
 
-
             Stats lvStats = new Stats();
 
             int value = SEnvir.Random.Next(total);
@@ -414,11 +413,10 @@ namespace Server.Models.Monsters
 
                 if (value >= 0) continue;
 
-                lvStats[info.StatType] = SEnvir.Random.Next( info.MaxAmount) + 1;
+                lvStats[info.StatType] = SEnvir.Random.Next(Math.Max(PetOwner.Stats[Stat.Luck] * info.MaxAmount, 1), info.MaxAmount);
 
                 break;
             }
-
 
             return lvStats;
         }

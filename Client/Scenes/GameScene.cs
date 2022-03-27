@@ -149,6 +149,7 @@ namespace Client.Scenes
         public DXConfigWindow ConfigBox;
         public InventoryDialog InventoryBox;
         public AdminManagementDialog AdminManagementBox;
+        public ReviveDialog ReviveBox;
         public CharacterDialog CharacterBox;
         public ExitDialog ExitBox;
         public ChatTextBox ChatTextBox;
@@ -465,6 +466,12 @@ namespace Client.Scenes
             AnnouncementBox = new AnnouncementDialog
             {
             };
+
+            ReviveBox = new ReviveDialog
+            {
+                Parent = this,
+                Visible = false,
+            };
             MagicBox = new MagicDialog()
             {
                 Parent = this,
@@ -665,6 +672,8 @@ namespace Client.Scenes
             BeltBox.Location = new Point(MainPanel.Location.X + MainPanel.Size.Width - BeltBox.Size.Width, MainPanel.Location.Y - BeltBox.Size.Height);
             
             NPCBox.Location = Point.Empty;
+
+            ReviveBox.Location = new Point((Size.Width - ReviveBox.Size.Width) / 2, (Size.Height - ReviveBox.Size.Height) / 2);
 
             NPCGoodsBox.Location = new Point(0, NPCBox.Size.Height);
 
@@ -3436,6 +3445,7 @@ namespace Client.Scenes
             NPCUpgradeBox.CloseButton.Enabled = !Observer;
             NPCUpgradeGemBox.CloseButton.Enabled = !Observer;
             NPCSkillStoneBox.CloseButton.Enabled = !Observer;
+            ReviveBox.CloseButton.Enabled = !Observer;
             NPCLevelUpBox.CloseButton.Enabled = !Observer;
             NPCSellBox.CloseButton.Enabled = !Observer;
         }
@@ -4063,6 +4073,14 @@ namespace Client.Scenes
                         NPCItemFragmentBox.Dispose();
 
                     NPCItemFragmentBox = null;
+                }
+
+                if(ReviveBox != null)
+                {
+                    if (!ReviveBox.IsDisposed)
+                        ReviveBox.Dispose();
+
+                    ReviveBox = null;
                 }
 
                 if(NPCSkillStoneBox != null)

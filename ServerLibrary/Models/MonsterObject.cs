@@ -2363,7 +2363,6 @@ namespace Server.Models
             if ((Poison & PoisonType.Red) == PoisonType.Red)
                 power = (int)(power * 1.2F);
 
-
             BuffInfo buff = Buffs.FirstOrDefault(x => x.Type == BuffType.MagicShield);
 
             if (buff != null)
@@ -2383,7 +2382,6 @@ namespace Server.Models
 
             if (CanAttackTarget(attacker) && PetOwner == null || Target == null)
                 Target = attacker;
-
 
             return power;
         }
