@@ -717,8 +717,8 @@ namespace Library
         EnhancedBloodLust = 604,
         AwakenedBloodLust = 605,
         AwakenedMassHeal = 606,
-        EnhancedRessurection = 608,
-        AwakenedRessurection = 609,
+        EnhancedResurrection = 608,
+        AwakenedResurrection = 609,
         EnhancedCelestialLight = 610,
         AwakenedCelestialLight = 611,
         AwakenedPoisonDust = 612,
@@ -733,6 +733,8 @@ namespace Library
         EnhancedEmpoweredRessurection = 621,
         AwakenedEmpoweredRessurection = 622,
         AwakenedGreaterTaoExplosion = 623,
+        EnhancedPoisonDust = 624,
+        AwakenedEvilSlayer = 625,
     }
 
     public enum MonsterImage

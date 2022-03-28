@@ -1535,7 +1535,11 @@ namespace Client.Models
                         #region Poison Dust & Greater Poison Dust
 
                         case MagicType.PoisonDust:
+                        case MagicType.EnhancedPoisonDust:
+                        case MagicType.AwakenedPoisonDust:
                         case MagicType.GreaterPoisonDust:
+                        case MagicType.EnhancedEmpoweredPoisonDust:
+                        case MagicType.AwakenedEmpoweredPoisonDust:
                             foreach (MapObject attackTarget in AttackTargets)
                             {
                                 attackTarget.Effects.Add(spell = new MirEffect(70, 10, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 10, 35, Globals.DarkColour)
@@ -1710,6 +1714,7 @@ namespace Client.Models
                         #region Greater Evil Slayer
 
                         case MagicType.GreaterEvilSlayer:
+                        case MagicType.AwakenedEvilSlayer:
                             foreach (Point point in MagicLocations)
                             {
                                 Effects.Add(spell = new MirProjectile(3440, 6, TimeSpan.FromMilliseconds(50), LibraryFile.Magic, 35, 35, Globals.HolyColour, CurrentLocation)
@@ -1834,6 +1839,7 @@ namespace Client.Models
                         #region Mass Heal
 
                         case MagicType.MassHeal:
+                        case MagicType.AwakenedMassHeal:
                             foreach (Point point in MagicLocations)
                             {
                                 spell = new MirEffect(670, 7, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 40, 60, Globals.HolyColour)
@@ -1887,6 +1893,8 @@ namespace Client.Models
                         #region Resurrection
 
                         case MagicType.Resurrection:
+                        case MagicType.EnhancedResurrection:
+                        case MagicType.AwakenedResurrection:
                             foreach (MapObject attackTarget in AttackTargets)
                             {
                                 attackTarget.Effects.Add(spell = new MirEffect(320, 7, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx, 60, 60, Globals.HolyColour)
@@ -1944,6 +1952,8 @@ namespace Client.Models
                         #region Celestial Light
 
                         case MagicType.CelestialLight:
+                        case MagicType.EnhancedCelestialLight:
+                        case MagicType.AwakenedCelestialLight:
                             foreach (MapObject attackTarget in AttackTargets)
                             {
                                 attackTarget.Effects.Add(spell = new MirEffect(290, 9, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 20, 40, Globals.HolyColour)
@@ -1982,6 +1992,7 @@ namespace Client.Models
                         #region Improved Explosive Talisman
 
                         case MagicType.ImprovedExplosiveTalisman:
+                        case MagicType.AwakenedGreaterTaoExplosion:
                             foreach (Point point in MagicLocations)
                             {
                                 Effects.Add(spell = new MirProjectile(980, 3, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 35, 35, Globals.DarkColour, CurrentLocation)
@@ -2307,7 +2318,7 @@ namespace Client.Models
                                     Effects.Add(new MirEffect(220, 1, TimeSpan.FromMilliseconds(2500), LibraryFile.ProgUse, 0, 0, Globals.NoneColour)
                                     {
                                         MapTarget = point,
-                                        StartTime = CEnvir.Now.AddMilliseconds(500 + Functions.Distance(point, CurrentLocation) * 50),
+                                        StartTime = CEnvir.Now.AddMilliseconds(200 + Functions.Distance(point, CurrentLocation) * 50),
                                         Opacity = 0.8F,
                                         DrawType = DrawType.Floor,
                                     });
@@ -2316,7 +2327,7 @@ namespace Client.Models
                                     {
                                         Blend = true,
                                         MapTarget = point,
-                                        StartTime = CEnvir.Now.AddMilliseconds(500 + Functions.Distance(point, CurrentLocation) * 50),
+                                        StartTime = CEnvir.Now.AddMilliseconds(200 + Functions.Distance(point, CurrentLocation) * 50),
                                         DrawType = DrawType.Floor,
                                     });
 
@@ -3427,6 +3438,8 @@ namespace Client.Models
                         #region Poison Dust
 
                         case MagicType.PoisonDust:
+                        case MagicType.EnhancedPoisonDust:
+                        case MagicType.AwakenedPoisonDust:
                             Effects.Add(spell = new MirEffect(60, 10, TimeSpan.FromMilliseconds(60), LibraryFile.Magic, 10, 35, Globals.DarkColour)
                             {
                                 Blend = true,
@@ -3525,6 +3538,7 @@ namespace Client.Models
                         #region Greater Evil Slayer
 
                         case MagicType.GreaterEvilSlayer:
+                        case MagicType.AwakenedEvilSlayer:
                             Effects.Add(spell = new MirEffect(3360, 6, TimeSpan.FromMilliseconds(80), LibraryFile.Magic, 10, 35, Globals.HolyColour)
                             {
                                 Blend = true,
@@ -3599,6 +3613,7 @@ namespace Client.Models
                         #region Mass Heal
 
                         case MagicType.MassHeal:
+                        case MagicType.AwakenedMassHeal:
                             Effects.Add(spell = new MirEffect(660, 10, TimeSpan.FromMilliseconds(60), LibraryFile.Magic, 10, 35, Globals.HolyColour)
                             {
                                 Blend = true,
@@ -3627,6 +3642,8 @@ namespace Client.Models
                         #region Resurrection
 
                         case MagicType.Resurrection:
+                        case MagicType.EnhancedResurrection:
+                        case MagicType.AwakenedResurrection:
                             Effects.Add(spell = new MirEffect(310, 10, TimeSpan.FromMilliseconds(60), LibraryFile.MagicEx, 60, 60, Globals.HolyColour)
                             {
                                 Blend = true,
@@ -3679,6 +3696,8 @@ namespace Client.Models
                         #region Celestial Light
 
                         case MagicType.CelestialLight:
+                        case MagicType.EnhancedCelestialLight:
+                        case MagicType.AwakenedCelestialLight:
                             Effects.Add(new MirEffect(280, 8, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 10, 35, Globals.HolyColour)
                             {
                                 Blend = true,
@@ -3707,6 +3726,7 @@ namespace Client.Models
                         #region Improved Explosive Talisman
 
                         case MagicType.ImprovedExplosiveTalisman:
+                        case MagicType.AwakenedGreaterTaoExplosion:
                             Effects.Add(spell = new MirEffect(980, 6, TimeSpan.FromMilliseconds(80), LibraryFile.MagicEx2, 10, 35, Globals.DarkColour)
                             {
                                 Blend = true,

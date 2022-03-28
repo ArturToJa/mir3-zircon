@@ -2253,7 +2253,7 @@ namespace Server.Models
 
             UserMagic magic;
 
-            if (!Magics.TryGetValue(MagicType.CelestialLight, out magic)) return;
+            if (!Magics.TryGetValue(MagicType.CelestialLight, out magic) && !Magics.TryGetValue(MagicType.EnhancedCelestialLight, out magic)) return;
 
             magic.Cooldown = SEnvir.Now.AddSeconds(6);
             Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = 6000 });
@@ -11334,9 +11334,12 @@ namespace Server.Models
 
                 case MagicType.Heal:
                 case MagicType.PoisonDust:
+                case MagicType.EnhancedPoisonDust:
+                case MagicType.AwakenedPoisonDust:
                 case MagicType.ExplosiveTalisman:
                 case MagicType.EvilSlayer:
                 case MagicType.GreaterEvilSlayer:
+                case MagicType.AwakenedEvilSlayer:
                 case MagicType.MagicResistance:
                 case MagicType.Resilience:
                 //case MagicType.ShacklingTalisman:
@@ -11345,19 +11348,27 @@ namespace Server.Models
                 case MagicType.ThunderKick:
                 case MagicType.StrengthOfFaith:
                 case MagicType.CelestialLight:
+                case MagicType.EnhancedCelestialLight:
+                case MagicType.AwakenedCelestialLight:
                 case MagicType.GreaterPoisonDust:
+                case MagicType.EnhancedEmpoweredPoisonDust:
+                case MagicType.AwakenedEmpoweredPoisonDust:
                 case MagicType.SummonDemonicCreature:
                 case MagicType.DemonExplosion:
                 case MagicType.Scarecrow:
                 case MagicType.LifeSteal:
                 case MagicType.ImprovedExplosiveTalisman:
+                case MagicType.AwakenedGreaterTaoExplosion:
 
                 case MagicType.TrapOctagon:
                 case MagicType.TaoistCombatKick:
                 case MagicType.ElementalSuperiority:
                 case MagicType.MassHeal:
+                case MagicType.AwakenedMassHeal:
                 case MagicType.BloodLust:
                 case MagicType.Resurrection:
+                case MagicType.EnhancedResurrection:
+                case MagicType.AwakenedResurrection:
                 case MagicType.Purification:
                 case MagicType.SummonSkeleton:
                 case MagicType.SummonJinSkeleton:
@@ -13009,8 +13020,13 @@ namespace Server.Models
                         ob));
                     break;
                 case MagicType.PoisonDust:
+                case MagicType.EnhancedPoisonDust:
+                case MagicType.AwakenedPoisonDust:
                     magics = new List<UserMagic> { magic };
-                    Magics.TryGetValue(MagicType.GreaterPoisonDust, out augMagic);
+                    if(!Magics.TryGetValue(MagicType.GreaterPoisonDust, out augMagic) && !Magics.TryGetValue(MagicType.EnhancedEmpoweredPoisonDust, out augMagic) && !Magics.TryGetValue(MagicType.AwakenedEmpoweredPoisonDust, out augMagic))
+                    {
+                        augMagic = null;
+                    }
 
                     realTargets = new HashSet<MapObject>();
 
@@ -13068,6 +13084,7 @@ namespace Server.Models
                     break;
                 case MagicType.ExplosiveTalisman:
                 case MagicType.ImprovedExplosiveTalisman:
+                case MagicType.AwakenedGreaterTaoExplosion:
 
                     magics = new List<UserMagic> { magic };
                     Magics.TryGetValue(MagicType.AugmentExplosiveTalisman, out augMagic);
@@ -13128,6 +13145,7 @@ namespace Server.Models
                     break;
                 case MagicType.EvilSlayer:
                 case MagicType.GreaterEvilSlayer:
+                case MagicType.AwakenedEvilSlayer:
                     magics = new List<UserMagic> { magic };
                     Magics.TryGetValue(MagicType.AugmentEvilSlayer, out augMagic);
 
@@ -13392,6 +13410,8 @@ namespace Server.Models
                         p.Location));
                     break;
                 case MagicType.CelestialLight:
+                case MagicType.EnhancedCelestialLight:
+                case MagicType.AwakenedCelestialLight:
                     if (Buffs.Any(x => x.Type == BuffType.CelestialLight)) break;
                     ob = null;
                     if (!UseAmulet(20, 0))
@@ -13401,7 +13421,6 @@ namespace Server.Models
                     }
 
                     targets.Add(ObjectID);
-
 
                     ActionList.Add(new DelayedAction(
                         SEnvir.Now.AddMilliseconds(1500),
@@ -13431,6 +13450,7 @@ namespace Server.Models
                     }
                     break;
                 case MagicType.MassHeal:
+                case MagicType.AwakenedMassHeal:
 
                     ob = null;
 
@@ -13529,6 +13549,8 @@ namespace Server.Models
 
                     break;
                 case MagicType.Resurrection:
+                case MagicType.EnhancedResurrection:
+                case MagicType.AwakenedResurrection:
                     magics = new List<UserMagic> { magic };
 
                     Magics.TryGetValue(MagicType.EmpoweredRessurection, out augMagic);
@@ -13902,10 +13924,15 @@ namespace Server.Models
                 case MagicType.Resilience:
                 case MagicType.ElementalSuperiority:
                 case MagicType.MassHeal:
+                case MagicType.AwakenedMassHeal:
                 case MagicType.BloodLust:
                 case MagicType.Resurrection:
+                case MagicType.EnhancedResurrection:
+                case MagicType.AwakenedResurrection:
                 case MagicType.Transparency:
                 case MagicType.CelestialLight:
+                case MagicType.EnhancedCelestialLight:
+                case MagicType.AwakenedCelestialLight:
                 case MagicType.LifeSteal:
                 case MagicType.SummonShinsu:
                 case MagicType.StrengthOfFaith:
@@ -14800,8 +14827,9 @@ namespace Server.Models
             bool canStuck = true;
             int burnChance = 0, burnPower = 1;
             int paraChance = 0;
-
+            int ignoreMagicShieldChance = 0;
             int power = 0;
+            int magicLifesteal = 0;
             UserMagic asteroid = null;
 
             foreach (UserMagic magic in magics)
@@ -14935,10 +14963,20 @@ namespace Server.Models
                         power += magic.GetPower() + GetSC();
                         //power += power;
                         break;
+                    case MagicType.AwakenedGreaterTaoExplosion:
+                        element = Element.Dark;
+                        power += magic.GetPower() + GetSC();
+                        ignoreMagicShieldChance = 10;
+                        break;
                     case MagicType.EvilSlayer:
                     case MagicType.GreaterEvilSlayer:
                         element = Element.Holy;
                         power += magic.GetPower() + GetSC();
+                        break;
+                    case MagicType.AwakenedEvilSlayer:
+                        element = Element.Holy;
+                        power += magic.GetPower() + GetSC();
+                        magicLifesteal = 20;
                         break;
                     case MagicType.SummonPuppet:
                         element = Element.Fire;
@@ -15078,6 +15116,7 @@ namespace Server.Models
 
                         break;
                     case MagicType.ImprovedExplosiveTalisman:
+                    case MagicType.AwakenedGreaterTaoExplosion:
                         if (stats != null && stats[Stat.DarkAffinity] >= 1)
                             power += (int)(power * 0.6F);
 
@@ -15104,6 +15143,7 @@ namespace Server.Models
                         break;
 
                     case MagicType.GreaterEvilSlayer:
+                    case MagicType.AwakenedEvilSlayer:
                         if (stats != null && stats[Stat.HolyAffinity] >= 1)
                             power += (int)(power * 0.6F);
 
@@ -15171,9 +15211,13 @@ namespace Server.Models
                 return 0;
             }
 
-            int damage = ob.Attacked(this, power, element, false, false, true, canStuck);
+            int damage = ob.Attacked(this, power, element, true, SEnvir.Random.Next(ignoreMagicShieldChance) == 0, true, canStuck);
 
             if (damage <= 0) return damage;
+            if(magicLifesteal > 0)
+            {
+                ChangeHP(damage * magicLifesteal / 100);
+            }
 
             int psnRate = 100;
 
@@ -15426,7 +15470,7 @@ namespace Server.Models
             ChangeHP(-power);
             LastHitter = null;
 
-            if (canReflect && CanAttackTarget(attacker) && attacker.Race != ObjectType.Player)
+            if (canReflect && CanAttackTarget(attacker))
             {
                 attacker.Attacked(this, power * Stats[Stat.ReflectDamage] / 100, Element.None, false);
 
@@ -15773,10 +15817,18 @@ namespace Server.Models
                     case MagicType.PoisonDust:
                         PoisonDustEnd(magics, (MapObject)data[1], (PoisonType)data[2]);
                         break;
+                    case MagicType.EnhancedPoisonDust:
+                        EnhancedPoisonDustEnd(magics, (MapObject)data[1], (PoisonType)data[2]);
+                        break;
+                    case MagicType.AwakenedPoisonDust:
+                        AwakenedPoisonDustEnd(magics, (MapObject)data[1], (PoisonType)data[2]);
+                        break;
                     case MagicType.ExplosiveTalisman:
                     case MagicType.EvilSlayer:
                     case MagicType.GreaterEvilSlayer:
+                    case MagicType.AwakenedEvilSlayer:
                     case MagicType.ImprovedExplosiveTalisman:
+                    case MagicType.AwakenedGreaterTaoExplosion:
                         MagicAttack(magics, (MapObject)data[1], (bool)data[2], (Stats)data[3]);
                         break;
                     case MagicType.Invisibility:
@@ -15790,6 +15842,10 @@ namespace Server.Models
                         break;
                     case MagicType.CelestialLight:
                         CelestialLightEnd(magic);
+                        break;
+                    case MagicType.EnhancedCelestialLight:
+                    case MagicType.AwakenedCelestialLight:
+                        EnhancedCelestialLightEnd(magic);
                         break;
                     case MagicType.DemonExplosion:
                         DemonExplosionEnd(magic, (Stats)data[1]);
@@ -15811,6 +15867,7 @@ namespace Server.Models
                     case MagicType.MassInvisibility:
                     case MagicType.BloodLust:
                     case MagicType.MassHeal:
+                    case MagicType.AwakenedMassHeal:
                     case MagicType.LifeSteal:
                         BuffCell(magic, (Cell)data[1], null);
                         break;
@@ -15821,6 +15878,12 @@ namespace Server.Models
                         PurificationEnd(magics, (MapObject)data[1]);
                         break;
                     case MagicType.Resurrection:
+                        ResurrectionEnd(magic, (PlayerObject)data[1]);
+                        break;
+                    case MagicType.EnhancedResurrection:
+                        ResurrectionEnd(magic, (PlayerObject)data[1]);
+                        break;
+                    case MagicType.AwakenedResurrection:
                         ResurrectionEnd(magic, (PlayerObject)data[1]);
                         break;
                     case MagicType.Infection:
@@ -16002,7 +16065,10 @@ namespace Server.Models
                         BloodLustEnd(magic, ob);
                         break;
                     case MagicType.MassHeal:
-                        HealEnd(magic, ob);
+                        EnhancedHealEnd(magic, ob);
+                        break;
+                    case MagicType.AwakenedMassHeal:
+                        AwakenedHealEnd(magic, ob);
                         break;
                     case MagicType.LifeSteal:
                         LifeStealEnd(magic, ob);
@@ -17530,7 +17596,7 @@ namespace Server.Models
             //LevelMagic(magic);
         }
 
-        public void EmpoweredHealEnd(UserMagic magic, MapObject ob)
+        public void EnhancedHealEnd(UserMagic magic, MapObject ob)
         {
             if (ob?.Node == null || !CanHelpTarget(ob) || ob.CurrentHP >= ob.Stats[Stat.Health] || ob.Buffs.Any(x => x.Type == BuffType.Heal)) return;
 
@@ -17583,6 +17649,113 @@ namespace Server.Models
 /*            foreach (UserMagic mag in magics)
                 LevelMagic(mag);*/
         }
+
+        public void EnhancedPoisonDustEnd(List<UserMagic> magics, MapObject ob, PoisonType type)
+        {
+            if (ob?.Node == null || !CanAttackTarget(ob)) return;
+
+            UserMagic magic = magics.FirstOrDefault(x => x.Info.Magic == MagicType.EnhancedPoisonDust);
+            if (magic == null) return;
+
+            for (int i = Pets.Count - 1; i >= 0; i--)
+                if (Pets[i].Target == null)
+                    Pets[i].Target = ob;
+
+            int duration = magic.GetPower() + GetSC() + Stats[Stat.DarkAttack] * 2;
+
+            ob.ApplyPoison(new Poison
+            {
+                Value = magic.Level + 1 + Level / 14,
+                Type = PoisonType.Green,
+                Owner = this,
+                TickCount = duration / 2,
+                TickFrequency = TimeSpan.FromSeconds(2),
+            });
+
+            ob.ApplyPoison(new Poison
+            {
+                Value = magic.Level + 1 + Level / 14,
+                Type = PoisonType.Red,
+                Owner = this,
+                TickCount = duration / 2,
+                TickFrequency = TimeSpan.FromSeconds(2),
+            });
+
+            /*            foreach (UserMagic mag in magics)
+                            LevelMagic(mag);*/
+        }
+
+        public void AwakenedPoisonDustEnd(List<UserMagic> magics, MapObject ob, PoisonType type)
+        {
+            if (ob?.Node == null || !CanAttackTarget(ob)) return;
+
+            UserMagic magic = magics.FirstOrDefault(x => x.Info.Magic == MagicType.AwakenedPoisonDust);
+            if (magic == null) return;
+
+            for (int i = Pets.Count - 1; i >= 0; i--)
+                if (Pets[i].Target == null)
+                    Pets[i].Target = ob;
+
+            int duration = magic.GetPower() + GetSC() + Stats[Stat.DarkAttack] * 2;
+
+            ob.ApplyPoison(new Poison
+            {
+                Value = magic.Level + 1 + Level / 14,
+                Type = PoisonType.Green,
+                Owner = this,
+                TickCount = duration / 2,
+                TickFrequency = TimeSpan.FromSeconds(2),
+            });
+
+            ob.ApplyPoison(new Poison
+            {
+                Value = magic.Level + 1 + Level / 14,
+                Type = PoisonType.Red,
+                Owner = this,
+                TickCount = duration / 2,
+                TickFrequency = TimeSpan.FromSeconds(2),
+            });
+
+            if(SEnvir.Random.Next(10) == 0)
+            {
+                ob.ApplyPoison(new Poison
+                {
+                    Value = magic.Level + 1 + Level / 14,
+                    Type = PoisonType.Slow,
+                    Owner = this,
+                    TickCount = 8,
+                    TickFrequency = TimeSpan.FromSeconds(2),
+                });
+                ob.ApplyPoison(new Poison
+                {
+                    Value = magic.Level + 1 + Level / 14,
+                    Type = PoisonType.Silenced,
+                    Owner = this,
+                    TickCount = 8,
+                    TickFrequency = TimeSpan.FromSeconds(2),
+                });
+                ob.ApplyPoison(new Poison
+                {
+                    Value = magic.Level + 1 + Level / 14,
+                    Type = PoisonType.WraithGrip,
+                    Owner = this,
+                    TickCount = 8,
+                    TickFrequency = TimeSpan.FromSeconds(2),
+                });
+                ob.ApplyPoison(new Poison
+                {
+                    Value = magic.Level + 1 + Level / 14,
+                    Type = PoisonType.Paralysis,
+                    Owner = this,
+                    TickCount = 4,
+                    TickFrequency = TimeSpan.FromSeconds(2),
+                });
+            }
+
+            /*            foreach (UserMagic mag in magics)
+                            LevelMagic(mag);*/
+        }
+
         public void InvisibilityEnd(UserMagic magic, MapObject ob)
         {
             if (ob?.Node == null || !CanHelpTarget(ob) || ob.Buffs.Any(x => x.Type == BuffType.Invisibility)) return;
@@ -17649,10 +17822,23 @@ namespace Server.Models
 
             Stats buffStats = new Stats
             {
+                [Stat.CelestialLight] = (magic.Level + 1) * 5,
+            };
+
+            BuffAdd(BuffType.CelestialLight, TimeSpan.FromSeconds(magic.GetPower() + Level), buffStats, true, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+        public void EnhancedCelestialLightEnd(UserMagic magic)
+        {
+            if (Buffs.Any(x => x.Type == BuffType.CelestialLight)) return;
+
+            Stats buffStats = new Stats
+            {
                 [Stat.CelestialLight] = (magic.Level + 1) * 10,
             };
 
-            BuffAdd(BuffType.CelestialLight, TimeSpan.FromSeconds(magic.GetPower()), buffStats, true, false, TimeSpan.Zero);
+            BuffAdd(BuffType.CelestialLight, TimeSpan.FromSeconds(magic.GetPower() + Level), buffStats, true, false, TimeSpan.Zero);
 
             //LevelMagic(magic);
         }
@@ -17876,8 +18062,54 @@ namespace Server.Models
             int power = magic.GetPower();
 
             ob.Dead = false;
-            ob.SetHP(ob.Stats[Stat.Health] * power / 100);
-            ob.SetMP(ob.Stats[Stat.Mana] * power / 100);
+            ob.SetHP(ob.Stats[Stat.Health] * power / 200);
+            ob.SetMP(ob.Stats[Stat.Mana] * power / 200);
+
+            Broadcast(new S.ObjectRevive { ObjectID = ob.ObjectID, Location = ob.CurrentLocation, Effect = false });
+
+            //LevelMagic(magic);
+
+            magic.Cooldown = SEnvir.Now.AddSeconds(20);
+            Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = 20000 });
+        }
+
+        public void EnhancedResurrectionEnd(UserMagic magic, MapObject ob)
+        {
+            if (ob?.Node == null || !ob.Dead) return;
+
+            if (SEnvir.Random.Next(100) > 25 + magic.Level * 25) return;
+
+            int power = magic.GetPower();
+
+            ob.Dead = false;
+            ob.SetHP(ob.Stats[Stat.Health]);
+            ob.SetMP(ob.Stats[Stat.Mana]);
+
+            Broadcast(new S.ObjectRevive { ObjectID = ob.ObjectID, Location = ob.CurrentLocation, Effect = false });
+
+            //LevelMagic(magic);
+
+            magic.Cooldown = SEnvir.Now.AddSeconds(20);
+            Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = 20000 });
+        }
+
+        public void AwakenedResurrectionEnd(UserMagic magic, MapObject ob)
+        {
+            if (ob?.Node == null || !ob.Dead) return;
+
+            if (SEnvir.Random.Next(100) > 25 + magic.Level * 25) return;
+
+            int power = magic.GetPower();
+
+            ob.Dead = false;
+            ob.SetHP(ob.Stats[Stat.Health]);
+            ob.SetMP(ob.Stats[Stat.Mana]);
+
+            Stats buffStats = new Stats
+            {
+                [Stat.MagicShield] = 45
+            };
+            ob.BuffAdd(BuffType.MagicShield, TimeSpan.FromSeconds(10), buffStats, true, false, TimeSpan.Zero);
 
             Broadcast(new S.ObjectRevive { ObjectID = ob.ObjectID, Location = ob.CurrentLocation, Effect = false });
 

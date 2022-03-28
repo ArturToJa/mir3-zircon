@@ -2841,10 +2841,14 @@ namespace Client.Scenes
                 case MagicType.ExpelUndead:
 
                 case MagicType.PoisonDust:
+                case MagicType.EnhancedPoisonDust:
+                case MagicType.AwakenedPoisonDust:
                 case MagicType.ExplosiveTalisman:
                 case MagicType.EvilSlayer:
                 case MagicType.GreaterEvilSlayer:
+                case MagicType.AwakenedEvilSlayer:
                 case MagicType.ImprovedExplosiveTalisman:
+                case MagicType.AwakenedGreaterTaoExplosion:
                 case MagicType.Infection:
                     //Has Target
                     if (CanAttackTarget(MagicObject))
@@ -2894,10 +2898,14 @@ namespace Client.Scenes
                     target = MouseObject ?? User;
                     break;
                 case MagicType.CelestialLight:
+                case MagicType.EnhancedCelestialLight:
+                case MagicType.AwakenedCelestialLight:
                     if (User.Buffs.All(x => x.Type == BuffType.CelestialLight)) return;
                     break;
 
                 case MagicType.Resurrection:
+                case MagicType.EnhancedResurrection:
+                case MagicType.AwakenedResurrection:
                     if (MouseObject == null || !MouseObject.Dead || MouseObject.Race != ObjectType.Player) return;
 
                     target = MouseObject;
@@ -3016,6 +3024,7 @@ namespace Client.Scenes
                 case MagicType.ElementalSuperiority:
                 case MagicType.BloodLust:
                 case MagicType.MassHeal:
+                case MagicType.AwakenedMassHeal:
                     if (!Functions.InRange(MapControl.MapLocation, User.CurrentLocation, Globals.MagicRange))
                     {
                         if (CEnvir.Now < OutputTime) return;
@@ -3048,10 +3057,14 @@ namespace Client.Scenes
             {
                 case MagicType.Purification:
                 case MagicType.EvilSlayer:
+                case MagicType.AwakenedEvilSlayer:
                 case MagicType.GreaterEvilSlayer:
                 case MagicType.ExplosiveTalisman:
                 case MagicType.ImprovedExplosiveTalisman:
+                case MagicType.AwakenedGreaterTaoExplosion:
                 case MagicType.PoisonDust:
+                case MagicType.EnhancedPoisonDust:
+                case MagicType.AwakenedPoisonDust:
                     targetLocation = MapControl.MapLocation;
                     break;
                 default:

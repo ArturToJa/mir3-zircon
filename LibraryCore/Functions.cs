@@ -221,6 +221,7 @@ namespace Library
                 case MagicType.Resilience:
                 case MagicType.MassInvisibility:
                 case MagicType.GreaterEvilSlayer:
+                case MagicType.AwakenedEvilSlayer:
                 case MagicType.GreaterFrozenEarth:
                 case MagicType.AwakenedFrozenEarth:
                 case MagicType.Infection:
@@ -229,6 +230,7 @@ namespace Library
                 case MagicType.BloodLust:
                 case MagicType.LifeSteal:
                 case MagicType.ImprovedExplosiveTalisman:
+                case MagicType.AwakenedGreaterTaoExplosion:
                     return MirAnimation.Combat1;
 
                 case MagicType.Interchange:
@@ -280,17 +282,26 @@ namespace Library
 
                 case MagicType.Heal:
                 case MagicType.PoisonDust:
+                case MagicType.EnhancedPoisonDust:
+                case MagicType.AwakenedPoisonDust:
                 case MagicType.Invisibility:
                 case MagicType.TrapOctagon:
                 case MagicType.MassHeal:
+                case MagicType.AwakenedMassHeal:
                 case MagicType.Resurrection:
+                case MagicType.EnhancedResurrection:
+                case MagicType.AwakenedResurrection:
                 case MagicType.Purification:
                 case MagicType.SummonSkeleton:
                 case MagicType.SummonJinSkeleton:
                 case MagicType.SummonShinsu:
                 case MagicType.StrengthOfFaith:
                 case MagicType.CelestialLight:
+                case MagicType.EnhancedCelestialLight:
+                case MagicType.AwakenedCelestialLight:
                 case MagicType.GreaterPoisonDust:
+                case MagicType.EnhancedEmpoweredPoisonDust:
+                case MagicType.AwakenedEmpoweredPoisonDust:
                 case MagicType.SummonDemonicCreature:
                 case MagicType.DemonExplosion:
                 case MagicType.Scarecrow:

@@ -114,106 +114,110 @@ namespace Server.Models.Monsters
 
             Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, CurrentLocation = CurrentLocation, Cast = true, Type = magic, Targets = targetIDs, Locations = locations });
 
-            for (int i = 1; i <= distance; i++)
+            for(int j = -1; j <= 1; j++)
             {
-                Point location = Functions.Move(CurrentLocation, Direction, i);
-                Cell cell = CurrentMap.GetCell(location);
-
-                if (cell == null) continue;
-
-                locations.Add(cell.Location);
-
-                if (cell.Objects != null)
+                MirDirection dir = Functions.ShiftDirection(Direction, j);
+                for (int i = 1; i <= distance; i++)
                 {
-                    foreach (MapObject ob in cell.Objects)
+                    Point location = Functions.Move(CurrentLocation, dir, i);
+                    Cell cell = CurrentMap.GetCell(location);
+
+                    if (cell == null) continue;
+
+                    locations.Add(cell.Location);
+
+                    if (cell.Objects != null)
                     {
-                        if (!CanAttackTarget(ob)) continue;
+                        foreach (MapObject ob in cell.Objects)
+                        {
+                            if (!CanAttackTarget(ob)) continue;
 
-                        ActionList.Add(new DelayedAction(
-                            SEnvir.Now.AddMilliseconds(500 + i * 75),
-                            ActionType.DelayAttack,
-                            ob,
-                            GetDC(),
-                            element));
+                            ActionList.Add(new DelayedAction(
+                                SEnvir.Now.AddMilliseconds(500 + i * 75),
+                                ActionType.DelayAttack,
+                                ob,
+                                GetDC(),
+                                element));
+                        }
                     }
-                }
 
-                switch (Direction)
-                {
-                    case MirDirection.Up:
-                    case MirDirection.Right:
-                    case MirDirection.Down:
-                    case MirDirection.Left:
-                        cell = CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -2)));
+                    switch (Direction)
+                    {
+                        case MirDirection.Up:
+                        case MirDirection.Right:
+                        case MirDirection.Down:
+                        case MirDirection.Left:
+                            cell = CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -2)));
 
-                        if (cell?.Objects != null)
-                        {
-                            foreach (MapObject ob in cell.Objects)
+                            if (cell?.Objects != null)
                             {
-                                if (!CanAttackTarget(ob)) continue;
+                                foreach (MapObject ob in cell.Objects)
+                                {
+                                    if (!CanAttackTarget(ob)) continue;
 
-                                ActionList.Add(new DelayedAction(
-                                    SEnvir.Now.AddMilliseconds(500 + i * 75),
-                                    ActionType.DelayAttack,
-                                    ob,
-                                    GetDC() / 2,
-                                    element));
+                                    ActionList.Add(new DelayedAction(
+                                        SEnvir.Now.AddMilliseconds(500 + i * 75),
+                                        ActionType.DelayAttack,
+                                        ob,
+                                        GetDC() / 2,
+                                        element));
+                                }
                             }
-                        }
-                        cell = CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 2)));
+                            cell = CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 2)));
 
-                        if (cell?.Objects != null)
-                        {
-                            foreach (MapObject ob in cell.Objects)
+                            if (cell?.Objects != null)
                             {
-                                if (!CanAttackTarget(ob)) continue;
+                                foreach (MapObject ob in cell.Objects)
+                                {
+                                    if (!CanAttackTarget(ob)) continue;
 
-                                ActionList.Add(new DelayedAction(
-                                    SEnvir.Now.AddMilliseconds(500 + i * 75),
-                                    ActionType.DelayAttack,
-                                    ob,
-                                    GetDC() / 2,
-                                    element));
+                                    ActionList.Add(new DelayedAction(
+                                        SEnvir.Now.AddMilliseconds(500 + i * 75),
+                                        ActionType.DelayAttack,
+                                        ob,
+                                        GetDC() / 2,
+                                        element));
+                                }
                             }
-                        }
-                        break;
-                    case MirDirection.UpRight:
-                    case MirDirection.DownRight:
-                    case MirDirection.DownLeft:
-                    case MirDirection.UpLeft:
-                        cell = CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -1)));
+                            break;
+                        case MirDirection.UpRight:
+                        case MirDirection.DownRight:
+                        case MirDirection.DownLeft:
+                        case MirDirection.UpLeft:
+                            cell = CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, -1)));
 
-                        if (cell?.Objects != null)
-                        {
-                            foreach (MapObject ob in cell.Objects)
+                            if (cell?.Objects != null)
                             {
-                                if (!CanAttackTarget(ob)) continue;
+                                foreach (MapObject ob in cell.Objects)
+                                {
+                                    if (!CanAttackTarget(ob)) continue;
 
-                                ActionList.Add(new DelayedAction(
-                                    SEnvir.Now.AddMilliseconds(500 + i * 75),
-                                    ActionType.DelayAttack,
-                                    ob,
-                                    GetDC() / 2,
-                                    element));
+                                    ActionList.Add(new DelayedAction(
+                                        SEnvir.Now.AddMilliseconds(500 + i * 75),
+                                        ActionType.DelayAttack,
+                                        ob,
+                                        GetDC() / 2,
+                                        element));
+                                }
                             }
-                        }
-                        cell = CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 1)));
+                            cell = CurrentMap.GetCell(Functions.Move(location, Functions.ShiftDirection(Direction, 1)));
 
-                        if (cell?.Objects != null)
-                        {
-                            foreach (MapObject ob in cell.Objects)
+                            if (cell?.Objects != null)
                             {
-                                if (!CanAttackTarget(ob)) continue;
+                                foreach (MapObject ob in cell.Objects)
+                                {
+                                    if (!CanAttackTarget(ob)) continue;
 
-                                ActionList.Add(new DelayedAction(
-                                    SEnvir.Now.AddMilliseconds(500 + i * 75),
-                                    ActionType.DelayAttack,
-                                    ob,
-                                    GetDC() / 2,
-                                    element));
+                                    ActionList.Add(new DelayedAction(
+                                        SEnvir.Now.AddMilliseconds(500 + i * 75),
+                                        ActionType.DelayAttack,
+                                        ob,
+                                        GetDC() / 2,
+                                        element));
+                                }
                             }
-                        }
-                        break;
+                            break;
+                    }
                 }
             }
         }

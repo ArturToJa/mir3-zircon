@@ -39,7 +39,7 @@ namespace Server.Models.Monsters
 
             if(attacksDone <= 0)
             {
-                if(CanAttack || CanMove)
+                if(CanAttack)
                 {
                     if (SEnvir.Random.Next(10) == 0)
                     {

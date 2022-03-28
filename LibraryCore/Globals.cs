@@ -426,7 +426,13 @@ namespace Library
             {MagicType.ExpelUndead, MagicType.EnhancedExpelUndead},
             {MagicType.MagicShield, MagicType.EnhancedMagicShield},
 
-
+            {MagicType.Heal, MagicType.MassHeal},
+            {MagicType.PoisonDust, MagicType.EnhancedPoisonDust},
+            {MagicType.EvilSlayer, MagicType.GreaterEvilSlayer},
+            {MagicType.ExplosiveTalisman, MagicType.ImprovedExplosiveTalisman},
+            {MagicType.Resurrection, MagicType.EnhancedResurrection},
+            {MagicType.SummonSkeleton, MagicType.SummonShinsu},
+            {MagicType.CelestialLight, MagicType.EnhancedCelestialLight},
         };
 
         public static Dictionary<MagicType, MagicType> MagicAwakening = new Dictionary<MagicType, MagicType>
@@ -466,6 +472,14 @@ namespace Library
             {MagicType.EnhancedGeoManipulation, MagicType.AwakenedGeoManipulation},
             {MagicType.EnhancedExpelUndead, MagicType.AwakenedExpelUndead},
             {MagicType.EnhancedMagicShield, MagicType.AwakenedMagicShield},
+
+            {MagicType.MassHeal, MagicType.AwakenedMassHeal},
+            {MagicType.EnhancedPoisonDust, MagicType.AwakenedPoisonDust},
+            {MagicType.GreaterEvilSlayer, MagicType.AwakenedEvilSlayer},
+            {MagicType.ImprovedExplosiveTalisman, MagicType.AwakenedGreaterTaoExplosion},
+            {MagicType.EnhancedResurrection, MagicType.AwakenedResurrection},
+            {MagicType.SummonShinsu, MagicType.SummonDemonicCreature},
+            {MagicType.EnhancedCelestialLight, MagicType.AwakenedCelestialLight},
         };
 
         public const int InventorySize = 49,
