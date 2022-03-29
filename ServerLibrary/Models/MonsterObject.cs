@@ -2364,7 +2364,7 @@ namespace Server.Models
                 power = (int)(power * 1.2F);
 
             
-            if(ignoreShield)
+            if(!ignoreShield)
             {
                 BuffInfo buff = Buffs.FirstOrDefault(x => x.Type == BuffType.MagicShield);
 
