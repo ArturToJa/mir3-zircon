@@ -218,16 +218,27 @@ namespace Library
                 case MagicType.ExplosiveTalisman:
                 case MagicType.EvilSlayer:
                 case MagicType.MagicResistance:
+                case MagicType.EnhancedMagicResistance:
+                case MagicType.AwakenedMagicResistance:
                 case MagicType.Resilience:
+                case MagicType.EnhancedResilience:
+                case MagicType.AwakenedResilience:
                 case MagicType.MassInvisibility:
+                case MagicType.AwakenedMassInvisibility:
                 case MagicType.GreaterEvilSlayer:
                 case MagicType.AwakenedEvilSlayer:
                 case MagicType.GreaterFrozenEarth:
                 case MagicType.AwakenedFrozenEarth:
                 case MagicType.Infection:
+                case MagicType.EnhancedInfection:
+                case MagicType.AwakenedInfection:
 
                 case MagicType.ElementalSuperiority:
+                case MagicType.EnhancedElementalSuperiority:
+                case MagicType.AwakenedElementalSuperiority:
                 case MagicType.BloodLust:
+                case MagicType.EnhancedBloodLust:
+                case MagicType.AwakenedBloodLust:
                 case MagicType.LifeSteal:
                 case MagicType.ImprovedExplosiveTalisman:
                 case MagicType.AwakenedGreaterTaoExplosion:
@@ -267,6 +278,8 @@ namespace Library
                 case MagicType.EnhancedGeoManipulation:
                 case MagicType.AwakenedGeoManipulation:
                 case MagicType.Transparency:
+                case MagicType.EnhancedTransparency:
+                case MagicType.AwakenedTransparency:
                 case MagicType.ThunderBolt:
                 case MagicType.Renounce:
                 case MagicType.EnhancedRenounce:
@@ -315,6 +328,8 @@ namespace Library
 
                 case MagicType.ThunderKick:
                 case MagicType.TaoistCombatKick:
+                case MagicType.EnhancedTaoCombatKick:
+                case MagicType.AwakenedTaoCombatKick:
                     return MirAnimation.Combat7;
 
                 case MagicType.Cloak:

@@ -53,7 +53,6 @@ namespace Server.Models.Monsters
         {
             base.ProcessAI();
 
-
             if (Dead) return;
 
             if (SEnvir.Now > TingTime)
@@ -96,9 +95,6 @@ namespace Server.Models.Monsters
                         TickCount = 1,
                     });
                 }
-
-
-
             }
         }
 
@@ -131,7 +127,6 @@ namespace Server.Models.Monsters
                 }
             }
             
-
             if (Target.Race == ObjectType.Monster)
             {
                 Target.SetHP(0);
@@ -140,6 +135,5 @@ namespace Server.Models.Monsters
 
             base.ProcessTarget();
         }
-
     }
 }

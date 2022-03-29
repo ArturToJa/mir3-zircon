@@ -735,6 +735,9 @@ namespace Library
         AwakenedGreaterTaoExplosion = 623,
         EnhancedPoisonDust = 624,
         AwakenedEvilSlayer = 625,
+        AwakenedMassInvisibility = 626,
+        EnhancedTransparency = 627,
+        AwakenedTransparency = 628,
     }
 
     public enum MonsterImage

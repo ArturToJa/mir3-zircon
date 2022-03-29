@@ -974,7 +974,9 @@ namespace Client.Models
 
                         case MagicType.ThunderBolt:
                         case MagicType.ThunderStrike:
-                            foreach (Point point in MagicLocations)
+                            int delay = 0;
+                            int delayOffset = 100;
+                            /*foreach (Point point in MagicLocations)
                             {
                                 spell = new MirEffect(1450, 3, TimeSpan.FromMilliseconds(150), LibraryFile.Magic, 150, 50, Globals.LightningColour)
                                 {
@@ -982,16 +984,18 @@ namespace Client.Models
                                     MapTarget = point
                                 };
                                 spell.Process();
-                            }
+                            }*/
 
                             foreach (MapObject attackTarget in AttackTargets)
                             {
                                 spell = new MirEffect(1450, 3, TimeSpan.FromMilliseconds(150), LibraryFile.Magic, 150, 50, Globals.LightningColour)
                                 {
                                     Blend = true,
-                                    Target = attackTarget
+                                    Target = attackTarget,
+                                    StartTime = CEnvir.Now.AddMilliseconds(delay),
                                 };
                                 spell.Process();
+                                delay += delayOffset;
                             }
 
                             if (MagicLocations.Count > 0 || AttackTargets.Count > 0)
@@ -1649,6 +1653,8 @@ namespace Client.Models
                         #region Magic Resistance
 
                         case MagicType.MagicResistance:
+                        case MagicType.EnhancedMagicResistance:
+                        case MagicType.AwakenedMagicResistance:
                             foreach (Point point in MagicLocations)
                             {
                                 Effects.Add(spell = new MirProjectile(980, 3, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 35, 35, Globals.NoneColour, CurrentLocation)
@@ -1682,6 +1688,7 @@ namespace Client.Models
                         #region Mass Invisibility
 
                         case MagicType.MassInvisibility:
+                        case MagicType.AwakenedMassInvisibility:
                             foreach (Point point in MagicLocations)
                             {
                                 Effects.Add(spell = new MirProjectile(980, 3, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 35, 35, Globals.PhantomColour, CurrentLocation)
@@ -1759,6 +1766,8 @@ namespace Client.Models
                         #region Resilience
 
                         case MagicType.Resilience:
+                        case MagicType.EnhancedResilience:
+                        case MagicType.AwakenedResilience:
 
                             foreach (Point point in MagicLocations)
                             {
@@ -1804,6 +1813,8 @@ namespace Client.Models
                         #region Elemental Superiority
 
                         case MagicType.ElementalSuperiority:
+                        case MagicType.EnhancedElementalSuperiority:
+                        case MagicType.AwakenedElementalSuperiority:
                             foreach (Point point in MagicLocations)
                             {
                                 Effects.Add(spell = new MirProjectile(980, 3, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 35, 35, Globals.NoneColour, CurrentLocation)
@@ -1861,6 +1872,8 @@ namespace Client.Models
                         #region Blood Lust
 
                         case MagicType.BloodLust:
+                        case MagicType.EnhancedBloodLust:
+                        case MagicType.AwakenedBloodLust:
                             foreach (Point point in MagicLocations)
                             {
                                 Effects.Add(spell = new MirProjectile(980, 3, TimeSpan.FromMilliseconds(100), LibraryFile.Magic, 35, 35, Globals.DarkColour, CurrentLocation)
@@ -2064,6 +2077,8 @@ namespace Client.Models
                         #region Infection
 
                         case MagicType.Infection:
+                        case MagicType.EnhancedInfection:
+                        case MagicType.AwakenedInfection:
                             foreach (Point point in MagicLocations)
                             {
                                 Effects.Add(spell = new MirProjectile(800, 6, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx5, 35, 35, Globals.NoneColour, CurrentLocation)
@@ -3511,6 +3526,8 @@ namespace Client.Models
                         #region Magic Resistance
 
                         case MagicType.MagicResistance:
+                        case MagicType.EnhancedMagicResistance:
+                        case MagicType.AwakenedMagicResistance:
                             Effects.Add(spell = new MirEffect(2080, 6, TimeSpan.FromMilliseconds(80), LibraryFile.Magic, 10, 35, Globals.NoneColour)
                             {
                                 Blend = true,
@@ -3524,6 +3541,7 @@ namespace Client.Models
                         #region Mass Invisibility
 
                         case MagicType.MassInvisibility:
+                        case MagicType.AwakenedMassInvisibility:
                             Effects.Add(spell = new MirEffect(2080, 6, TimeSpan.FromMilliseconds(80), LibraryFile.Magic, 10, 35, Globals.PhantomColour)
                             {
                                 Blend = true,
@@ -3554,6 +3572,8 @@ namespace Client.Models
                         #region Resilience
 
                         case MagicType.Resilience:
+                        case MagicType.EnhancedResilience:
+                        case MagicType.AwakenedResilience:
                             Effects.Add(spell = new MirEffect(2080, 6, TimeSpan.FromMilliseconds(80), LibraryFile.Magic, 10, 35, Globals.NoneColour)
                             {
                                 Blend = true,
@@ -3581,6 +3601,8 @@ namespace Client.Models
                         #region Taoist Combat Kick
 
                         case MagicType.TaoistCombatKick:
+                        case MagicType.EnhancedTaoCombatKick:
+                        case MagicType.AwakenedTaoCombatKick:
                             DXSoundManager.Play(SoundIndex.TaoistCombatKickStart);
                             break;
 
@@ -3589,6 +3611,8 @@ namespace Client.Models
                         #region Elemental Superiority
 
                         case MagicType.ElementalSuperiority:
+                        case MagicType.EnhancedElementalSuperiority:
+                        case MagicType.AwakenedElementalSuperiority:
                             Effects.Add(spell = new MirEffect(2080, 6, TimeSpan.FromMilliseconds(80), LibraryFile.Magic, 10, 35, Globals.NoneColour)
                             {
                                 Blend = true,
@@ -3629,6 +3653,8 @@ namespace Client.Models
                         #region Blood Lust
 
                         case MagicType.BloodLust:
+                        case MagicType.EnhancedBloodLust:
+                        case MagicType.AwakenedBloodLust:
                             Effects.Add(spell = new MirEffect(2080, 6, TimeSpan.FromMilliseconds(80), LibraryFile.Magic, 10, 35, Globals.DarkColour)
                             {
                                 Blend = true,
@@ -3683,6 +3709,8 @@ namespace Client.Models
                         #region Transparency
 
                         case MagicType.Transparency:
+                        case MagicType.EnhancedTransparency:
+                        case MagicType.AwakenedTransparency:
                             Effects.Add(new MirEffect(430, 7, TimeSpan.FromMilliseconds(100), LibraryFile.MagicEx2, 10, 35, Globals.PhantomColour)
                             {
                                 Blend = true,

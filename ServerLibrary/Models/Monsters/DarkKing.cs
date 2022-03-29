@@ -48,7 +48,7 @@ namespace Server.Models.Monsters
                         AttackDelay = 300;
                         tempDirection = Direction;
                         tempLocation = CurrentLocation;
-                        Stats[Stat.MagicShield] += 100;
+                        Stats[Stat.MagicShield] += 70;
                     }
                 }
 

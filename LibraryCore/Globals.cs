@@ -433,6 +433,14 @@ namespace Library
             {MagicType.Resurrection, MagicType.EnhancedResurrection},
             {MagicType.SummonSkeleton, MagicType.SummonShinsu},
             {MagicType.CelestialLight, MagicType.EnhancedCelestialLight},
+            {MagicType.BloodLust, MagicType.EnhancedBloodLust},
+            {MagicType.ElementalSuperiority, MagicType.EnhancedElementalSuperiority},
+            {MagicType.Resilience, MagicType.EnhancedResilience},
+            {MagicType.MagicResistance, MagicType.EnhancedMagicResistance},
+            {MagicType.Transparency, MagicType.EnhancedTransparency},
+            {MagicType.Invisibility, MagicType.MassInvisibility},
+            {MagicType.Infection, MagicType.EnhancedInfection},
+            {MagicType.TaoistCombatKick, MagicType.EnhancedTaoCombatKick},
         };
 
         public static Dictionary<MagicType, MagicType> MagicAwakening = new Dictionary<MagicType, MagicType>
@@ -480,6 +488,14 @@ namespace Library
             {MagicType.EnhancedResurrection, MagicType.AwakenedResurrection},
             {MagicType.SummonShinsu, MagicType.SummonDemonicCreature},
             {MagicType.EnhancedCelestialLight, MagicType.AwakenedCelestialLight},
+            {MagicType.EnhancedBloodLust, MagicType.AwakenedBloodLust},
+            {MagicType.EnhancedElementalSuperiority, MagicType.AwakenedElementalSuperiority},
+            {MagicType.EnhancedResilience, MagicType.AwakenedResilience},
+            {MagicType.EnhancedMagicResistance, MagicType.AwakenedMagicResistance},
+            {MagicType.EnhancedTransparency, MagicType.AwakenedTransparency},
+            {MagicType.MassInvisibility, MagicType.AwakenedMassInvisibility},
+            {MagicType.EnhancedInfection, MagicType.AwakenedInfection},
+            {MagicType.EnhancedTaoCombatKick, MagicType.AwakenedTaoCombatKick},
         };
 
         public const int InventorySize = 49,

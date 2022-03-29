@@ -2850,6 +2850,8 @@ namespace Client.Scenes
                 case MagicType.ImprovedExplosiveTalisman:
                 case MagicType.AwakenedGreaterTaoExplosion:
                 case MagicType.Infection:
+                case MagicType.EnhancedInfection:
+                case MagicType.AwakenedInfection:
                     //Has Target
                     if (CanAttackTarget(MagicObject))
                         target = MagicObject;
@@ -2971,6 +2973,8 @@ namespace Client.Scenes
                 // case MagicType.SummonSkeleton:
                 case MagicType.Invisibility:
                 case MagicType.TaoistCombatKick:
+                case MagicType.EnhancedTaoCombatKick:
+                case MagicType.AwakenedTaoCombatKick:
                 case MagicType.ThunderKick:
                 case MagicType.SummonSkeleton:
                 case MagicType.SummonShinsu:
@@ -3007,6 +3011,8 @@ namespace Client.Scenes
                 case MagicType.EnhancedGeoManipulation:
                 case MagicType.AwakenedGeoManipulation:
                 case MagicType.Transparency:
+                case MagicType.EnhancedTransparency:
+                case MagicType.AwakenedTransparency:
                 case MagicType.ChainLightning:
                 case MagicType.AwakenedChainLightning:
                 case MagicType.MeteorShower:
@@ -3017,12 +3023,21 @@ namespace Client.Scenes
                 case MagicType.AwakenedAsteroid:
 
                 case MagicType.MagicResistance:
+                case MagicType.EnhancedMagicResistance:
+                case MagicType.AwakenedMagicResistance:
                 case MagicType.Resilience:
+                case MagicType.EnhancedResilience:
+                case MagicType.AwakenedResilience:
                 case MagicType.LifeSteal:
                 case MagicType.MassInvisibility:
+                case MagicType.AwakenedMassInvisibility:
                 case MagicType.TrapOctagon:
                 case MagicType.ElementalSuperiority:
+                case MagicType.EnhancedElementalSuperiority:
+                case MagicType.AwakenedElementalSuperiority:
                 case MagicType.BloodLust:
+                case MagicType.EnhancedBloodLust:
+                case MagicType.AwakenedBloodLust:
                 case MagicType.MassHeal:
                 case MagicType.AwakenedMassHeal:
                     if (!Functions.InRange(MapControl.MapLocation, User.CurrentLocation, Globals.MagicRange))

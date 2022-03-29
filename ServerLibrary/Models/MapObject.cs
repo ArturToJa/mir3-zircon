@@ -229,12 +229,9 @@ namespace Server.Models
                         damage += poison.Value;
                         break;
                     case PoisonType.Infection:
+                        damage += poison.Value;
                         if (Race == ObjectType.Player)
-                            damage += 1 + Stats[Stat.Health] / 100;
-                        else
-                        {
-                            damage += poison.Value;
-                        }
+                            damage /= 2;
 
                         infection = true;
 

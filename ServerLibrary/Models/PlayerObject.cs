@@ -2309,16 +2309,38 @@ namespace Server.Models
             }
         }
 
-        private void RefreshBuff(BuffType type)
+        private void RefreshBuffMagicResistance()
         {
-            BuffInfo buff = Buffs.FirstOrDefault(x => x.Type == type);
+            BuffInfo buff = Buffs.FirstOrDefault(x => x.Type == BuffType.MagicResistance);
             
             if (buff != null)
             {
                 Stats newStats = new Stats();
                 foreach (KeyValuePair<Stat, int> stat in buff.Stats.Values)
                 {
-                    if(stat.Value == 6)
+                    if(stat.Value == 5)
+                    {
+                        return;
+                    }
+                }
+
+                if (buff.Stats[Stat.MinMR] > 0) newStats[Stat.MinMR] = 5 + (Level / 16);
+                if (buff.Stats[Stat.MaxMR] > 0) newStats[Stat.MaxMR] = 5 + (Level / 8);
+
+                buff.Stats = newStats;
+                Enqueue(new S.BuffChanged { Index = buff.Index, Stats = newStats });
+            }
+        }
+        private void RefreshBuffElemental()
+        {
+            BuffInfo buff = Buffs.FirstOrDefault(x => x.Type == BuffType.ElementalSuperiority);
+
+            if (buff != null)
+            {
+                Stats newStats = new Stats();
+                foreach (KeyValuePair<Stat, int> stat in buff.Stats.Values)
+                {
+                    if (stat.Value == 5)
                     {
                         continue;
                     }
@@ -2327,6 +2349,35 @@ namespace Server.Models
                         newStats[stat.Key] = 5 + (Level / 8);
                     }
                 }
+                buff.Stats = newStats;
+                Enqueue(new S.BuffChanged { Index = buff.Index, Stats = newStats });
+            }
+        }
+        private void RefreshBuffBloodLust()
+        {
+            BuffInfo buff = Buffs.FirstOrDefault(x => x.Type == BuffType.BloodLust);
+
+            if (buff != null)
+            {
+                Stats newStats = new Stats();
+                if (buff.Stats[Stat.MinDC] > 0) newStats[Stat.MinDC] = 5 + (Level / 16);
+                if (buff.Stats[Stat.MaxDC] > 0) newStats[Stat.MaxDC] = 5 + (Level / 8);
+                if (buff.Stats[Stat.CriticalChance] > 0) newStats[Stat.CriticalChance] = 4;
+                buff.Stats = newStats;
+                Enqueue(new S.BuffChanged { Index = buff.Index, Stats = newStats });
+            }
+        }
+        private void RefreshBuffResilience()
+        {
+            BuffInfo buff = Buffs.FirstOrDefault(x => x.Type == BuffType.Resilience);
+
+            if (buff != null)
+            {
+                Stats newStats = new Stats();
+                if (buff.Stats[Stat.MinAC] > 0) newStats[Stat.MinAC] = 5 + (Level / 16);
+                if (buff.Stats[Stat.MaxAC] > 0) newStats[Stat.MaxAC] = 5 + (Level / 8);
+                if (buff.Stats[Stat.PhysicalResistance] > 0) newStats[Stat.PhysicalResistance] = 1;
+
                 buff.Stats = newStats;
                 Enqueue(new S.BuffChanged { Index = buff.Index, Stats = newStats });
             }
@@ -2344,10 +2395,10 @@ namespace Server.Models
 
             SEnvir.RankingSort(Character);
 
-            RefreshBuff(BuffType.BloodLust);
-            RefreshBuff(BuffType.ElementalSuperiority);
-            RefreshBuff(BuffType.MagicResistance);
-            RefreshBuff(BuffType.Resilience);
+            RefreshBuffBloodLust();
+            RefreshBuffElemental();
+            RefreshBuffMagicResistance();
+            RefreshBuffResilience();
 
             ApplyGuildBuff();
         }
@@ -11305,6 +11356,8 @@ namespace Server.Models
                 case MagicType.EnhancedGeoManipulation:
                 case MagicType.AwakenedGeoManipulation:
                 case MagicType.Transparency:
+                case MagicType.EnhancedTransparency:
+                case MagicType.AwakenedTransparency:
                 case MagicType.MagicShield:
                 case MagicType.EnhancedMagicShield:
                 case MagicType.AwakenedMagicShield:
@@ -11341,10 +11394,15 @@ namespace Server.Models
                 case MagicType.GreaterEvilSlayer:
                 case MagicType.AwakenedEvilSlayer:
                 case MagicType.MagicResistance:
+                case MagicType.EnhancedMagicResistance:
+                case MagicType.AwakenedMagicResistance:
                 case MagicType.Resilience:
+                case MagicType.EnhancedResilience:
+                case MagicType.AwakenedResilience:
                 //case MagicType.ShacklingTalisman:
                 case MagicType.Invisibility:
                 case MagicType.MassInvisibility:
+                case MagicType.AwakenedMassInvisibility:
                 case MagicType.ThunderKick:
                 case MagicType.StrengthOfFaith:
                 case MagicType.CelestialLight:
@@ -11362,10 +11420,16 @@ namespace Server.Models
 
                 case MagicType.TrapOctagon:
                 case MagicType.TaoistCombatKick:
+                case MagicType.EnhancedTaoCombatKick:
+                case MagicType.AwakenedTaoCombatKick:
                 case MagicType.ElementalSuperiority:
+                case MagicType.EnhancedElementalSuperiority:
+                case MagicType.AwakenedElementalSuperiority:
                 case MagicType.MassHeal:
                 case MagicType.AwakenedMassHeal:
                 case MagicType.BloodLust:
+                case MagicType.EnhancedBloodLust:
+                case MagicType.AwakenedBloodLust:
                 case MagicType.Resurrection:
                 case MagicType.EnhancedResurrection:
                 case MagicType.AwakenedResurrection:
@@ -11389,6 +11453,8 @@ namespace Server.Models
                 case MagicType.EnhancedMassBeckon:
                 case MagicType.AwakenedMassBeckon:
                 case MagicType.Infection:
+                case MagicType.EnhancedInfection:
+                case MagicType.AwakenedInfection:
                     if (magic.Cost > CurrentMP)
                     {
                         Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
@@ -12977,29 +13043,27 @@ namespace Server.Models
                     ob = null;
 
                     cells = CurrentMap.GetCells(CurrentLocation, 0, 6);
+                    int index = 0;
                     foreach (Cell cell in cells)
                     {
                         if (cell.Objects == null)
                         {
-                            if (SEnvir.Random.Next(40) == 0)
-                                locations.Add(cell.Location);
-
                             continue;
                         }
-
                         foreach (MapObject target in cell.Objects)
                         {
-                            if (SEnvir.Random.Next(2) > 0) continue;
                             if (!CanAttackTarget(target)) continue;
 
                             targets.Add(target.ObjectID);
 
                             ActionList.Add(new DelayedAction(
-                                SEnvir.Now.AddMilliseconds(500),
+                                SEnvir.Now.AddMilliseconds(500 + index * 100),
                                 ActionType.DelayMagic,
                                 new List<UserMagic> { magic },
                                 target));
+                            index++;
                         }
+                        
                     }
                     break;
 
@@ -13208,6 +13272,8 @@ namespace Server.Models
                     break;
 
                 case MagicType.MagicResistance:
+                case MagicType.EnhancedMagicResistance:
+                case MagicType.AwakenedMagicResistance:
                     ob = null;
 
                     if (!Functions.InRange(CurrentLocation, p.Location, Globals.MagicRange) || !UseAmulet(1, 0, out stats))
@@ -13230,6 +13296,8 @@ namespace Server.Models
                     }
                     break;
                 case MagicType.ElementalSuperiority:
+                case MagicType.EnhancedElementalSuperiority:
+                case MagicType.AwakenedElementalSuperiority:
 
                     ob = null;
 
@@ -13253,7 +13321,11 @@ namespace Server.Models
                     }
                     break;
                 case MagicType.Resilience:
+                case MagicType.EnhancedResilience:
+                case MagicType.AwakenedResilience:
                 case MagicType.BloodLust:
+                case MagicType.EnhancedBloodLust:
+                case MagicType.AwakenedBloodLust:
                 case MagicType.LifeSteal:
 
                     ob = null;
@@ -13390,6 +13462,8 @@ namespace Server.Models
                         new List<UserMagic> { magic }));
                     break;
                 case MagicType.Transparency:
+                case MagicType.EnhancedTransparency:
+                case MagicType.AwakenedTransparency:
                     ob = null;
                     if (!UseAmulet(10, 0))
                     {
@@ -13428,6 +13502,7 @@ namespace Server.Models
                         new List<UserMagic> { magic }));
                     break;
                 case MagicType.MassInvisibility:
+                case MagicType.AwakenedMassInvisibility:
 
                     ob = null;
 
@@ -13473,6 +13548,7 @@ namespace Server.Models
                     }
                     break;
                 case MagicType.TaoistCombatKick:
+                case MagicType.EnhancedTaoCombatKick:
                     ob = null;
 
                     ActionList.Add(new DelayedAction(
@@ -13480,6 +13556,28 @@ namespace Server.Models
                         ActionType.DelayMagic,
                         new List<UserMagic> { magic },
                         CurrentMap.GetCell(Functions.Move(CurrentLocation, p.Direction)),
+                        p.Direction));
+                    break;
+                case MagicType.AwakenedTaoCombatKick:
+                    ob = null;
+
+                    ActionList.Add(new DelayedAction(
+                        SEnvir.Now.AddMilliseconds(500),
+                        ActionType.DelayMagic,
+                        new List<UserMagic> { magic },
+                        CurrentMap.GetCell(Functions.Move(CurrentLocation, p.Direction)),
+                        p.Direction));
+                    ActionList.Add(new DelayedAction(
+                        SEnvir.Now.AddMilliseconds(500),
+                        ActionType.DelayMagic,
+                        new List<UserMagic> { magic },
+                        CurrentMap.GetCell(Functions.Move(CurrentLocation, Functions.ShiftDirection(p.Direction, -1))),
+                        p.Direction));
+                    ActionList.Add(new DelayedAction(
+                        SEnvir.Now.AddMilliseconds(500),
+                        ActionType.DelayMagic,
+                        new List<UserMagic> { magic },
+                        CurrentMap.GetCell(Functions.Move(CurrentLocation, Functions.ShiftDirection(p.Direction, 1))),
                         p.Direction));
                     break;
                 case MagicType.Purification:
@@ -13626,6 +13724,8 @@ namespace Server.Models
                         stats));
                     break;
                 case MagicType.Infection:
+                case MagicType.EnhancedInfection:
+                case MagicType.AwakenedInfection:
                     if (!CanAttackTarget(ob))
                     {
                         locations.Add(p.Location);
@@ -13871,6 +13971,8 @@ namespace Server.Models
                 case MagicType.ChangeOfSeasons:
                 case MagicType.TheNewBeginning:
                 case MagicType.Transparency:
+                case MagicType.EnhancedTransparency:
+                case MagicType.AwakenedTransparency:
                     break;
                 default:
                     BuffRemove(BuffType.Cloak);
@@ -13920,16 +14022,27 @@ namespace Server.Models
                 case MagicType.Heal:
                 case MagicType.Invisibility:
                 case MagicType.MagicResistance:
+                case MagicType.EnhancedMagicResistance:
+                case MagicType.AwakenedMagicResistance:
                 case MagicType.MassInvisibility:
+                case MagicType.AwakenedMassInvisibility:
                 case MagicType.Resilience:
+                case MagicType.EnhancedResilience:
+                case MagicType.AwakenedResilience:
                 case MagicType.ElementalSuperiority:
+                case MagicType.EnhancedElementalSuperiority:
+                case MagicType.AwakenedElementalSuperiority:
                 case MagicType.MassHeal:
                 case MagicType.AwakenedMassHeal:
                 case MagicType.BloodLust:
+                case MagicType.EnhancedBloodLust:
+                case MagicType.AwakenedBloodLust:
                 case MagicType.Resurrection:
                 case MagicType.EnhancedResurrection:
                 case MagicType.AwakenedResurrection:
                 case MagicType.Transparency:
+                case MagicType.EnhancedTransparency:
+                case MagicType.AwakenedTransparency:
                 case MagicType.CelestialLight:
                 case MagicType.EnhancedCelestialLight:
                 case MagicType.AwakenedCelestialLight:
@@ -14957,6 +15070,7 @@ namespace Server.Models
                     case MagicType.ExplosiveTalisman:
                         element = Element.Dark;
                         power += magic.GetPower() + GetSC();
+                        power /= 2;
                         break;
                     case MagicType.ImprovedExplosiveTalisman:
                         element = Element.Dark;
@@ -14969,6 +15083,10 @@ namespace Server.Models
                         ignoreMagicShieldChance = 10;
                         break;
                     case MagicType.EvilSlayer:
+                        element = Element.Holy;
+                        power += magic.GetPower() + GetSC();
+                        power /= 2;
+                        break;
                     case MagicType.GreaterEvilSlayer:
                         element = Element.Holy;
                         power += magic.GetPower() + GetSC();
@@ -15840,6 +15958,12 @@ namespace Server.Models
                     case MagicType.Transparency:
                         TransparencyEnd(magic, this, (Point)data[1]);
                         break;
+                    case MagicType.EnhancedTransparency:
+                        EnhancedTransparencyEnd(magic, this, (Point)data[1]);
+                        break;
+                    case MagicType.AwakenedTransparency:
+                        AwakenedTransparencyEnd(magic, this, (Point)data[1]);
+                        break;
                     case MagicType.CelestialLight:
                         CelestialLightEnd(magic);
                         break;
@@ -15851,7 +15975,11 @@ namespace Server.Models
                         DemonExplosionEnd(magic, (Stats)data[1]);
                         break;
                     case MagicType.MagicResistance:
+                    case MagicType.EnhancedMagicResistance:
+                    case MagicType.AwakenedMagicResistance:
                     case MagicType.ElementalSuperiority:
+                    case MagicType.EnhancedElementalSuperiority:
+                    case MagicType.AwakenedElementalSuperiority:
                         BuffCell(magic, (Cell)data[1], (Stats)data[2]);
                         break;
                     case MagicType.SummonSkeleton:
@@ -15864,8 +15992,13 @@ namespace Server.Models
                         TrapOctagonEnd(magic, (Map)data[1], (Point)data[2]);
                         break;
                     case MagicType.Resilience:
+                    case MagicType.EnhancedResilience:
+                    case MagicType.AwakenedResilience:
                     case MagicType.MassInvisibility:
+                    case MagicType.AwakenedMassInvisibility:
                     case MagicType.BloodLust:
+                    case MagicType.EnhancedBloodLust:
+                    case MagicType.AwakenedBloodLust:
                     case MagicType.MassHeal:
                     case MagicType.AwakenedMassHeal:
                     case MagicType.LifeSteal:
@@ -15873,6 +16006,10 @@ namespace Server.Models
                         break;
                     case MagicType.TaoistCombatKick:
                         TaoistCombatKick(magic, (Cell)data[1], (MirDirection)data[2]);
+                        break;
+                    case MagicType.EnhancedTaoCombatKick:
+                    case MagicType.AwakenedTaoCombatKick:
+                        EnhancedTaoistCombatKick(magic, (Cell)data[1], (MirDirection)data[2]);
                         break;
                     case MagicType.Purification:
                         PurificationEnd(magics, (MapObject)data[1]);
@@ -15889,12 +16026,18 @@ namespace Server.Models
                     case MagicType.Infection:
                         InfectionEnd(magics, (MapObject)data[1]);
                         break;
+                    case MagicType.EnhancedInfection:
+                        EnhancedInfectionEnd(magics, (MapObject)data[1]);
+                        break;
+                    case MagicType.AwakenedInfection:
+                        AwakenedInfectionEnd(magics, (MapObject)data[1]);
+                        break;
 
                     #endregion
 
                     #region Assassin
 
-                    case MagicType.PoisonousCloud:
+                    /*case MagicType.PoisonousCloud:
                         PoisonousCloudEnd(magic);
                         break;
                     case MagicType.Cloak:
@@ -15930,7 +16073,7 @@ namespace Server.Models
                         break;
                     case MagicType.FlashOfLight:
                         AttackCell(magics, (Cell)data[1], true);
-                        break;
+                        break;*/
 
                         #endregion
                 }
@@ -16052,17 +16195,44 @@ namespace Server.Models
                     case MagicType.MagicResistance:
                         MagicResistanceEnd(magic, ob, stats);
                         break;
+                    case MagicType.EnhancedMagicResistance:
+                        EnhancedMagicResistanceEnd(magic, ob, stats);
+                        break;
+                    case MagicType.AwakenedMagicResistance:
+                        AwakenedMagicResistanceEnd(magic, ob, stats);
+                        break;
                     case MagicType.Resilience:
                         ResilienceEnd(magic, ob);
+                        break;
+                    case MagicType.EnhancedResilience:
+                        EnhancedResilienceEnd(magic, ob);
+                        break;
+                    case MagicType.AwakenedResilience:
+                        AwakenedResilienceEnd(magic, ob);
                         break;
                     case MagicType.MassInvisibility:
                         InvisibilityEnd(magic, ob);
                         break;
+                    case MagicType.AwakenedMassInvisibility:
+                        AwakenedInvisibilityEnd(magic, ob);
+                        break;
                     case MagicType.ElementalSuperiority:
                         ElementalSuperiorityEnd(magic, ob, stats);
                         break;
+                    case MagicType.EnhancedElementalSuperiority:
+                        EnhancedElementalSuperiorityEnd(magic, ob, stats);
+                        break;
+                    case MagicType.AwakenedElementalSuperiority:
+                        AwakenedElementalSuperiorityEnd(magic, ob, stats);
+                        break;
                     case MagicType.BloodLust:
                         BloodLustEnd(magic, ob);
+                        break;
+                    case MagicType.EnhancedBloodLust:
+                        EnhancedBloodLustEnd(magic, ob);
+                        break;
+                    case MagicType.AwakenedBloodLust:
+                        AwakenedBloodLustEnd(magic, ob);
                         break;
                     case MagicType.MassHeal:
                         EnhancedHealEnd(magic, ob);
@@ -17739,7 +17909,7 @@ namespace Server.Models
                     Value = magic.Level + 1 + Level / 14,
                     Type = PoisonType.WraithGrip,
                     Owner = this,
-                    TickCount = 8,
+                    TickCount = 1,
                     TickFrequency = TimeSpan.FromSeconds(2),
                 });
                 ob.ApplyPoison(new Poison
@@ -17763,6 +17933,28 @@ namespace Server.Models
             Stats buffStats = new Stats
             {
                 [Stat.Invisibility] = 1
+            };
+
+            ob.BuffAdd(BuffType.Invisibility, TimeSpan.FromSeconds((magic.GetPower() + GetSC() + Stats[Stat.PhantomAttack] * 2)), buffStats, true, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+
+        public void AwakenedInvisibilityEnd(UserMagic magic, MapObject ob)
+        {
+            if (ob?.Node == null || !CanHelpTarget(ob) || ob.Buffs.Any(x => x.Type == BuffType.Invisibility)) return;
+
+            Stats buffStats = new Stats
+            {
+                [Stat.Invisibility] = 1,
+                [Stat.DarkResistance] = 1,
+                [Stat.FireResistance] = 1,
+                [Stat.HolyResistance] = 1,
+                [Stat.IceResistance] = 1,
+                [Stat.PhantomResistance] = 1,
+                [Stat.PhysicalResistance] = 1,
+                [Stat.LightningResistance] = 1,
+                [Stat.WindResistance] = 1,
             };
 
             ob.BuffAdd(BuffType.Invisibility, TimeSpan.FromSeconds((magic.GetPower() + GetSC() + Stats[Stat.PhantomAttack] * 2)), buffStats, true, false, TimeSpan.Zero);
@@ -17798,7 +17990,7 @@ namespace Server.Models
         {
             if (ob?.Node == null || !CanHelpTarget(ob) || ob.Buffs.Any(x => x.Type == BuffType.Transparency)) return;
 
-            Teleport(CurrentMap, location, false);
+            //Teleport(CurrentMap, location, false);
 
             int delay = magic.Info.Delay;
             if (SEnvir.Now <= PvPTime.AddSeconds(30))
@@ -17814,6 +18006,64 @@ namespace Server.Models
 
             ob.BuffAdd(BuffType.Transparency, TimeSpan.FromSeconds(Math.Min(SEnvir.Now <= PvPTime.AddSeconds(30) ? 20 : 3600, magic.GetPower() + GetSC() / 2 + Stats[Stat.PhantomAttack] * 2)), buffStats, true, false, TimeSpan.Zero);
 
+            //LevelMagic(magic);
+        }
+        public void EnhancedTransparencyEnd(UserMagic magic, MapObject ob, Point location)
+        {
+            if (ob?.Node == null || !CanHelpTarget(ob) || ob.Buffs.Any(x => x.Type == BuffType.Transparency)) return;
+            Teleport(CurrentMap, CurrentMap.GetRandomLocation(CurrentLocation, 3), false);
+
+            int delay = magic.Info.Delay;
+            if (SEnvir.Now <= PvPTime.AddSeconds(30))
+                delay *= 10;
+
+            magic.Cooldown = SEnvir.Now.AddMilliseconds(delay);
+            Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = delay });
+
+            Stats buffStats = new Stats
+            {
+                [Stat.Transparency] = 1
+            };
+
+            ob.BuffAdd(BuffType.Transparency, TimeSpan.FromSeconds(Math.Min(SEnvir.Now <= PvPTime.AddSeconds(30) ? 20 : 3600, magic.GetPower() + GetSC() / 2 + Stats[Stat.PhantomAttack] * 2)), buffStats, true, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+        public void AwakenedTransparencyEnd(UserMagic magic, MapObject ob, Point location)
+        {
+            if (ob?.Node == null || !CanHelpTarget(ob) || ob.Buffs.Any(x => x.Type == BuffType.Transparency)) return;
+            MirDirection randomDirection = (MirDirection)SEnvir.Random.Next(8);
+
+            Teleport(CurrentMap, CurrentMap.GetRandomLocation(CurrentLocation, 3), false);
+
+            int delay = magic.Info.Delay;
+            if (SEnvir.Now <= PvPTime.AddSeconds(30))
+                delay *= 10;
+
+            magic.Cooldown = SEnvir.Now.AddMilliseconds(delay);
+            Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = delay });
+
+            Stats buffStats = new Stats
+            {
+                [Stat.Transparency] = 1
+            };
+
+            ob.BuffAdd(BuffType.Transparency, TimeSpan.FromSeconds(Math.Min(SEnvir.Now <= PvPTime.AddSeconds(30) ? 20 : 3600, magic.GetPower() + GetSC() / 2 + Stats[Stat.PhantomAttack] * 2)), buffStats, true, false, TimeSpan.Zero);
+
+            UserMagic healMagic;
+            if (!Magics.TryGetValue(MagicType.Heal, out healMagic) && !Magics.TryGetValue(MagicType.MassHeal, out healMagic) && !Magics.TryGetValue(MagicType.AwakenedMassHeal, out healMagic)) return;
+            switch(healMagic.Info.Magic)
+            {
+                case MagicType.Heal:
+                    HealEnd(healMagic, ob);
+                    break;
+                case MagicType.MassHeal:
+                    EnhancedHealEnd(healMagic, ob);
+                    break;
+                case MagicType.AwakenedMassHeal:
+                    AwakenedHealEnd(healMagic, ob);
+                    break;
+            }
             //LevelMagic(magic);
         }
         public void CelestialLightEnd(UserMagic magic)
@@ -17850,52 +18100,45 @@ namespace Server.Models
             {
                 [Stat.MaxMR] = 5 + (ob.Level / 8)
             };
-
             if (stats[Stat.FireAffinity] > 0)
             {
-                buffStats[Stat.FireResistance] = 6;
+                buffStats[Stat.FireResistance] = 5;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
-
             if (stats[Stat.IceAffinity] > 0)
             {
-                buffStats[Stat.IceResistance] = 6;
+                buffStats[Stat.IceResistance] = 5;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
-
             if (stats[Stat.LightningAffinity] > 0)
             {
-                buffStats[Stat.LightningResistance] = 6;
+                buffStats[Stat.LightningResistance] = 5;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
-
             if (stats[Stat.WindAffinity] > 0)
             {
-                buffStats[Stat.WindResistance] = 6;
+                buffStats[Stat.WindResistance] = 5;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
-
             if (stats[Stat.HolyAffinity] > 0)
             {
-                buffStats[Stat.HolyResistance] = 6;
+                buffStats[Stat.HolyResistance] = 5;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
-
             if (stats[Stat.DarkAffinity] > 0)
             {
-                buffStats[Stat.DarkResistance] = 6;
+                buffStats[Stat.DarkResistance] = 5;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
-
             if (stats[Stat.PhantomAffinity] > 0)
             {
-                buffStats[Stat.PhantomResistance] = 6;
+                buffStats[Stat.PhantomResistance] = 5;
                 buffStats[Stat.MinMR] = 0;
                 buffStats[Stat.MaxMR] = 0;
             }
@@ -17904,6 +18147,78 @@ namespace Server.Models
 
             //LevelMagic(magic);
         }
+
+        public void EnhancedMagicResistanceEnd(UserMagic magic, MapObject ob, Stats stats)
+        {
+            MagicResistanceEnd(magic, ob, stats);
+            if (ob?.Node == null || !CanAttackTarget(ob)) return;
+            ob.Buffs.RemoveAll(x => x.Type == BuffType.MagicResistance);
+        }
+
+        public void AwMagicResistanceEnd(UserMagic magic, MapObject ob, Stats stats)
+        {
+            if (ob?.Node == null || !CanHelpTarget(ob)) return;
+
+            Stats buffStats = new Stats
+            {
+                [Stat.MaxMR] = 5 + (ob.Level / 8),
+                [Stat.MinMR] = 5 + (ob.Level / 16)
+            };
+            if (stats[Stat.FireAffinity] > 0)
+            {
+                buffStats[Stat.FireResistance] = 5;
+                buffStats[Stat.MinMR] = 0;
+                buffStats[Stat.MaxMR] = 0;
+            }
+            if (stats[Stat.IceAffinity] > 0)
+            {
+                buffStats[Stat.IceResistance] = 5;
+                buffStats[Stat.MinMR] = 0;
+                buffStats[Stat.MaxMR] = 0;
+            }
+            if (stats[Stat.LightningAffinity] > 0)
+            {
+                buffStats[Stat.LightningResistance] = 5;
+                buffStats[Stat.MinMR] = 0;
+                buffStats[Stat.MaxMR] = 0;
+            }
+            if (stats[Stat.WindAffinity] > 0)
+            {
+                buffStats[Stat.WindResistance] = 5;
+                buffStats[Stat.MinMR] = 0;
+                buffStats[Stat.MaxMR] = 0;
+            }
+            if (stats[Stat.HolyAffinity] > 0)
+            {
+                buffStats[Stat.HolyResistance] = 5;
+                buffStats[Stat.MinMR] = 0;
+                buffStats[Stat.MaxMR] = 0;
+            }
+            if (stats[Stat.DarkAffinity] > 0)
+            {
+                buffStats[Stat.DarkResistance] = 5;
+                buffStats[Stat.MinMR] = 0;
+                buffStats[Stat.MaxMR] = 0;
+            }
+            if (stats[Stat.PhantomAffinity] > 0)
+            {
+                buffStats[Stat.PhantomResistance] = 5;
+                buffStats[Stat.MinMR] = 0;
+                buffStats[Stat.MaxMR] = 0;
+            }
+
+            ob.BuffAdd(BuffType.MagicResistance, TimeSpan.FromSeconds(magic.GetPower() + GetSC() * 2), buffStats, true, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+
+        public void AwakenedMagicResistanceEnd(UserMagic magic, MapObject ob, Stats stats)
+        {
+            AwMagicResistanceEnd(magic, ob, stats);
+            if (ob?.Node == null || !CanAttackTarget(ob)) return;
+            ob.Buffs.RemoveAll(x => x.Type == BuffType.MagicResistance);
+        }
+
         public void ResilienceEnd(UserMagic magic, MapObject ob)
         {
             if (ob?.Node == null || !CanHelpTarget(ob)) return;
@@ -17911,6 +18226,36 @@ namespace Server.Models
             Stats buffStats = new Stats
             {
                 [Stat.MaxAC] = 5 + (ob.Level / 8),
+            };
+
+            ob.BuffAdd(BuffType.Resilience, TimeSpan.FromSeconds((magic.GetPower() + GetSC() * 2)), buffStats, true, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+        public void EnhancedResilienceEnd(UserMagic magic, MapObject ob)
+        {
+            if (ob?.Node == null || !CanHelpTarget(ob)) return;
+
+            Stats buffStats = new Stats
+            {
+                [Stat.MaxAC] = 5 + (ob.Level / 8),
+                [Stat.PhysicalResistance] = 1
+            };
+
+            ob.BuffAdd(BuffType.Resilience, TimeSpan.FromSeconds((magic.GetPower() + GetSC() * 2)), buffStats, true, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+
+        public void AwakenedResilienceEnd(UserMagic magic, MapObject ob)
+        {
+            if (ob?.Node == null || !CanHelpTarget(ob)) return;
+
+            Stats buffStats = new Stats
+            {
+                [Stat.MaxAC] = 5 + (ob.Level / 8),
+                [Stat.MinAC] = 5 + (ob.Level / 16),
+                [Stat.PhysicalResistance] = 1
             };
 
             ob.BuffAdd(BuffType.Resilience, TimeSpan.FromSeconds((magic.GetPower() + GetSC() * 2)), buffStats, true, false, TimeSpan.Zero);
@@ -17980,6 +18325,100 @@ namespace Server.Models
 
             //LevelMagic(magic);
         }
+        public void AwElementalSuperiorityEnd(UserMagic magic, MapObject ob, Stats stats)
+        {
+            if (ob?.Node == null || !CanHelpTarget(ob)) return;
+
+            Stats buffStats = new Stats
+            {
+                [Stat.MaxMC] = 5 + (ob.Level / 8),
+                [Stat.MaxSC] = 5 + (ob.Level / 8),
+                [Stat.MinMC] = 5 + (ob.Level / 16),
+                [Stat.MinSC] = 5 + (ob.Level / 16)
+            };
+
+            if (stats[Stat.FireAffinity] > 0)
+            {
+                buffStats[Stat.FireAttack] = 5 + (ob.Level / 8);
+                buffStats[Stat.MaxMC] = 0;
+                buffStats[Stat.MaxSC] = 0;
+                buffStats[Stat.MinMC] = 0;
+                buffStats[Stat.MinSC] = 0;
+            }
+
+            if (stats[Stat.IceAffinity] > 0)
+            {
+                buffStats[Stat.IceAttack] = 5 + (ob.Level / 8);
+                buffStats[Stat.MaxMC] = 0;
+                buffStats[Stat.MaxSC] = 0;
+                buffStats[Stat.MinMC] = 0;
+                buffStats[Stat.MinSC] = 0;
+            }
+
+            if (stats[Stat.LightningAffinity] > 0)
+            {
+                buffStats[Stat.LightningAttack] = 5 + (ob.Level / 8);
+                buffStats[Stat.MaxMC] = 0;
+                buffStats[Stat.MaxSC] = 0;
+                buffStats[Stat.MinMC] = 0;
+                buffStats[Stat.MinSC] = 0;
+            }
+
+            if (stats[Stat.WindAffinity] > 0)
+            {
+                buffStats[Stat.WindAttack] = 5 + (ob.Level / 8);
+                buffStats[Stat.MaxMC] = 0;
+                buffStats[Stat.MaxSC] = 0;
+                buffStats[Stat.MinMC] = 0;
+                buffStats[Stat.MinSC] = 0;
+            }
+
+            if (stats[Stat.HolyAffinity] > 0)
+            {
+                buffStats[Stat.HolyAttack] = 5 + (ob.Level / 8);
+                buffStats[Stat.MaxMC] = 0;
+                buffStats[Stat.MaxSC] = 0;
+                buffStats[Stat.MinMC] = 0;
+                buffStats[Stat.MinSC] = 0;
+            }
+
+            if (stats[Stat.DarkAffinity] > 0)
+            {
+                buffStats[Stat.DarkAttack] = 5 + (ob.Level / 8);
+                buffStats[Stat.MaxMC] = 0;
+                buffStats[Stat.MaxSC] = 0;
+                buffStats[Stat.MinMC] = 0;
+                buffStats[Stat.MinSC] = 0;
+            }
+
+            if (stats[Stat.PhantomAffinity] > 0)
+            {
+                buffStats[Stat.PhantomAttack] = 5 + (ob.Level / 8);
+                buffStats[Stat.MaxMC] = 0;
+                buffStats[Stat.MaxSC] = 0;
+                buffStats[Stat.MinMC] = 0;
+                buffStats[Stat.MinSC] = 0;
+            }
+
+            ob.BuffAdd(BuffType.ElementalSuperiority, TimeSpan.FromSeconds(magic.GetPower() + GetSC() * 2), buffStats, true, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+
+        public void EnhancedElementalSuperiorityEnd(UserMagic magic, MapObject ob, Stats stats)
+        {
+            ElementalSuperiorityEnd(magic, ob, stats);
+            if (ob?.Node == null || !CanAttackTarget(ob)) return;
+            ob.Buffs.RemoveAll(x => x.Type == BuffType.ElementalSuperiority);
+        }
+
+        public void AwakenedElementalSuperiorityEnd(UserMagic magic, MapObject ob, Stats stats)
+        {
+            AwElementalSuperiorityEnd(magic, ob, stats);
+            if (ob?.Node == null || !CanAttackTarget(ob)) return;
+            ob.Buffs.RemoveAll(x => x.Type == BuffType.ElementalSuperiority);
+        }
+
         public void BloodLustEnd(UserMagic magic, MapObject ob)
         {
             if (ob?.Node == null || !CanHelpTarget(ob)) return;
@@ -17987,6 +18426,35 @@ namespace Server.Models
             Stats buffStats = new Stats
             {
                 [Stat.MaxDC] = 5 + (ob.Level / 8)
+            };
+
+            ob.BuffAdd(BuffType.BloodLust, TimeSpan.FromSeconds((magic.GetPower() + GetSC() * 2)), buffStats, true, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+        public void EnhancedBloodLustEnd(UserMagic magic, MapObject ob)
+        {
+            if (ob?.Node == null || !CanHelpTarget(ob)) return;
+
+            Stats buffStats = new Stats
+            {
+                [Stat.MaxDC] = 5 + (ob.Level / 8),
+                [Stat.CriticalChance] = 4,
+            };
+
+            ob.BuffAdd(BuffType.BloodLust, TimeSpan.FromSeconds((magic.GetPower() + GetSC() * 2)), buffStats, true, false, TimeSpan.Zero);
+
+            //LevelMagic(magic);
+        }
+        public void AwakenedBloodLustEnd(UserMagic magic, MapObject ob)
+        {
+            if (ob?.Node == null || !CanHelpTarget(ob)) return;
+
+            Stats buffStats = new Stats
+            {
+                [Stat.MaxDC] = 5 + (ob.Level / 8),
+                [Stat.CriticalChance] = 4,
+                [Stat.MinDC] = 5 + (ob.Level / 16)
             };
 
             ob.BuffAdd(BuffType.BloodLust, TimeSpan.FromSeconds((magic.GetPower() + GetSC() * 2)), buffStats, true, false, TimeSpan.Zero);
@@ -18131,13 +18599,52 @@ namespace Server.Models
                 Value = GetSC() + Stats[Stat.CriticalChance] + Stats[Stat.CriticalDamage],
                 Type = PoisonType.Infection,
                 Owner = this,
-                TickCount = 10 + magic.Level * 10,
-                TickFrequency = TimeSpan.FromSeconds(1),
+                TickCount = 10 + magic.Level * 5,
+                TickFrequency = TimeSpan.FromMilliseconds(1500),
             });
 
 /*            foreach (UserMagic mag in magics)
                 LevelMagic(mag);*/
         }
+        public void EnhancedInfectionEnd(List<UserMagic> magics, MapObject ob)
+        {
+            if (ob?.Node == null || !CanAttackTarget(ob) || (ob.Poison & PoisonType.Infection) == PoisonType.Infection) return;
+
+            UserMagic magic = magics.FirstOrDefault(x => x.Info.Magic == MagicType.EnhancedInfection);
+            if (magic == null) return;
+
+            ob.ApplyPoison(new Poison
+            {
+                Value = GetSC() + Stats[Stat.CriticalChance] + Stats[Stat.CriticalDamage],
+                Type = PoisonType.Infection,
+                Owner = this,
+                TickCount = 10 + magic.Level * 10,
+                TickFrequency = TimeSpan.FromMilliseconds(700),
+            });
+
+            /*            foreach (UserMagic mag in magics)
+                            LevelMagic(mag);*/
+        }
+        public void AwakenedInfectionEnd(List<UserMagic> magics, MapObject ob)
+        {
+            if (ob?.Node == null || !CanAttackTarget(ob) || (ob.Poison & PoisonType.Infection) == PoisonType.Infection) return;
+
+            UserMagic magic = magics.FirstOrDefault(x => x.Info.Magic == MagicType.AwakenedInfection);
+            if (magic == null) return;
+
+            ob.ApplyPoison(new Poison
+            {
+                Value = GetSC() + Stats[Stat.CriticalChance] + Stats[Stat.CriticalDamage] + (ob.Stats[Stat.Health] / 100),
+                Type = PoisonType.Infection,
+                Owner = this,
+                TickCount = 10 + magic.Level * 10,
+                TickFrequency = TimeSpan.FromMilliseconds(700),
+            });
+
+            /*            foreach (UserMagic mag in magics)
+                            LevelMagic(mag);*/
+        }
+
         public void TrapOctagonEnd(UserMagic magic, Map map, Point location)
         {
             if (map != CurrentMap) return;
@@ -18210,6 +18717,57 @@ namespace Server.Models
                 if (ob.Pushed(direction, magic.GetPower()) <= 0) continue;
 
                 Attack(ob, new List<UserMagic> { magic }, true, 0, false, false);
+                //LevelMagic(magic);
+                break;
+            }
+        }
+        private void EnhancedTaoistCombatKick(UserMagic magic, Cell cell, MirDirection direction)
+        {
+            if (cell?.Objects == null) return;
+
+            for (int i = cell.Objects.Count - 1; i >= 0; i--)
+            {
+                MapObject ob = cell.Objects[i];
+                if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level) continue;
+
+                //CanPush check ?
+
+                if (ob.Pushed(direction, magic.GetPower()) <= 0) continue;
+
+                Attack(ob, new List<UserMagic> { magic }, true, 0, false, false);
+                ob.ApplyPoison(new Poison
+                {
+                    Type = PoisonType.Paralysis,
+                    Owner = this,
+                    TickCount = 1,
+                    TickFrequency = TimeSpan.FromSeconds(2),
+                });
+                //LevelMagic(magic);
+                break;
+            }
+        }
+
+        private void AwakenedTaoistCombatKick(UserMagic magic, Cell cell, MirDirection direction)
+        {
+            if (cell?.Objects == null) return;
+
+            for (int i = cell.Objects.Count - 1; i >= 0; i--)
+            {
+                MapObject ob = cell.Objects[i];
+                if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level) continue;
+
+                //CanPush check ?
+
+                if (ob.Pushed(direction, magic.GetPower()) <= 0) continue;
+
+                Attack(ob, new List<UserMagic> { magic }, true, 0, false, false);
+                ob.ApplyPoison(new Poison
+                {
+                    Type = PoisonType.Paralysis,
+                    Owner = this,
+                    TickCount = 1,
+                    TickFrequency = TimeSpan.FromMilliseconds(2),
+                });
                 //LevelMagic(magic);
                 break;
             }
