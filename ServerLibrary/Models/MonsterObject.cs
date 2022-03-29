@@ -2363,13 +2363,16 @@ namespace Server.Models
             if ((Poison & PoisonType.Red) == PoisonType.Red)
                 power = (int)(power * 1.2F);
 
-            BuffInfo buff = Buffs.FirstOrDefault(x => x.Type == BuffType.MagicShield);
+            
+            if(ignoreShield)
+            {
+                BuffInfo buff = Buffs.FirstOrDefault(x => x.Type == BuffType.MagicShield);
 
-            if (buff != null)
-                buff.RemainingTime -= TimeSpan.FromMilliseconds(power * 10);
-
-            power -= power * Stats[Stat.MagicShield] / 100;
-
+                if (buff != null)
+                    buff.RemainingTime -= TimeSpan.FromMilliseconds(power * 10);
+                power -= power * Stats[Stat.MagicShield] / 100;
+            }
+            
             if (SEnvir.Random.Next(100) < attacker.Stats[Stat.CriticalChance] && canCrit && power > 0)
             {
                 power += power + (power * attacker.Stats[Stat.CriticalDamage] / 100);
