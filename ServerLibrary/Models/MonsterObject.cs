@@ -1060,7 +1060,7 @@ namespace Server.Models
 
             if (CurrentHP >= Stats[Stat.Health]) return;
 
-            int regen = (int)Math.Max(1, Stats[Stat.Health] * 0.02F); //2% every 10 seconds aprox
+            int regen = (int)Math.Max(1, Stats[Stat.Health] * 0.0135F); //2% every 10 seconds aprox
 
             ChangeHP(regen);
         }

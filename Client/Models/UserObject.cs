@@ -641,7 +641,6 @@ namespace Client.Models
                     break;
                 case MirAction.Attack:
                     attackDelay = Globals.AttackDelay - Stats[Stat.AttackSpeed]*Globals.ASpeedRate;
-                    attackDelay = Math.Max(800, attackDelay);
                     AttackTime = CEnvir.Now + TimeSpan.FromMilliseconds(attackDelay);
 
                     if (BagWeight > Stats[Stat.BagWeight])
@@ -660,7 +659,6 @@ namespace Client.Models
                     break;
                 case MirAction.Mining:
                     attackDelay = Globals.AttackDelay - Stats[Stat.AttackSpeed] * Globals.ASpeedRate;
-                    attackDelay = Math.Max(800, attackDelay);
                     AttackTime = CEnvir.Now + TimeSpan.FromMilliseconds(attackDelay);
 
                     if (BagWeight > Stats[Stat.BagWeight])

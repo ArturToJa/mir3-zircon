@@ -442,7 +442,7 @@ namespace Server.Envir
                         decimal exp = decimal.Parse(lines[i].Split(' ')[1].Trim());
                         Globals.ExperienceList.Add(new Globals.ExperienceData(level, exp));
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         Log(string.Format("ExperienceList: Error parsing line {0} - {1}", i, lines[i]));
                     }

@@ -507,7 +507,7 @@ namespace Library
                          StorageSize = 100;
 
         public const int AttackDelay = 1500,
-                         ASpeedRate = 47,
+                         ASpeedRate = 50,
                          ProjectileSpeed = 48;
 
         public static TimeSpan TurnTime = TimeSpan.FromMilliseconds(300),

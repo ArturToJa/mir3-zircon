@@ -2673,7 +2673,6 @@ namespace Client.Scenes
                     {
                         ReceiveChat($"{magic.Info.Name} is now Ready.", MessageType.Hint);
                         int attackDelay = Globals.AttackDelay - MapObject.User.Stats[Stat.AttackSpeed] * Globals.ASpeedRate;
-                        attackDelay = Math.Max(800, attackDelay);
 
                         ToggleTime = CEnvir.Now + TimeSpan.FromMilliseconds(attackDelay + 200);
 

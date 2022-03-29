@@ -364,13 +364,13 @@ namespace Server.Models
 
             RegenTime = SEnvir.Now + RegenDelay;
 
-            float rate = 2; //2%
+            float rate = 1.35f; //1,3%
 
-            if (Class == MirClass.Wizard) rate += 1;
+            //if (Class == MirClass.Wizard) rate += 1;
 
-            UserMagic magic;
+/*            UserMagic magic;
             if (Magics.TryGetValue(MagicType.Rejuvenation, out magic) && Level >= magic.Info.NeedLevel1)
-                rate += 0.5F + magic.Level * 0.5F;
+                rate += 0.5F + magic.Level * 0.5F;*/
 
             rate /= 100F;
 
@@ -2610,7 +2610,7 @@ namespace Server.Models
                 }
             }
 
-            UserMagic magic;
+            /*UserMagic magic;
             if (Buffs.Any(x => x.Type == BuffType.RagingWind) && Magics.TryGetValue(MagicType.RagingWind, out magic))
             {
                 int power = Stats[Stat.MinAC] + Stats[Stat.MaxAC] + 4 + magic.Level * 6;
@@ -2622,7 +2622,7 @@ namespace Server.Models
 
                 Stats[Stat.MinMR] = power * 3 / 10;
                 Stats[Stat.MaxMR] = power - Stats[Stat.MinMR];
-            }
+            }*/
 
             Stats[Stat.AttackSpeed] += Math.Min(3, Level / 15);
 
@@ -2635,8 +2635,8 @@ namespace Server.Models
             Stats[Stat.PhantomResistance] = Math.Min(5, Stats[Stat.PhantomResistance]);
             Stats[Stat.PhysicalResistance] = Math.Min(5, Stats[Stat.PhysicalResistance]);
 
-            Stats[Stat.Comfort] = Math.Min(20, Stats[Stat.Comfort]);
-            Stats[Stat.AttackSpeed] = Math.Min(15, Stats[Stat.AttackSpeed]);
+            Stats[Stat.Comfort] = Math.Min(22, Stats[Stat.Comfort]);
+            Stats[Stat.AttackSpeed] = Math.Min(18, Stats[Stat.AttackSpeed]);
 
             RegenDelay = TimeSpan.FromMilliseconds(15000 - Stats[Stat.Comfort] * 650);
 
@@ -10781,10 +10781,7 @@ namespace Server.Models
             Direction = direction;
             ActionTime = SEnvir.Now + Globals.AttackTime;
 
-            int aspeed = Stats[Stat.AttackSpeed];
-            int attackDelay = Globals.AttackDelay - aspeed * Globals.ASpeedRate;
-            attackDelay = Math.Max(800, attackDelay);
-            AttackTime = SEnvir.Now.AddMilliseconds(attackDelay);
+            AttackTime = SEnvir.Now.AddMilliseconds(GetAttackDelay(Stats[Stat.AttackSpeed]));
 
             Poison poison = PoisonList.FirstOrDefault(x => x.Type == PoisonType.Slow);
             TimeSpan slow = TimeSpan.Zero;
@@ -10795,7 +10792,7 @@ namespace Server.Models
             }
 
             if (BagWeight > Stats[Stat.BagWeight])
-                AttackTime += TimeSpan.FromMilliseconds(attackDelay);
+                AttackTime += TimeSpan.FromMilliseconds(Globals.AttackDelay);
 
             MagicType validMagic = MagicType.None;
             List<UserMagic> magics = new List<UserMagic>();
@@ -11026,7 +11023,7 @@ namespace Server.Models
 
             if (AttackLocation(Functions.Move(CurrentLocation, Direction), magics, true, SEnvir.Random.Next(100)< Stats[Stat.IgnoreArmour]))
             {
-                switch (attackMagic)
+               /* switch (attackMagic)
                 {
                     case MagicType.FullBloom:
                         Enqueue(new S.MagicToggle { Magic = attackMagic, CanUse = false });
@@ -11144,7 +11141,7 @@ namespace Server.Models
                         break;
                     default:
                         break;
-                }
+                }*/
             }
 
             BuffRemove(BuffType.Transparency);
@@ -14278,10 +14275,7 @@ namespace Server.Models
             Direction = direction;
             ActionTime = SEnvir.Now + Globals.AttackTime;
 
-            int aspeed = Stats[Stat.AttackSpeed];
-            int attackDelay = Globals.AttackDelay - aspeed * Globals.ASpeedRate;
-            attackDelay = Math.Max(800, attackDelay);
-            AttackTime = SEnvir.Now.AddMilliseconds(attackDelay);
+            AttackTime = SEnvir.Now.AddMilliseconds(GetAttackDelay(Stats[Stat.AttackSpeed]));
 
             Poison poison = PoisonList.FirstOrDefault(x => x.Type == PoisonType.Slow);
             TimeSpan slow = TimeSpan.Zero;
@@ -14292,7 +14286,7 @@ namespace Server.Models
             }
 
             if (BagWeight > Stats[Stat.BagWeight])
-                AttackTime += TimeSpan.FromMilliseconds(attackDelay);
+                AttackTime += TimeSpan.FromMilliseconds(Globals.AttackDelay);
 
             bool result = false;
             if (CurrentMap.Info.CanMine && CurrentMap.GetCell(Functions.Move(CurrentLocation, Direction)) == null)
@@ -14404,7 +14398,7 @@ namespace Server.Models
             bool hasBladeStorm = false, hasAwakenedBladeStorm = false;
             bool hasDanceOfSallows = false;
             bool hasMassacre = false;
-            bool hasSwiftBlade = false, hasSeismicSlam = false, hasAwakenedSeismicSlam = false, hasFlamingSwordBurn = false, hasFlamingSwordStrongBurn = false;
+            bool hasSeismicSlam = false, hasAwakenedSeismicSlam = false, hasFlamingSwordBurn = false, hasFlamingSwordStrongBurn = false;
 
             UserMagic magic;
             foreach (UserMagic mag in magics)
@@ -14425,7 +14419,6 @@ namespace Server.Models
                     case MagicType.EnhancedSeismicSlam:
                     case MagicType.AwakenedSeismicSlam:
                         ignoreAccuracy = true;
-                        hasSwiftBlade = true;
                         break;
                     case MagicType.FlameSplash:
                         hasFlameSplash = !primary;
@@ -14510,7 +14503,6 @@ namespace Server.Models
 
                         if (ob.Race == ObjectType.Player)
                             power /= 4;
-                        break;
                         break;
                     case MagicType.EnhancedSeismicSlam:
                         power = power * magic.GetPower() / 100;
@@ -14786,23 +14778,6 @@ namespace Server.Models
 
             decimal lifestealAmount = damage * Stats[Stat.LifeSteal] / 100M;
 
-/*            if (hasSwiftBlade)
-            {
-                lifestealAmount = Math.Min(lifestealAmount, 2000 - SwiftBladeLifeSteal);
-                SwiftBladeLifeSteal += lifestealAmount;
-            }
-
-            if (hasFlameSplash)
-            {
-                lifestealAmount = Math.Min(lifestealAmount, 750 - FlameSplashLifeSteal);
-                FlameSplashLifeSteal += lifestealAmount;
-            }
-            if (hasDestructiveSurge)
-            {
-                lifestealAmount = Math.Min(lifestealAmount, 750 - DestructiveSurgeLifeSteal);
-                DestructiveSurgeLifeSteal += lifestealAmount;
-            }
-*/
             if (primary || Class == MirClass.Warrior || hasFlameSplash)
                 LifeSteal += lifestealAmount;
 
@@ -19138,10 +19113,7 @@ namespace Server.Models
                 RegenTime = SEnvir.Now + RegenDelay;
             ActionTime = SEnvir.Now + Globals.AttackTime;
 
-            int aspeed = Stats[Stat.AttackSpeed];
-            int attackDelay = Globals.AttackDelay - aspeed * Globals.ASpeedRate;
-            attackDelay = Math.Max(800, attackDelay);
-            AttackTime = SEnvir.Now.AddMilliseconds(attackDelay);
+            AttackTime = SEnvir.Now.AddMilliseconds(GetAttackDelay(Stats[Stat.AttackSpeed]));
 
             Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, AttackMagic = magic.Info.Magic });
 
@@ -19157,6 +19129,11 @@ namespace Server.Models
 
             magic.Cooldown = SEnvir.Now.AddMilliseconds(delay);
             Enqueue(new S.MagicCooldown { InfoIndex = magic.Info.Index, Delay = delay });
+        }
+
+        private int GetAttackDelay(int attackSpeed)
+        {
+            return Globals.AttackDelay - attackSpeed * Globals.ASpeedRate;
         }
 
         public void DarkConversionEnd(UserMagic magic, MapObject ob)
