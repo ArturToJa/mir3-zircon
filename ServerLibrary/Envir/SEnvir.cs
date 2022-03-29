@@ -677,7 +677,7 @@ namespace Server.Envir
 
             }
 
-            RefreshItemRefineStats();
+            //RefreshItemRefineStats();
         }
 
         private static void RefreshItemRefineStats()
