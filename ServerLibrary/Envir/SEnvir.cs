@@ -676,7 +676,346 @@ namespace Server.Envir
                 BossList.Add(monster);
 
             }
+
+            RefreshItemRefineStats();
         }
+
+        private static void RefreshItemRefineStats()
+        {
+            for (int i = AccountInfoList.Count - 1; i >= 0; i--)
+            {
+                for (int j = AccountInfoList[i].Items.Count - 1; j >= 0; j--)
+                {
+                    UserItem item = AccountInfoList[i].Items[j];
+                    if (item != null)
+                    {
+                        if (item.Level > 0)
+                        {
+                            for (int z = item.AddedStats.Count - 1; z >= 0; z--)
+                            {
+                                UserItemStat stat = item.AddedStats[z];
+                                if (stat.StatSource != StatSource.Refine) continue;
+                                stat.Delete();
+                            }
+                            foreach (KeyValuePair<Stat, int> statPair in item.Info.Stats.Values)
+                            {
+                                switch (statPair.Key)
+                                {
+                                    case Stat.Health:
+                                    case Stat.Mana:
+                                    case Stat.Luck:
+                                    case Stat.Accuracy:
+                                    case Stat.Agility:
+                                    case Stat.AttackSpeed:
+                                    case Stat.BagWeight:
+                                    case Stat.HandWeight:
+                                    case Stat.WearWeight:
+                                    case Stat.MinAC:
+                                    case Stat.MinDC:
+                                    case Stat.MinMC:
+                                    case Stat.MinMR:
+                                    case Stat.MinSC:
+                                    case Stat.MaxSC:
+                                    case Stat.MaxMC:
+                                    case Stat.MaxAC:
+                                    case Stat.MaxDC:
+                                    case Stat.MaxMR:
+                                    case Stat.DCPercent:
+                                    case Stat.ACPercent:
+                                    case Stat.MRPercent:
+                                    case Stat.MCPercent:
+                                    case Stat.SCPercent:
+                                    case Stat.LifeSteal:
+                                    case Stat.Comfort:
+                                    case Stat.ParalysisChance:
+                                    case Stat.CriticalChance:
+                                    case Stat.CriticalDamage:
+                                    case Stat.HealthPercent:
+                                    case Stat.ManaPercent:
+                                    case Stat.PoisonResistance:
+                                        int statNow = statPair.Value * item.Level / 10;
+                                        item.AddStat(statPair.Key, statNow, StatSource.Refine);
+                                        break;
+                                    case Stat.ItemReviveTime:
+                                        statNow = (statPair.Value / 2) * item.Level / 10;
+                                        item.AddStat(statPair.Key, -statNow, StatSource.Refine);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+                for (int j = AccountInfoList[i].Characters.Count - 1; j >= 0; j--)
+                {
+                    for (int k = AccountInfoList[i].Characters[j].Items.Count - 1; k >= 0; k--)
+                    {
+                        UserItem item = AccountInfoList[i].Characters[j].Items[k];
+                        if (item != null)
+                        {
+                            if (item.Level > 0)
+                            {
+                                for (int z = item.AddedStats.Count - 1; z >= 0; z--)
+                                {
+                                    UserItemStat stat = item.AddedStats[z];
+                                    if (stat.StatSource != StatSource.Refine) continue;
+                                    stat.Delete();
+                                }
+                                foreach (KeyValuePair<Stat, int> statPair in item.Info.Stats.Values)
+                                {
+                                    switch (statPair.Key)
+                                    {
+                                        case Stat.Health:
+                                        case Stat.Mana:
+                                        case Stat.Luck:
+                                        case Stat.Accuracy:
+                                        case Stat.Agility:
+                                        case Stat.AttackSpeed:
+                                        case Stat.BagWeight:
+                                        case Stat.HandWeight:
+                                        case Stat.WearWeight:
+                                        case Stat.MinAC:
+                                        case Stat.MinDC:
+                                        case Stat.MinMC:
+                                        case Stat.MinMR:
+                                        case Stat.MinSC:
+                                        case Stat.MaxSC:
+                                        case Stat.MaxMC:
+                                        case Stat.MaxAC:
+                                        case Stat.MaxDC:
+                                        case Stat.MaxMR:
+                                        case Stat.DCPercent:
+                                        case Stat.ACPercent:
+                                        case Stat.MRPercent:
+                                        case Stat.MCPercent:
+                                        case Stat.SCPercent:
+                                        case Stat.LifeSteal:
+                                        case Stat.Comfort:
+                                        case Stat.ParalysisChance:
+                                        case Stat.CriticalChance:
+                                        case Stat.CriticalDamage:
+                                        case Stat.HealthPercent:
+                                        case Stat.ManaPercent:
+                                        case Stat.PoisonResistance:
+                                            int statNow = statPair.Value * item.Level / 10;
+                                            item.AddStat(statPair.Key, statNow, StatSource.Refine);
+                                            break;
+                                        case Stat.ItemReviveTime:
+                                            statNow = (statPair.Value / 2) * item.Level / 10;
+                                            item.AddStat(statPair.Key, -statNow, StatSource.Refine);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (int j = AccountInfoList[i].Companions.Count - 1; j >= 0; j--)
+                {
+                    for (int k = AccountInfoList[i].Companions[j].Items.Count - 1; k >= 0; k--)
+                    {
+                        UserItem item = AccountInfoList[i].Companions[j].Items[k];
+                        if (item != null)
+                        {
+                            if(item.Level > 0)
+                            {
+                                for(int z = item.AddedStats.Count - 1; z >= 0; z--)
+                                {
+                                    UserItemStat stat = item.AddedStats[z];
+                                    if (stat.StatSource != StatSource.Refine) continue;
+                                    stat.Delete();
+                                }
+                                foreach(KeyValuePair<Stat, int> statPair in item.Info.Stats.Values)
+                                {
+                                    switch (statPair.Key)
+                                    {
+                                        case Stat.Health:
+                                        case Stat.Mana:
+                                        case Stat.Luck:
+                                        case Stat.Accuracy:
+                                        case Stat.Agility:
+                                        case Stat.AttackSpeed:
+                                        case Stat.BagWeight:
+                                        case Stat.HandWeight:
+                                        case Stat.WearWeight:
+                                        case Stat.MinAC:
+                                        case Stat.MinDC:
+                                        case Stat.MinMC:
+                                        case Stat.MinMR:
+                                        case Stat.MinSC:
+                                        case Stat.MaxSC:
+                                        case Stat.MaxMC:
+                                        case Stat.MaxAC:
+                                        case Stat.MaxDC:
+                                        case Stat.MaxMR:
+                                        case Stat.DCPercent:
+                                        case Stat.ACPercent:
+                                        case Stat.MRPercent:
+                                        case Stat.MCPercent:
+                                        case Stat.SCPercent:
+                                        case Stat.LifeSteal:
+                                        case Stat.Comfort:
+                                        case Stat.ParalysisChance:
+                                        case Stat.CriticalChance:
+                                        case Stat.CriticalDamage:
+                                        case Stat.HealthPercent:
+                                        case Stat.ManaPercent:
+                                        case Stat.PoisonResistance:
+                                            int statNow = statPair.Value * item.Level / 10;
+                                            item.AddStat(statPair.Key, statNow, StatSource.Refine);
+                                            break;
+                                        case Stat.ItemReviveTime:
+                                            statNow = (statPair.Value / 2) * item.Level / 10;
+                                            item.AddStat(statPair.Key, -statNow, StatSource.Refine);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (int j = AccountInfoList[i].Mail.Count - 1; j >= 0; j--)
+                {
+                    for (int k = AccountInfoList[i].Mail[j].Items.Count - 1; k >= 0; k--)
+                    {
+                        UserItem item = AccountInfoList[i].Mail[j].Items[k];
+                        if (item != null)
+                        {
+                            if (item.Level > 0)
+                            {
+                                for (int z = item.AddedStats.Count - 1; z >= 0; z--)
+                                {
+                                    UserItemStat stat = item.AddedStats[z];
+                                    if (stat.StatSource != StatSource.Refine) continue;
+                                    stat.Delete();
+                                }
+                                foreach (KeyValuePair<Stat, int> statPair in item.Info.Stats.Values)
+                                {
+                                    switch (statPair.Key)
+                                    {
+                                        case Stat.Health:
+                                        case Stat.Mana:
+                                        case Stat.Luck:
+                                        case Stat.Accuracy:
+                                        case Stat.Agility:
+                                        case Stat.AttackSpeed:
+                                        case Stat.BagWeight:
+                                        case Stat.HandWeight:
+                                        case Stat.WearWeight:
+                                        case Stat.MinAC:
+                                        case Stat.MinDC:
+                                        case Stat.MinMC:
+                                        case Stat.MinMR:
+                                        case Stat.MinSC:
+                                        case Stat.MaxSC:
+                                        case Stat.MaxMC:
+                                        case Stat.MaxAC:
+                                        case Stat.MaxDC:
+                                        case Stat.MaxMR:
+                                        case Stat.DCPercent:
+                                        case Stat.ACPercent:
+                                        case Stat.MRPercent:
+                                        case Stat.MCPercent:
+                                        case Stat.SCPercent:
+                                        case Stat.LifeSteal:
+                                        case Stat.Comfort:
+                                        case Stat.ParalysisChance:
+                                        case Stat.CriticalChance:
+                                        case Stat.CriticalDamage:
+                                        case Stat.HealthPercent:
+                                        case Stat.ManaPercent:
+                                        case Stat.PoisonResistance:
+                                            int statNow = statPair.Value * item.Level / 10;
+                                            item.AddStat(statPair.Key, statNow, StatSource.Refine);
+                                            break;
+                                        case Stat.ItemReviveTime:
+                                            statNow = (statPair.Value / 2) * item.Level / 10;
+                                            item.AddStat(statPair.Key, -statNow, StatSource.Refine);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (int i = AuctionInfoList.Count - 1; i >= 0; i--)
+            {
+                AuctionInfo info = AuctionInfoList[i];
+                if (info == null) continue;
+                UserItem item = info.Item;
+                if (item != null)
+                {
+                    if (item.Level > 0)
+                    {
+                        for (int z = item.AddedStats.Count - 1; z >= 0; z--)
+                        {
+                            UserItemStat stat = item.AddedStats[z];
+                            if (stat.StatSource != StatSource.Refine) continue;
+                            stat.Delete();
+                        }
+                        foreach (KeyValuePair<Stat, int> statPair in item.Info.Stats.Values)
+                        {
+                            switch (statPair.Key)
+                            {
+                                case Stat.Health:
+                                case Stat.Mana:
+                                case Stat.Luck:
+                                case Stat.Accuracy:
+                                case Stat.Agility:
+                                case Stat.AttackSpeed:
+                                case Stat.BagWeight:
+                                case Stat.HandWeight:
+                                case Stat.WearWeight:
+                                case Stat.MinAC:
+                                case Stat.MinDC:
+                                case Stat.MinMC:
+                                case Stat.MinMR:
+                                case Stat.MinSC:
+                                case Stat.MaxSC:
+                                case Stat.MaxMC:
+                                case Stat.MaxAC:
+                                case Stat.MaxDC:
+                                case Stat.MaxMR:
+                                case Stat.DCPercent:
+                                case Stat.ACPercent:
+                                case Stat.MRPercent:
+                                case Stat.MCPercent:
+                                case Stat.SCPercent:
+                                case Stat.LifeSteal:
+                                case Stat.Comfort:
+                                case Stat.ParalysisChance:
+                                case Stat.CriticalChance:
+                                case Stat.CriticalDamage:
+                                case Stat.HealthPercent:
+                                case Stat.ManaPercent:
+                                case Stat.PoisonResistance:
+                                    int statNow = statPair.Value * item.Level / 10;
+                                    item.AddStat(statPair.Key, statNow, StatSource.Refine);
+                                    break;
+                                case Stat.ItemReviveTime:
+                                    statNow = (statPair.Value / 2) * item.Level / 10;
+                                    item.AddStat(statPair.Key, -statNow, StatSource.Refine);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         //Only works on Increasing EXP, still need to do Rebirth or loss of exp ranking update.
         public static void RankingSort(CharacterInfo character, bool updateLead = true)
         {
