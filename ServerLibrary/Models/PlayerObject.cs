@@ -6521,42 +6521,10 @@ namespace Server.Models
                         break;
                     }
 
-
-
                     MagicInfo info = SEnvir.MagicInfoList.Binding.First(x => x.Index == item.Info.Shape);
                     MagicType type;
 
-                    if (Magics.TryGetValue(info.Magic, out magic) || (Globals.MagicEnhancement.TryGetValue(info.Magic, out type) && Magics.TryGetValue(type, out magic)) || (Globals.MagicAwakening.TryGetValue(info.Magic, out type) && Magics.TryGetValue(type, out magic)))
-                    {
-                        int rate = (magic.Level - 2) * 500;
-
-                        magic.Experience++;
-
-                        if (magic.Experience >= rate || (magic.Level == 3 && SEnvir.Random.Next(rate) == 0))
-                        {
-                            magic.Level++;
-                            magic.Experience = 0;
-
-                            Enqueue(new S.MagicLeveled { InfoIndex = magic.Info.Index, Level = magic.Level, Experience = magic.Experience });
-
-                            Connection.ReceiveChat(string.Format(Connection.Language.LearnBook4Success, magic.Info.Name, magic.Level), MessageType.System);
-
-                            foreach (SConnection con in Connection.Observers)
-                                con.ReceiveChat(string.Format(con.Language.LearnBook4Success, magic.Info.Name, magic.Level), MessageType.System);
-
-                            RefreshStats();
-                        }
-                        else
-                        {
-                            Connection.ReceiveChat(string.Format(Connection.Language.LearnBook4Failed, magic.Level + 1), MessageType.System);
-
-                            foreach (SConnection con in Connection.Observers)
-                                con.ReceiveChat(string.Format(con.Language.LearnBook4Failed, magic.Level + 1), MessageType.System);
-
-                            Enqueue(new S.MagicLeveled { InfoIndex = magic.Info.Index, Level = magic.Level, Experience = magic.Experience });
-                        }
-                    }
-                    else
+                    if (!Magics.TryGetValue(info.Magic, out magic) && !(Globals.MagicEnhancement.TryGetValue(info.Magic, out type) && Magics.TryGetValue(type, out magic)) && !(Globals.MagicAwakening.TryGetValue(info.Magic, out type) && Magics.TryGetValue(type, out magic)))
                     {
                         magic = SEnvir.UserMagicList.CreateNewObject();
                         magic.Character = Character;
@@ -19475,7 +19443,7 @@ namespace Server.Models
             FiltersClass = Character.FiltersClass;
             FiltersItemType = Character.FiltersItemType;
             FiltersRarity = Character.FiltersRarity;
-            Enqueue(new S.SendCompanionFilters { FilterClass = p.FilterClass, FilterRarity = p.FilterRarity, FilterItemType = p.FilterItemType });
+            //Enqueue(new S.SendCompanionFilters { FilterClass = p.FilterClass, FilterRarity = p.FilterRarity, FilterItemType = p.FilterItemType });
             Connection.ReceiveChat("Companion filters have been updated", MessageType.System);
         }
     }
