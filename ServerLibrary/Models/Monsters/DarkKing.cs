@@ -41,7 +41,7 @@ namespace Server.Models.Monsters
             {
                 if(CanAttack)
                 {
-                    if (SEnvir.Random.Next(10) == 0)
+                    if (SEnvir.Random.Next(20) == 0)
                     {
                         attacksDone = numberOfAttacks;
                         tempAttackDelay = AttackDelay;
@@ -80,42 +80,44 @@ namespace Server.Models.Monsters
                 if(targets.Count > 0)
                 {
                     MapObject newTarget = targets[SEnvir.Random.Next(targets.Count)];
-
-                    MirDirection dir = (MirDirection)SEnvir.Random.Next(8);
-                    Cell cell = null;
-                    for (int i = 0; i < 8; i++)
+                    if(newTarget != null && CanAttackTarget(newTarget))
                     {
-                        cell = CurrentMap.GetCell(Functions.Move(newTarget.CurrentLocation, Functions.ShiftDirection(dir, i), 1));
-
-                        if (cell == null || cell.Movements != null)
+                        MirDirection dir = (MirDirection)SEnvir.Random.Next(8);
+                        Cell cell = null;
+                        for (int i = 0; i < 8; i++)
                         {
-                            cell = null;
-                            continue;
+                            cell = CurrentMap.GetCell(Functions.Move(newTarget.CurrentLocation, Functions.ShiftDirection(dir, i), 1));
+
+                            if (cell == null || cell.Movements != null)
+                            {
+                                cell = null;
+                                continue;
+                            }
+                            break;
                         }
-                        break;
-                    }
 
-                    if (cell != null)
-                    {
-                        Direction = Functions.DirectionFromPoint(cell.Location, newTarget.CurrentLocation);
-                        Teleport(CurrentMap, cell.Location);
-                        Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation });
-
-                        UpdateAttackTime();
-
-                        ActionList.Add(new DelayedAction(
-                                           SEnvir.Now.AddMilliseconds(400),
-                                           ActionType.DelayAttack,
-                                           Target,
-                                           GetDC() + newTarget.Stats[Stat.Health] / 100,
-                                           AttackElement));
-                        attacksDone--;
-                        if (attacksDone == 0)
+                        if (cell != null)
                         {
-                            AttackDelay = tempAttackDelay;
-                            Direction = tempDirection;
-                            Teleport(CurrentMap, tempLocation, false);
-                            Stats[Stat.MagicShield] -= 100;
+                            Direction = Functions.DirectionFromPoint(cell.Location, newTarget.CurrentLocation);
+                            Teleport(CurrentMap, cell.Location);
+                            Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation });
+
+                            UpdateAttackTime();
+
+                            ActionList.Add(new DelayedAction(
+                                               SEnvir.Now.AddMilliseconds(400),
+                                               ActionType.DelayAttack,
+                                               Target,
+                                               GetDC() + newTarget.Stats[Stat.Health] / 100,
+                                               AttackElement));
+                            attacksDone--;
+                            if (attacksDone == 0)
+                            {
+                                AttackDelay = tempAttackDelay;
+                                Direction = tempDirection;
+                                Teleport(CurrentMap, tempLocation, false);
+                                Stats[Stat.MagicShield] -= 100;
+                            }
                         }
                     }
                 }

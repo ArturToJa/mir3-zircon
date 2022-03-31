@@ -667,6 +667,11 @@ namespace Server.Models
                         MinionsCount = 3,
                         MaxMinions = 1000
                     };
+                case 137:
+                    return new StrongBoss
+                    {
+                        MonsterInfo = monsterInfo
+                    };
                 default:
                     return new MonsterObject { MonsterInfo = monsterInfo };
             }
