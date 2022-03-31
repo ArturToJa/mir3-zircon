@@ -11,9 +11,19 @@ namespace Server.Models.Monsters
 {
     public class StrongBoss : MonsterObject
     {
+        List<Cell> cells;
         public StrongBoss()
         {
             AvoidFireWall = false;
+        }
+
+        public override void Process()
+        {
+            base.Process();
+
+            if (Dead) return;
+
+            cells = CurrentMap.GetCells(CurrentLocation, 0, ViewRange);
         }
 
         protected override bool InAttackRange()
@@ -52,46 +62,55 @@ namespace Server.Models.Monsters
 
         private void RangeAttack()
         {
-            List<MapObject> targets = GetTargets(CurrentMap, CurrentLocation, ViewRange);
-            if (targets.Count > 0)
+            MapObject newTarget = Target;
+            if (newTarget != null && CanAttackTarget(newTarget))
             {
-                MapObject newTarget = targets[SEnvir.Random.Next(targets.Count)];
-                if (newTarget != null && CanAttackTarget(newTarget))
+                MirDirection dir = (MirDirection)SEnvir.Random.Next(8);
+                Cell cell = null;
+                for (int i = 0; i < 8; i++)
                 {
-                    MirDirection dir = (MirDirection)SEnvir.Random.Next(8);
-                    Cell cell = null;
-                    for (int i = 0; i < 8; i++)
-                    {
-                        cell = CurrentMap.GetCell(Functions.Move(newTarget.CurrentLocation, Functions.ShiftDirection(dir, i), 1));
+                    cell = CurrentMap.GetCell(Functions.Move(newTarget.CurrentLocation, Functions.ShiftDirection(dir, i), 1));
 
-                        if (cell == null || cell.Movements != null)
-                        {
-                            cell = null;
-                            continue;
-                        }
-                        break;
-                    }
-
-                    if (cell != null)
+                    if (cell == null || cell.Movements != null)
                     {
-                        Direction = Functions.DirectionFromPoint(cell.Location, newTarget.CurrentLocation);
-                        Teleport(CurrentMap, cell.Location);
-                        UpdateAttackTime();
+                        cell = null;
+                        continue;
                     }
+                    break;
                 }
-                foreach(MapObject target in targets)
-                {
-                    if (target != null && CanAttackTarget(target))
-                    {
-                        Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation });
 
-                        ActionList.Add(new DelayedAction(
-                                           SEnvir.Now.AddMilliseconds(400),
-                                           ActionType.DelayAttack,
-                                           Target,
-                                           GetDC() + GetSC() * target.Stats[Stat.Health] / 100,
-                                           AttackElement));
-                    }
+                if (cell != null)
+                {
+                    Direction = Functions.DirectionFromPoint(cell.Location, newTarget.CurrentLocation);
+                    Teleport(CurrentMap, cell.Location);
+                }
+            }
+            List<uint> targetIDs = new List<uint>();
+            List<Point> locations = new List<Point>();
+
+            Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, CurrentLocation = CurrentLocation, Cast = true, Type = MagicType.FireStorm, Targets = targetIDs, Locations = locations });
+
+            UpdateAttackTime();
+
+            foreach (Cell cell in cells)
+            {
+                if (cell.Objects == null)
+                {
+                    continue;
+                }
+
+                foreach (MapObject ob in cell.Objects)
+                {
+                    if (!CanAttackTarget(ob)) continue;
+
+                    targetIDs.Add(ob.ObjectID);
+
+                    ActionList.Add(new DelayedAction(
+                        SEnvir.Now.AddMilliseconds(500),
+                        ActionType.DelayAttack,
+                        ob,
+                        GetDC() + GetSC() * ob.Stats[Stat.Health] / 100,
+                        Element.Null));
                 }
             }
         }

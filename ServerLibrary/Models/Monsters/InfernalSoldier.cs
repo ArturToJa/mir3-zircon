@@ -38,12 +38,9 @@ namespace Server.Models.Monsters
         {
             if (Target == null) return;
 
-            if (InAttackRange())
+            if (CanAttack)
             {
-                if (CanAttack)
-                {
-                    RangeAttack();
-                }
+                RangeAttack();
             }
             if (CurrentLocation == Target.CurrentLocation)
             {

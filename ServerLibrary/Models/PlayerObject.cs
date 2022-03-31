@@ -15473,7 +15473,7 @@ namespace Server.Models
 
                 if (buff != null)
                 {
-                    buff.RemainingTime -= TimeSpan.FromMilliseconds(power * 25);
+                    buff.RemainingTime -= TimeSpan.FromMilliseconds(power / 2);
                     Enqueue(new S.BuffTime { Index = buff.Index, Time = buff.RemainingTime });
                 }
 

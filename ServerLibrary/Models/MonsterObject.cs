@@ -2374,7 +2374,7 @@ namespace Server.Models
                 BuffInfo buff = Buffs.FirstOrDefault(x => x.Type == BuffType.MagicShield);
 
                 if (buff != null)
-                    buff.RemainingTime -= TimeSpan.FromMilliseconds(power * 10);
+                    buff.RemainingTime -= TimeSpan.FromMilliseconds(power / 2);
                 power -= power * Stats[Stat.MagicShield] / 100;
             }
             
