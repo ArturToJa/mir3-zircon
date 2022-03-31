@@ -1033,6 +1033,9 @@ namespace Library
         DemonicBlack,
         ForestTree,
         DarkForestTree,
+        TempleKnight,
+        LavaGod,
+        LavaScorp,
     }
 
     

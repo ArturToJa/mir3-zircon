@@ -2069,6 +2069,10 @@ namespace Client.Models
                     CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_24, out BodyLibrary);
                     BodyShape = 4;
                     break;
+                case MonsterImage.TempleKnight:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_59, out BodyLibrary);
+                    BodyShape = 9;
+                    break;
                 default:
                     CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_1, out BodyLibrary);
                     BodyShape = 0;

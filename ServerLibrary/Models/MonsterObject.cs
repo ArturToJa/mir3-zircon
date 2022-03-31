@@ -2437,7 +2437,7 @@ namespace Server.Models
 
             //ProcessEvents();
 
-            if(MonsterInfo.IsBoss && MonsterInfo.Level >= 15000)
+            if(EXPOwner != null && MonsterInfo.IsBoss && MonsterInfo.Level >= 15000)
             {
                 foreach (SConnection con in SEnvir.Connections)
                 {
