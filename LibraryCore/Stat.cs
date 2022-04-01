@@ -76,6 +76,14 @@ namespace Library
                         else
                             this[pair.Key] = Math.Min(this[pair.Key], pair.Value);
                         break;
+                    case Stat.ParalysisChance:
+                        if (pair.Value == 0) continue;
+
+                        if (this[pair.Key] == 0)
+                            this[pair.Key] = pair.Value;
+                        else
+                            this[pair.Key] = Math.Max(this[pair.Key], pair.Value);
+                        break;
                     default:
                         this[pair.Key] += pair.Value;
                         break;

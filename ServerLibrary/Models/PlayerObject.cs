@@ -14731,6 +14731,7 @@ namespace Server.Models
                     TickCount = 1,
                     Owner = this,
                     TickFrequency = TimeSpan.FromSeconds(magic.GetPower() + 1),
+                    Stackable = false,
                 });
 
                 ob.ApplyPoison(new Poison
@@ -14739,6 +14740,7 @@ namespace Server.Models
                     Type = PoisonType.Paralysis,
                     TickFrequency = TimeSpan.FromSeconds(1),
                     TickCount = 1,
+                    Stackable = true,
                 });
             }
 /*            if (Buffs.Any(x => x.Type == BuffType.Might) && Magics.TryGetValue(MagicType.Might, out magic))
@@ -14756,13 +14758,6 @@ namespace Server.Models
                 ChangeHP(/*Math.Min((hasLotus ? 1500 : 750),*/ heal);
             }
 
-            //  if (primary)
-
-            int psnRate = 200;
-
-            if (ob.Level >= 250)
-                psnRate = 2000;
-
             if(hasFlamingSwordBurn)
             {
                 ob.ApplyPoison(new Poison
@@ -14771,7 +14766,8 @@ namespace Server.Models
                     Type = PoisonType.Burn,
                     TickFrequency = TimeSpan.FromSeconds(1),
                     TickCount = 2,
-                    Value = ob.Stats[Stat.Health] / 100
+                    Value = ob.Stats[Stat.Health] / 100,
+                    Stackable = false,
                 });
             }
 
@@ -14783,11 +14779,12 @@ namespace Server.Models
                     Type = PoisonType.Burn,
                     TickFrequency = TimeSpan.FromSeconds(1),
                     TickCount = 2,
-                    Value = 5 * (ob.Stats[Stat.Health] / 100)
+                    Value = 5 * (ob.Stats[Stat.Health] / 100),
+                    Stackable = false,
                 });
             }
 
-            if (SEnvir.Random.Next(psnRate) < Stats[Stat.ParalysisChance] || hasAwakenedSeismicSlam)
+            if (SEnvir.Random.Next(100) < Stats[Stat.ParalysisChance] || hasAwakenedSeismicSlam)
             {
                 ob.ApplyPoison(new Poison
                 {
@@ -14795,6 +14792,7 @@ namespace Server.Models
                     Type = PoisonType.Paralysis,
                     TickFrequency = TimeSpan.FromSeconds(3),
                     TickCount = 1,
+                    Stackable = true,
                 });
             }
 
@@ -14806,10 +14804,11 @@ namespace Server.Models
                     Owner = this,
                     TickCount = 1,
                     TickFrequency = TimeSpan.FromMilliseconds(1500),
+                    Stackable = false,
                 });
             }
 
-            if (ob.Race != ObjectType.Player && SEnvir.Random.Next(psnRate) < Stats[Stat.SlowChance] || hasSeismicSlam)
+            if (ob.Race != ObjectType.Player && SEnvir.Random.Next(100) < Stats[Stat.SlowChance] || hasSeismicSlam)
             {
                 ob.ApplyPoison(new Poison
                 {
@@ -14818,10 +14817,11 @@ namespace Server.Models
                     Value = 20,
                     TickFrequency = TimeSpan.FromSeconds(5),
                     TickCount = 1,
+                    Stackable = false,
                 });
             }
 
-            if (SEnvir.Random.Next(psnRate) < Stats[Stat.SilenceChance] || hasAwakenedSeismicSlam)
+            if (SEnvir.Random.Next(100) < Stats[Stat.SilenceChance] || hasAwakenedSeismicSlam)
             {
                 ob.ApplyPoison(new Poison
                 {
@@ -14829,6 +14829,7 @@ namespace Server.Models
                     Type = PoisonType.Silenced,
                     TickFrequency = TimeSpan.FromSeconds(5),
                     TickCount = 1,
+                    Stackable = false,
                 });
             }
 
@@ -15292,6 +15293,7 @@ namespace Server.Models
                     Type = PoisonType.Paralysis,
                     TickFrequency = TimeSpan.FromSeconds(2),
                     TickCount = 1,
+                    Stackable = true,
                 });
             }
 
@@ -15304,6 +15306,7 @@ namespace Server.Models
                     Value = 20,
                     TickFrequency = TimeSpan.FromSeconds(5),
                     TickCount = 1,
+                    Stackable = false,
                 });
             }
 
@@ -15315,6 +15318,7 @@ namespace Server.Models
                     Type = PoisonType.Silenced,
                     TickFrequency = TimeSpan.FromSeconds(5),
                     TickCount = 1,
+                    Stackable = false,
                 });
             }
 
@@ -15332,6 +15336,7 @@ namespace Server.Models
                     TickCount = 1,
                     TickFrequency = duration,
                     Owner = this,
+                    Stackable = false,
                 });
             }
 
@@ -15359,6 +15364,7 @@ namespace Server.Models
                     TickCount = 1,
                     TickFrequency = TimeSpan.FromSeconds(silence),
                     Owner = this,
+                    Stackable = false,
                 });
             }
 
@@ -15371,6 +15377,7 @@ namespace Server.Models
                     TickCount = 3,
                     TickFrequency = TimeSpan.FromSeconds(1),
                     Owner = this,
+                    Stackable = false,
                 });
             }
             if(paraChance > 0 && SEnvir.Random.Next(paraChance) == 0)
@@ -15381,6 +15388,7 @@ namespace Server.Models
                     Type = PoisonType.Paralysis,
                     TickFrequency = TimeSpan.FromSeconds(2),
                     TickCount = 1,
+                    Stackable = true,
                 });
             }
             CheckBrown(ob);
@@ -16799,7 +16807,7 @@ namespace Server.Models
             }
 
             MagicType type = magic.Info.Magic;
-            if (travelled > 0 && target != null)
+            if (target != null)
             {
                 if(type == MagicType.Assault || type == MagicType.AwakenedAssault)
                 {
@@ -16807,16 +16815,18 @@ namespace Server.Models
                     {
                         Type = PoisonType.Paralysis,
                         TickCount = 1,
-                        TickFrequency = TimeSpan.FromMilliseconds(travelled * 300 + magic.GetPower()),
+                        TickFrequency = TimeSpan.FromMilliseconds(travelled * 300 + 2000),
                         Owner = this,
+                        Stackable = true,
                     });
 
                     target.ApplyPoison(new Poison
                     {
                         Type = PoisonType.Silenced,
                         TickCount = 1,
-                        TickFrequency = TimeSpan.FromMilliseconds(travelled * 300 + magic.GetPower() * 2),
+                        TickFrequency = TimeSpan.FromMilliseconds(travelled * 300 + 2000 * 2),
                         Owner = this,
+                        Stackable = false,
                     });
                 }
                 if(type == MagicType.AwakenedAssault)
@@ -16825,8 +16835,9 @@ namespace Server.Models
                     {
                         Type = PoisonType.Red,
                         TickCount = 1,
-                        TickFrequency = TimeSpan.FromMilliseconds(travelled * 300 + magic.GetPower() * 2),
+                        TickFrequency = TimeSpan.FromMilliseconds(travelled * 300 + 2000 * 4),
                         Owner = this,
+                        Stackable = false,
                     });
                 }
 
@@ -16925,6 +16936,7 @@ namespace Server.Models
                     TickCount = 1,
                     Owner = this,
                     TickFrequency = TimeSpan.FromSeconds(3),
+                    Stackable = false,
                 });
             }
         }
@@ -16967,6 +16979,7 @@ namespace Server.Models
                     Type = PoisonType.Paralysis,
                     TickFrequency = TimeSpan.FromSeconds(ob.Race == ObjectType.Monster ? (1 + magic.Level) : 1),
                     TickCount = 1,
+                    Stackable = true,
                 });
             }
 
@@ -16991,6 +17004,7 @@ namespace Server.Models
                     TickCount = 1,
                     Owner = this,
                     TickFrequency = TimeSpan.FromSeconds(3),
+                    Stackable = false,
                 });
             }
         }
@@ -17035,6 +17049,7 @@ namespace Server.Models
                     Type = PoisonType.Slow,
                     TickFrequency = TimeSpan.FromSeconds(1 + magic.Level),
                     TickCount = 1,
+                    Stackable = false,
                 });
 
                 //LevelMagic(magic);
@@ -17062,6 +17077,7 @@ namespace Server.Models
                     Type = PoisonType.Paralysis,
                     TickFrequency = TimeSpan.FromSeconds(1 + magic.Level),
                     TickCount = 1,
+                    Stackable = true,
                 });
 
                 //LevelMagic(magic);
@@ -17252,6 +17268,7 @@ namespace Server.Models
                             TickCount = 1,
                             TickFrequency = TimeSpan.FromSeconds(5 + magic.Level * 3),
                             Type = PoisonType.Slow,
+                            Stackable = false,
                         });
                         break;
                 }
@@ -17378,6 +17395,7 @@ namespace Server.Models
                     Owner = this,
                     TickCount = 1,
                     TickFrequency = TimeSpan.FromSeconds(2),
+                    Stackable = true,
                 });
             }
             else
@@ -17757,6 +17775,7 @@ namespace Server.Models
                 Owner = this,
                 TickCount = duration / 2,
                 TickFrequency = TimeSpan.FromSeconds(2),
+                Stackable = false,
             });
 
 /*            foreach (UserMagic mag in magics)
@@ -17783,6 +17802,7 @@ namespace Server.Models
                 Owner = this,
                 TickCount = duration / 2,
                 TickFrequency = TimeSpan.FromSeconds(2),
+                Stackable = false,
             });
 
             ob.ApplyPoison(new Poison
@@ -17792,6 +17812,7 @@ namespace Server.Models
                 Owner = this,
                 TickCount = duration / 2,
                 TickFrequency = TimeSpan.FromSeconds(2),
+                Stackable = false,
             });
 
             /*            foreach (UserMagic mag in magics)
@@ -17818,6 +17839,7 @@ namespace Server.Models
                 Owner = this,
                 TickCount = duration / 2,
                 TickFrequency = TimeSpan.FromSeconds(2),
+                Stackable = false,
             });
 
             ob.ApplyPoison(new Poison
@@ -17827,6 +17849,7 @@ namespace Server.Models
                 Owner = this,
                 TickCount = duration / 2,
                 TickFrequency = TimeSpan.FromSeconds(2),
+                Stackable = false,
             });
 
             if(SEnvir.Random.Next(10) == 0)
@@ -17838,6 +17861,7 @@ namespace Server.Models
                     Owner = this,
                     TickCount = 8,
                     TickFrequency = TimeSpan.FromSeconds(2),
+                    Stackable = false,
                 });
                 ob.ApplyPoison(new Poison
                 {
@@ -17846,6 +17870,7 @@ namespace Server.Models
                     Owner = this,
                     TickCount = 8,
                     TickFrequency = TimeSpan.FromSeconds(2),
+                    Stackable = true,
                 });
                 ob.ApplyPoison(new Poison
                 {
@@ -17854,6 +17879,7 @@ namespace Server.Models
                     Owner = this,
                     TickCount = 1,
                     TickFrequency = TimeSpan.FromSeconds(2),
+                    Stackable = false,
                 });
                 ob.ApplyPoison(new Poison
                 {
@@ -17862,6 +17888,7 @@ namespace Server.Models
                     Owner = this,
                     TickCount = 4,
                     TickFrequency = TimeSpan.FromSeconds(2),
+                    Stackable = true,
                 });
             }
 
@@ -18544,6 +18571,7 @@ namespace Server.Models
                 Owner = this,
                 TickCount = 10 + magic.Level * 5,
                 TickFrequency = TimeSpan.FromMilliseconds(1500),
+                Stackable = false,
             });
 
 /*            foreach (UserMagic mag in magics)
@@ -18563,6 +18591,7 @@ namespace Server.Models
                 Owner = this,
                 TickCount = 10 + magic.Level * 10,
                 TickFrequency = TimeSpan.FromMilliseconds(700),
+                Stackable = false,
             });
 
             /*            foreach (UserMagic mag in magics)
@@ -18582,6 +18611,7 @@ namespace Server.Models
                 Owner = this,
                 TickCount = 10 + magic.Level * 10,
                 TickFrequency = TimeSpan.FromMilliseconds(700),
+                Stackable = false,
             });
 
             /*            foreach (UserMagic mag in magics)
@@ -18684,32 +18714,7 @@ namespace Server.Models
                     Owner = this,
                     TickCount = 1,
                     TickFrequency = TimeSpan.FromSeconds(2),
-                });
-                //LevelMagic(magic);
-                break;
-            }
-        }
-
-        private void AwakenedTaoistCombatKick(UserMagic magic, Cell cell, MirDirection direction)
-        {
-            if (cell?.Objects == null) return;
-
-            for (int i = cell.Objects.Count - 1; i >= 0; i--)
-            {
-                MapObject ob = cell.Objects[i];
-                if (!CanAttackTarget(ob) || ob.Level >= Level || SEnvir.Random.Next(16) >= 6 + magic.Level * 3 + Level - ob.Level) continue;
-
-                //CanPush check ?
-
-                if (ob.Pushed(direction, magic.GetPower()) <= 0) continue;
-
-                Attack(ob, new List<UserMagic> { magic }, true, 0, false, false);
-                ob.ApplyPoison(new Poison
-                {
-                    Type = PoisonType.Paralysis,
-                    Owner = this,
-                    TickCount = 1,
-                    TickFrequency = TimeSpan.FromMilliseconds(2),
+                    Stackable = true,
                 });
                 //LevelMagic(magic);
                 break;
@@ -18848,6 +18853,7 @@ namespace Server.Models
                 TickCount = ob.Race == ObjectType.Player ? duration * 7 / 10 : duration,
                 TickFrequency = TimeSpan.FromSeconds(1),
                 Extra = touch,
+                Stackable = false,
             });
 
             if (touch != null)
@@ -18859,6 +18865,7 @@ namespace Server.Models
                     Owner = this,
                     TickCount = ob.Race == ObjectType.Player ? duration * 3 / 10 : duration,
                     TickFrequency = TimeSpan.FromSeconds(1),
+                    Stackable = true,
                 });
 
 /*            LevelMagic(magic);
@@ -18882,6 +18889,7 @@ namespace Server.Models
                 Owner = this,
                 TickCount = duration,
                 TickFrequency = TimeSpan.FromSeconds(1),
+                Stackable = false,
             });
 
             if (ob.Race == ObjectType.Monster)
@@ -18907,6 +18915,7 @@ namespace Server.Models
                 Owner = this,
                 TickCount = duration / 2,
                 TickFrequency = TimeSpan.FromSeconds(2),
+                Stackable = false,
             });
 
             //LevelMagic(magic);

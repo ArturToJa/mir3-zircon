@@ -1731,6 +1731,7 @@ namespace Server.Models
                 Value = GetSC(),
                 TickFrequency = TimeSpan.FromSeconds(PoisonFrequency),
                 TickCount = PoisonTicks,
+                Stackable = false,
             });
 
             return damage;

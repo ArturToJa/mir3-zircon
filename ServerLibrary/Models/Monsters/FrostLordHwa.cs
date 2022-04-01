@@ -69,6 +69,7 @@ namespace Server.Models.Monsters
                         Type = PoisonType.Abyss,
                         TickFrequency = TimeSpan.FromSeconds(10),
                         TickCount = 1,
+                        Stackable = false,
                     });
 
                     ob.ApplyPoison(new Poison
@@ -77,6 +78,7 @@ namespace Server.Models.Monsters
                         Type = PoisonType.Silenced,
                         TickFrequency = TimeSpan.FromSeconds(10),
                         TickCount = 1,
+                        Stackable = false,
                     });
 
                     ob.ApplyPoison(new Poison
@@ -85,6 +87,7 @@ namespace Server.Models.Monsters
                         Type = PoisonType.Red,
                         TickFrequency = TimeSpan.FromSeconds(10),
                         TickCount = 1,
+                        Stackable = false,
                     });
 
                     ob.ApplyPoison(new Poison
@@ -93,6 +96,7 @@ namespace Server.Models.Monsters
                         Type = PoisonType.WraithGrip,
                         TickFrequency = TimeSpan.FromSeconds(5),
                         TickCount = 1,
+                        Stackable = false,
                     });
                 }
             }

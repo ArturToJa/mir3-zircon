@@ -53,6 +53,7 @@ namespace Server.Models.Monsters
                     Value = GetSC(),
                     TickFrequency = TimeSpan.FromSeconds(2),
                     TickCount = 10,
+                    Stackable = false,
                 });
             }
 
@@ -64,6 +65,7 @@ namespace Server.Models.Monsters
                     Type = PoisonType.Paralysis,
                     TickFrequency = TimeSpan.FromSeconds(5),
                     TickCount = 1,
+                    Stackable = true,
                 });
             }
             return result;

@@ -259,7 +259,8 @@ namespace Server.Models
                                 TickCount = poison.TickCount,
                                 TickFrequency = poison.TickFrequency,
                                 Type = poison.Type,
-                                TickTime = poison.TickTime
+                                TickTime = poison.TickTime,
+                                Stackable = poison.Stackable,
                             });
                         }
                         break;
@@ -1486,11 +1487,30 @@ namespace Server.Models
 
             if (SEnvir.Random.Next(100) < Stats[Stat.PoisonResistance] + Stats[Stat.Endurance]) return false;
 
+            if(!p.Stackable)
+            {
+                foreach (Poison poison in PoisonList)
+                {
+                    if (poison.Type != p.Type) continue;
+
+                    if (poison.Value > p.Value) return false;
+
+                    PoisonList.Remove(poison);
+                    break;
+                }
+            }
             foreach (Poison poison in PoisonList)
             {
                 if (poison.Type != p.Type) continue;
-
-                if (poison.Value > p.Value) return false;
+                if (!p.Stackable)
+                {
+                    if (poison.Value > p.Value) return false;
+                }
+                else
+                {
+                    if ((poison.TickCount * poison.TickFrequency.TotalMilliseconds) + (poison.TickTime - SEnvir.Now).TotalMilliseconds > p.TickCount * p.TickFrequency.TotalMilliseconds) return false;
+                }
+                    
 
                 PoisonList.Remove(poison);
                 break;
@@ -1636,5 +1656,6 @@ namespace Server.Models
         public int TickCount;
         public DateTime TickTime;
         public object Extra;
+        public bool Stackable;
     }
 }

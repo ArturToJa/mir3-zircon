@@ -37,6 +37,7 @@ namespace Server.Models.Monsters
                 Owner = this,
                 TickFrequency = TimeSpan.FromSeconds(2),
                 TickCount = 10,
+                Stackable = false,
             });
         }
 
