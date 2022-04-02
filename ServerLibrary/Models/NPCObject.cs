@@ -155,7 +155,7 @@ namespace Server.Models
                     case NPCActionType.SpecialRefine:
                         break;
                     case NPCActionType.Rebirth:
-                        if (Globals.RebirthDataList.Count > (ob.Character.Rebirth + 1) && ob.Level >= Globals.RebirthDataList[ob.Character.Rebirth + 1].RequiredLevel)
+                        if (Globals.RebirthDataList.Count - 1 > (ob.Character.Rebirth + 1) && ob.Level >= Globals.RebirthDataList[ob.Character.Rebirth + 1].RequiredLevel)
                             ob.NPCRebirth();
                         break;
 

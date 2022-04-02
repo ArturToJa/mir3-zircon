@@ -2280,7 +2280,7 @@ namespace Server.Models
         {
             if (rateEffected)
             {
-                amount *= 1M + Stats[Stat.ExperienceRate] / 100M;
+                amount *= 1M + Stats[Stat.ExperienceRate] / 10000M;
                 amount *= 1M + Stats[Stat.BaseExperienceRate] / 100M;
             }
 
@@ -2558,10 +2558,10 @@ namespace Server.Models
                         Stats[Stat.MCPercent] += (1 + pair.Value.Level) * 5;
                         break;
                     case MagicType.EnhancedReflectDamage:
-                        Stats[Stat.ReflectDamage] = 5 + pair.Value.Level * 3;
+                        Stats[Stat.ReflectDamage] = 6 + pair.Value.Level * 3;
                         break;
                     case MagicType.AwakenedReflectDamage:
-                        Stats[Stat.ReflectDamage] = 5 + pair.Value.Level * 3;
+                        Stats[Stat.ReflectDamage] = 6 + pair.Value.Level * 3;
                         break;
                 }
             }
@@ -2692,9 +2692,9 @@ namespace Server.Models
             Stats[Stat.WearWeight] += Stats[Stat.WearWeight] * Stats[Stat.WeightRate];
             Stats[Stat.BagWeight] += Stats[Stat.BagWeight] * Stats[Stat.WeightRate];
 
-            Stats[Stat.Rebirth] = Character.Rebirth;
+            Stats[Stat.Rebirth] += Character.Rebirth;
 
-            foreach(KeyValuePair<Stat, int> BonusStats in Globals.RebirthDataList[Character.Rebirth].BonusStatistics)
+            foreach(KeyValuePair<Stat, int> BonusStats in Globals.RebirthDataList[Stats[Stat.Rebirth]].BonusStatistics)
             {
                 Stats[BonusStats.Key] += BonusStats.Value;
             }
