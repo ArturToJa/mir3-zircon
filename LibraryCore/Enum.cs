@@ -1036,6 +1036,17 @@ namespace Library
         TempleKnight,
         LavaGod,
         LavaScorp,
+
+        TempleSnake,
+        Tachinid,
+        SnailKing,
+        Turtle,
+        WarBeast,
+
+        Ent,
+        VenusFlytrap1,
+        VenusFlytrap2,
+        PoisonusTreant,
     }
 
     

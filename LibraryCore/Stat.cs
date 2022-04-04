@@ -776,7 +776,7 @@ namespace Library
         [StatDescription(Title = "Poison Resistance", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent)]
         PoisonResistance,
 
-        [StatDescription(Title = "Rebirth ", Format = "{0}", Mode = StatType.Default)]
+        [StatDescription(Title = "Rebirth", Format = "{0:+#0;-#0;#0}", Mode = StatType.Default)]
         Rebirth,
 
         [StatDescription(Title = "Level Up Count ", Format = "{0}", Mode = StatType.Default)]

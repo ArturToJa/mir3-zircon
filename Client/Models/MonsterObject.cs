@@ -2081,6 +2081,42 @@ namespace Client.Models
                     CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_50, out BodyLibrary);
                     BodyShape = 2;
                     break;
+                case MonsterImage.TempleSnake:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_63, out BodyLibrary);
+                    BodyShape = 1;
+                    break;
+                case MonsterImage.Tachinid:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_32, out BodyLibrary);
+                    BodyShape = 2;
+                    break;
+                case MonsterImage.SnailKing:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_56, out BodyLibrary);
+                    BodyShape = 3;
+                    break;
+                case MonsterImage.Turtle:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_56, out BodyLibrary);
+                    BodyShape = 6;
+                    break;
+                case MonsterImage.WarBeast:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_56, out BodyLibrary);
+                    BodyShape = 4;
+                    break;
+                case MonsterImage.Ent:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_59, out BodyLibrary);
+                    BodyShape = 1;
+                    break;
+                case MonsterImage.VenusFlytrap1:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_38, out BodyLibrary);
+                    BodyShape = 2;
+                    break;
+                case MonsterImage.VenusFlytrap2:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_38, out BodyLibrary);
+                    BodyShape = 3;
+                    break;
+                case MonsterImage.PoisonusTreant:
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_31, out BodyLibrary);
+                    BodyShape = 1;
+                    break;
                 default:
                     CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_1, out BodyLibrary);
                     BodyShape = 0;
