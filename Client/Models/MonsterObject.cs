@@ -2086,8 +2086,8 @@ namespace Client.Models
                     BodyShape = 1;
                     break;
                 case MonsterImage.Tachinid:
-                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_32, out BodyLibrary);
-                    BodyShape = 2;
+                    CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_62, out BodyLibrary);
+                    BodyShape = 3;
                     break;
                 case MonsterImage.SnailKing:
                     CEnvir.LibraryList.TryGetValue(LibraryFile.Mon_56, out BodyLibrary);
