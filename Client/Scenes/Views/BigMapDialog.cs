@@ -50,7 +50,7 @@ namespace Client.Scenes.Views
             TitleLabel.Text = SelectedInfo.Description;
             Image.Index = SelectedInfo.MiniMap;
 
-            SetClientSize(Image.Size);
+            SetClientSize(new Size(Math.Min(Image.Size.Width, GameScene.Game.Size.Width / 2), Math.Min(Image.Size.Height, GameScene.Game.Size.Height / 2)));
             Location = new Point((GameScene.Game.Size.Width - Size.Width) / 2, (GameScene.Game.Size.Height - Size.Height) / 2);
 
             Size size = GetMapSize(SelectedInfo.FileName);
@@ -149,8 +149,11 @@ namespace Client.Scenes.Views
             {
                 Parent = Panel,
                 LibraryFile = LibraryFile.MiniMap,
+                Movable = true,
+                IgnoreMoveBounds = true,
             };
             Image.MouseClick += Image_MouseClick;
+            Image.Moving += Image_Moving;
         }
 
         private void Image_MouseClick(object sender, MouseEventArgs e)
@@ -432,7 +435,28 @@ namespace Client.Scenes.Views
             control.Dispose();
             MapInfoObjects.Remove(ob);
         }
-        
+
+        private void Image_Moving(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            int x = Image.Location.X;
+
+            if (x + Image.Size.Width < Panel.Size.Width)
+                x = Panel.Size.Width - Image.Size.Width;
+
+            if (x > 0)
+                x = 0;
+
+            int y = Image.Location.Y;
+
+            if (y + Image.Size.Height < Panel.Size.Height)
+                y = Panel.Size.Height - Image.Size.Height;
+
+            if (y > 0)
+                y = 0;
+
+            Image.Location = new Point(x, y);
+        }
+
         #endregion
 
         #region IDisposable
