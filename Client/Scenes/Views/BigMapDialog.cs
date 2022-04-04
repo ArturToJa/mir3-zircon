@@ -52,6 +52,7 @@ namespace Client.Scenes.Views
 
             SetClientSize(new Size(Math.Min(Image.Size.Width, GameScene.Game.Size.Width / 2), Math.Min(Image.Size.Height, GameScene.Game.Size.Height / 2)));
             Location = new Point((GameScene.Game.Size.Width - Size.Width) / 2, (GameScene.Game.Size.Height - Size.Height) / 2);
+            Image.Location = new Point(0, 0);
 
             Size size = GetMapSize(SelectedInfo.FileName);
             ScaleX = Image.Size.Width / (float)size.Width;
