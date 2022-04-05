@@ -678,9 +678,9 @@ namespace Server.Models
                     {
                         MonsterInfo = monsterInfo,
                         PoisonType = PoisonType.StrongGreen,
-                        PoisonTicks = 10,
+                        PoisonTicks = 20,
                         PoisonFrequency = 1,
-                        PoisonRate = 8,
+                        PoisonRate = 0,
                         PoisonStackable = true,
                     };
                 case 139:
