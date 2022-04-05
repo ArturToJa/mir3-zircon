@@ -683,6 +683,11 @@ namespace Server.Models
                         PoisonRate = 8,
                         PoisonStackable = true,
                     };
+                case 139:
+                    return new Tachinid
+                    {
+                        MonsterInfo = monsterInfo
+                    };
                 default:
                     return new MonsterObject { MonsterInfo = monsterInfo };
             }
