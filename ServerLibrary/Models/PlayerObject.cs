@@ -2278,6 +2278,7 @@ namespace Server.Models
 
         public void GainExperience(decimal amount, bool huntGold, int gainLevel = Int32.MaxValue, bool rateEffected = true)
         {
+            if (Level >= Config.MaxLevel) return;
             if (rateEffected)
             {
                 amount *= 1M + Stats[Stat.ExperienceRate] / 10000M;
@@ -2302,7 +2303,7 @@ namespace Server.Models
                 }
             }
 
-            if (Level >= Config.MaxLevel || Experience < MaxExperience)
+            if (Experience < MaxExperience)
             {
                 SEnvir.RankingSort(Character);
                 return;

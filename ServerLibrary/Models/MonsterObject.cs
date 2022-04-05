@@ -106,6 +106,7 @@ namespace Server.Models
         }
 
         public PoisonType PoisonType;
+        public bool PoisonStackable = false;
         public int PoisonRate = 10;
         public int PoisonTicks = 5;
         public int PoisonFrequency = 2;
@@ -671,6 +672,16 @@ namespace Server.Models
                     return new StrongBoss
                     {
                         MonsterInfo = monsterInfo
+                    };
+                case 138:
+                    return new Ent
+                    {
+                        MonsterInfo = monsterInfo,
+                        PoisonType = PoisonType.StrongGreen,
+                        PoisonTicks = 10,
+                        PoisonFrequency = 1,
+                        PoisonRate = 8,
+                        PoisonStackable = true,
                     };
                 default:
                     return new MonsterObject { MonsterInfo = monsterInfo };
@@ -1731,7 +1742,7 @@ namespace Server.Models
                 Value = GetSC(),
                 TickFrequency = TimeSpan.FromSeconds(PoisonFrequency),
                 TickCount = PoisonTicks,
-                Stackable = false,
+                Stackable = PoisonStackable,
             });
 
             return damage;

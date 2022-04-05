@@ -11,20 +11,9 @@ namespace Server.Models.Monsters
 {
     public class InfernalSoldier : MonsterObject
     {
-        List<Cell> cells;
-
         public InfernalSoldier()
         {
             AvoidFireWall = false;
-        }
-
-        public override void Process()
-        {
-            base.Process();
-
-            if (Dead) return;
-
-            cells = CurrentMap.GetCells(CurrentLocation, 0, ViewRange);
         }
 
         protected override bool InAttackRange()
@@ -87,7 +76,7 @@ namespace Server.Models.Monsters
 
                     UpdateAttackTime();
 
-                    foreach (Cell cell in cells)
+                    foreach (Cell cell in CurrentMap.GetCells(CurrentLocation, 0, ViewRange))
                     {
                         if (cell.Objects == null)
                         {
