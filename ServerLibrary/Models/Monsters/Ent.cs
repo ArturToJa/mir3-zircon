@@ -20,6 +20,7 @@ namespace Server.Models.Monsters
 
         public override void ProcessTarget()
         {
+            if(Target == null) return;
             if (CurrentLocation == Target.CurrentLocation)
             {
                 MirDirection direction = (MirDirection)SEnvir.Random.Next(8);
