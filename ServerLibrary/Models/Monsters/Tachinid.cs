@@ -45,5 +45,7 @@ namespace Server.Models.Monsters
                                        GetDC(),
                                        AttackElement));
                 }
+            }
+        }
     }
 }
