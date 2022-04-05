@@ -193,7 +193,7 @@ namespace Server.Models
             for (int i = PoisonList.Count - 1; i >= 0; i--)
             {
                 Poison poison = PoisonList[i];
-                if (poison.Owner?.Node == null || poison.Owner.Dead || poison.Owner.CurrentMap != CurrentMap || !Functions.InRange(poison.Owner.CurrentLocation, CurrentLocation, Config.MaxViewRange))
+                if (poison.Owner?.Node == null || poison.Owner.Dead)
                 {
                     PoisonList.Remove(poison);
                     continue;
@@ -1498,22 +1498,6 @@ namespace Server.Models
                     PoisonList.Remove(poison);
                     break;
                 }
-            }
-            foreach (Poison poison in PoisonList)
-            {
-                if (poison.Type != p.Type) continue;
-                if (!p.Stackable)
-                {
-                    if (poison.Value > p.Value) return false;
-                }
-                else
-                {
-                    if ((poison.TickCount * poison.TickFrequency.TotalMilliseconds) + (poison.TickTime - SEnvir.Now).TotalMilliseconds > p.TickCount * p.TickFrequency.TotalMilliseconds) return false;
-                }
-                    
-
-                PoisonList.Remove(poison);
-                break;
             }
 
             //Check Pets target
