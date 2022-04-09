@@ -11,11 +11,20 @@ namespace Server.Models.Monsters
 {
     public class Ent : MonsterObject
     {
+
         protected override bool InAttackRange()
         {
-            if (Target.CurrentMap != CurrentMap) return false;
+            if(MonsterInfo.IsBoss)
+            {
+                if (Target.CurrentMap != CurrentMap) return false;
 
-            return Target.CurrentLocation != CurrentLocation && Functions.InRange(CurrentLocation, Target.CurrentLocation, ViewRange);
+                return Target.CurrentLocation != CurrentLocation && Functions.InRange(CurrentLocation, Target.CurrentLocation, ViewRange);
+            }
+            else
+            {
+                return base.InAttackRange();
+            }
+            
         }
 
         public override void ProcessTarget()
