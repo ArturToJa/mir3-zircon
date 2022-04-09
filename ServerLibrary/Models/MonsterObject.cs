@@ -653,12 +653,13 @@ namespace Server.Models
                         MonsterInfo = monsterInfo,
                     };
                 case 135:
-                    return new MonsterObject { 
+                    return new Ent
+                    { 
                         MonsterInfo = monsterInfo,
                         PoisonType = PoisonType.StrongGreen,
                         PoisonTicks = 10,
                         PoisonFrequency = 1,
-                        PoisonRate = 8
+                        PoisonRate = 0
                     };
                 case 136:
                     return new ArachnidGrazer

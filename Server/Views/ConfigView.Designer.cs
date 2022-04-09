@@ -2176,7 +2176,7 @@
             this.xtraTabPage8.Controls.Add(this.MaxLuckEdit);
             this.xtraTabPage8.Controls.Add(this.labelControl60);
             this.xtraTabPage8.Controls.Add(this.labelControl59);
-            this.xtraTabPage8.Controls.Add(this.SpecialRepairDelayEdit);
+            //this.xtraTabPage8.Controls.Add(this.SpecialRepairDelayEdit);
             this.xtraTabPage8.Controls.Add(this.TorchRateEdit);
             this.xtraTabPage8.Controls.Add(this.labelControl54);
             this.xtraTabPage8.Controls.Add(this.DropLayersEdit);
@@ -2361,18 +2361,18 @@
             // 
             // SpecialRepairDelayEdit
             // 
-            this.SpecialRepairDelayEdit.EditValue = System.TimeSpan.Parse("00:00:00");
+            /*this.SpecialRepairDelayEdit.EditValue = System.TimeSpan.Parse("00:00:00");
             this.SpecialRepairDelayEdit.Location = new System.Drawing.Point(121, 127);
             this.SpecialRepairDelayEdit.MenuManager = this.ribbon;
-            this.SpecialRepairDelayEdit.Name = "SpecialRepairDelayEdit";
+            this.SpecialRepairDelayEdit.Name = "SpecialRepairDelayEdit";*/
             // 
             // 
             // 
-            this.SpecialRepairDelayEdit.Properties.AllowEditDays = false;
+            /*this.SpecialRepairDelayEdit.Properties.AllowEditDays = false;
             this.SpecialRepairDelayEdit.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.SpecialRepairDelayEdit.Properties.Mask.EditMask = "HH:mm:ss";
-            this.SpecialRepairDelayEdit.TabIndex = 85;
+            this.SpecialRepairDelayEdit.TabIndex = 85;*/
             // 
             // TorchRateEdit
             // 
@@ -2700,7 +2700,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.MaxCurseEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.LuckRateEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MaxLuckEdit.Properties)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SpecialRepairDelayEdit.Properties)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.SpecialRepairDelayEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.TorchRateEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DropLayersEdit.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.DropDistanceEdit.Properties)).EndInit();
