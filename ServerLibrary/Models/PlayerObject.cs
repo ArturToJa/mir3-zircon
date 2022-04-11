@@ -16207,12 +16207,12 @@ namespace Server.Models
 
             TradeClose();
 
-            HashSet<MonsterObject> clearList = new HashSet<MonsterObject>(TaggedMonsters);
+            /*HashSet<MonsterObject> clearList = new HashSet<MonsterObject>(TaggedMonsters);
 
             foreach (MonsterObject ob in clearList)
                 ob.EXPOwner = null;
 
-            TaggedMonsters.Clear();
+            TaggedMonsters.Clear();*/
 
             base.Die();
 

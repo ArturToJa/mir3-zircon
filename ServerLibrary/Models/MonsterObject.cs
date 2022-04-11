@@ -2643,8 +2643,6 @@ namespace Server.Models
                 if (ePlayers.Count > 1)
                     exp += exp * 0.06M * ePlayers.Count; //6% per nearby member.
 
-
-
                 foreach (PlayerObject player in ePlayers)
                 {
                     decimal expfinal = exp * player.Level / totalLevels;
@@ -2658,7 +2656,7 @@ namespace Server.Models
 
             if (dPlayers.Count == 0)
             {
-                if (!EXPOwner.Dead && EXPOwner.CurrentMap == CurrentMap && Functions.InRange(EXPOwner.CurrentLocation, CurrentLocation, Config.MaxViewRange))
+                //if (!EXPOwner.Dead && EXPOwner.CurrentMap == CurrentMap && Functions.InRange(EXPOwner.CurrentLocation, CurrentLocation, Config.MaxViewRange))
                     Drop(EXPOwner, 1, dRate);
             }
             else
@@ -2666,7 +2664,6 @@ namespace Server.Models
                 foreach (PlayerObject player in dPlayers)
                     Drop(player, dPlayers.Count, dRate);
             }
-
         }
 
         public virtual void Drop(PlayerObject owner, int players, decimal rate)
