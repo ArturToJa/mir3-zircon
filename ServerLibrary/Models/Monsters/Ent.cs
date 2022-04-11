@@ -24,7 +24,6 @@ namespace Server.Models.Monsters
             {
                 return base.InAttackRange();
             }
-            
         }
 
         public override void ProcessTarget()
@@ -45,7 +44,7 @@ namespace Server.Models.Monsters
             else
                 MoveTo(Target.CurrentLocation);
 
-            if (!CanAttack) return;
+            if (!CanAttack || !InAttackRange()) return;
 
             List<uint> targetIDs = new List<uint>();
             List<Point> locations = new List<Point>();
@@ -71,7 +70,7 @@ namespace Server.Models.Monsters
                         SEnvir.Now.AddMilliseconds(500),
                         ActionType.DelayAttack,
                         ob,
-                        GetDC() + ob.Stats[Stat.MaxAC],
+                        GetDC(),
                         AttackElement));
                 }
             }

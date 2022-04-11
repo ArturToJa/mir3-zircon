@@ -112,6 +112,7 @@ namespace Server.Models
         public int PoisonFrequency = 2;
 
         public bool IgnoreShield;
+        public bool IgnoreArmour;
 
         public bool EasterEventMob, HalloweenEventMob, ChristmasEventMob;
 
@@ -659,7 +660,8 @@ namespace Server.Models
                         PoisonType = PoisonType.StrongGreen,
                         PoisonTicks = 10,
                         PoisonFrequency = 1,
-                        PoisonRate = 0
+                        PoisonRate = 0,
+                        IgnoreArmour = true,
                     };
                 case 136:
                     return new ArachnidGrazer
@@ -683,6 +685,8 @@ namespace Server.Models
                         PoisonFrequency = 1,
                         PoisonRate = 0,
                         PoisonStackable = true,
+                        IgnoreArmour = true,
+                        IgnoreShield = true,
                     };
                 case 139:
                     return new Tachinid
@@ -1685,7 +1689,7 @@ namespace Server.Models
         {
             if (ob?.Node == null || ob.Dead) return 0;
 
-            int damage;
+            int damage = power;
 
             if (PoisonList.Any(x => x.Type == PoisonType.Abyss) && SEnvir.Random.Next(2) > 0)
             {
@@ -1703,11 +1707,17 @@ namespace Server.Models
                     return 0;
                 }
 
-                damage = power - ob.GetAC();
+                if (!IgnoreArmour)
+                {
+                    damage -= ob.GetAC();
+                }
             }
             else
             {
-                damage = power - ob.GetMR();
+                if(!IgnoreArmour)
+                {
+                    damage -= ob.GetMR();
+                }
             }
 
             int res = ob.Stats.GetResistanceValue(element);
