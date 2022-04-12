@@ -571,6 +571,11 @@ namespace Client.Envir
                     bind.Category = "Functions";
                     bind.Key1 = Keys.D;
                     break;
+                case KeyBindAction.AutoAttackToggle:
+                    bind.Category = "Functions";
+                    bind.Key1 = Keys.D;
+                    bind.Control1 = true;
+                    break;
                 case KeyBindAction.ChangeChatMode:
                     bind.Category = "Functions";
                     bind.Key1 = Keys.K;

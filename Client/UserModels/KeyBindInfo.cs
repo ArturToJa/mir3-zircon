@@ -243,6 +243,8 @@ namespace Client.UserModels
         MountToggle,
         [Description("Toggle Auto Run")]
         AutoRunToggle,
+        [Description("Toggle Auto Attack")]
+        AutoAttackToggle,
         [Description("Change Chat Mode")]
         ChangeChatMode,
 

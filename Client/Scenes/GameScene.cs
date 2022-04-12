@@ -227,6 +227,19 @@ namespace Client.Scenes
         }
         private bool _AutoRun;
 
+        public bool AutoAttack
+        {
+            get => _AutoAttack;
+            set
+            {
+                if (_AutoAttack == value) return;
+                _AutoAttack = value;
+
+                ReceiveChat(value ? "[AutoAttack: On]" : "[AutoAttack: Off]", MessageType.Hint);
+            }
+        }
+        private bool _AutoAttack;
+
         #region StorageSize
 
         public int StorageSize
@@ -1154,6 +1167,13 @@ namespace Client.Scenes
                         if (Observer) continue;
 
                         AutoRun = !AutoRun;
+                        AutoAttack = false;
+                        break;
+                    case KeyBindAction.AutoAttackToggle:
+                        if (Observer) continue;
+
+                        AutoAttack = !AutoAttack;
+                        AutoRun = false;
                         break;
                     case KeyBindAction.UseBelt01:
                         if (Observer) continue;
@@ -4338,6 +4358,7 @@ namespace Client.Scenes
 
                 CanRun = false;
                 AutoRun = false;
+                AutoAttack = false;
                 _NPCID = 0;
                 _Companion = null;
                 _Partner = null;

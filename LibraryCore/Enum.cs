@@ -1253,7 +1253,9 @@ namespace Library
         LevelUpScroll = 94,
         SkillStone = 95,
         SkillEnhancement = 96,
-        SkillAwakening = 97
+        SkillAwakening = 97,
+
+        UpgradeGemReset = 98,
     }
 
     [Flags]

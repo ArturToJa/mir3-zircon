@@ -603,6 +603,7 @@ namespace Client.Scenes.Views
                     if (GameScene.Game.Observer) return;
 
                     GameScene.Game.AutoRun = false;
+                    GameScene.Game.AutoAttack = false;
                     if (MapObject.MouseObject == null) return;
                     NPCObject npc = MapObject.MouseObject as NPCObject;
                     if (npc != null)
@@ -616,6 +617,7 @@ namespace Client.Scenes.Views
                     break;
                 case MouseButtons.Right:
                     GameScene.Game.AutoRun = false;
+                    GameScene.Game.AutoAttack = false;
 
                     if (User.CurrentAction == MirAction.Standing)
                         GameScene.Game.CanRun = false;
@@ -743,6 +745,18 @@ namespace Client.Scenes.Views
             {
                 if (!GameScene.Game.MoveFrame || (User.Poison & PoisonType.WraithGrip) == PoisonType.WraithGrip) return;
                 Run(direction);
+                return;
+            }
+            else if (GameScene.Game.AutoAttack && MapObject.TargetObject == null)
+            {
+                if (CEnvir.Now > User.AttackTime && User.Horse == HorseType.None)
+                    MapObject.User.AttemptAction(new ObjectAction(
+                        MirAction.Attack, //RANDOMIZE
+                        direction,
+                        MapObject.User.CurrentLocation,
+                        0, //Ranged Attack Target ID
+                        MagicType.None,
+                        Element.None));
                 return;
             }
 

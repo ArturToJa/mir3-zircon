@@ -9690,40 +9690,58 @@ namespace Server.Models
             }
             UserItem gemItem = FindUserItem(p.Gem, out targetArray);
             if (gemItem == null || p.Target.Count > gemItem.Count) return; //Already Leveled.
-            if (gemItem.Info.Effect != ItemEffect.UpgradeGem) return;
-            if (gemItem.Info.Stats[Stat.GemCount] <= 0) return;
-            if (targetItem.GemCount + gemItem.Info.Stats[Stat.GemCount] > Config.MaxItemStatBonus) return;
+            if (gemItem.Info.Effect != ItemEffect.UpgradeGem && gemItem.Info.Effect != ItemEffect.UpgradeGemReset) return;
 
             S.ItemsChanged gemResult = new S.ItemsChanged { Links = new List<CellLinkInfo>(), Success = true };
             S.ItemStatsChanged targetResult = new S.ItemStatsChanged { GridType = p.Target.GridType, Slot = p.Target.Slot, NewStats = new Stats() };
             Enqueue(gemResult);
             Enqueue(targetResult);
 
-            int HowMuchCanBeAdded = (Config.MaxItemStatBonus - targetItem.GemCount) / gemItem.Info.Stats[Stat.GemCount];
-
-            long count = Math.Min(gemItem.Count, Math.Min(p.Gem.Count, HowMuchCanBeAdded));
-            p.Gem.Count = 0;
-            for(long i = 0; i < count; i++)
+            if (gemItem.Info.Effect == ItemEffect.UpgradeGem)
             {
-                if(targetItem.GemCount + gemItem.Info.Stats[Stat.GemCount] <= Config.MaxItemStatBonus )
+                if (gemItem.Info.Stats[Stat.GemCount] <= 0) return;
+                if (targetItem.GemCount + gemItem.Info.Stats[Stat.GemCount] > Config.MaxItemStatBonus) return;
+                int HowMuchCanBeAdded = (Config.MaxItemStatBonus - targetItem.GemCount) / gemItem.Info.Stats[Stat.GemCount];
+
+                long count = Math.Min(gemItem.Count, Math.Min(p.Gem.Count, HowMuchCanBeAdded));
+                p.Gem.Count = 0;
+                for (long i = 0; i < count; i++)
                 {
-                    foreach (KeyValuePair<Stat, int> stat in gemItem.Info.Stats.Values)
+                    if (targetItem.GemCount + gemItem.Info.Stats[Stat.GemCount] <= Config.MaxItemStatBonus)
                     {
-                        if(stat.Key != Stat.GemCount)
+                        foreach (KeyValuePair<Stat, int> stat in gemItem.Info.Stats.Values)
                         {
-                            targetItem.AddStat(stat.Key, stat.Value, StatSource.NPCAdded);
-                            targetResult.NewStats[stat.Key] += stat.Value;
+                            if (stat.Key != Stat.GemCount)
+                            {
+                                targetItem.AddStat(stat.Key, stat.Value, StatSource.NPCAdded);
+                                targetResult.NewStats[stat.Key] += stat.Value;
+                            }
                         }
+                        gemItem.Count--;
+                        p.Gem.Count++;
+                        targetItem.GemCount += gemItem.Info.Stats[Stat.GemCount];
                     }
-                    gemItem.Count--;
-                    p.Gem.Count++;
-                    targetItem.GemCount += gemItem.Info.Stats[Stat.GemCount];
-                }
-                else
-                {
-                    targetItem.Flags |= UserItemFlags.NonUpgradeable;
+                    else
+                    {
+                        targetItem.Flags |= UserItemFlags.NonUpgradeable;
+                    }
                 }
             }
+            else
+            {
+                p.Gem.Count = 1;
+                gemItem.Count--;
+                for (int z = targetItem.AddedStats.Count - 1; z >= 0; z--)
+                {
+                    UserItemStat stat = targetItem.AddedStats[z];
+                    if (stat.StatSource != StatSource.NPCAdded) continue;
+                    targetResult.NewStats[stat.Stat] -= stat.Amount;
+                    stat.Delete();
+                }
+                targetItem.GemCount = 0;
+                targetItem.Flags &= ~UserItemFlags.NonUpgradeable;
+            }
+            
             gemResult.Links.Add(p.Gem);
 
             if (gemItem.Count < 1)
