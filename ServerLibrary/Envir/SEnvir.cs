@@ -373,7 +373,7 @@ namespace Server.Envir
                 if (BossEventCount >= BossEventLimit)
                 {
                     BossEventCount = 0;
-                    BossEventLimit *= (long)(Config.BossEventTime / (Now - BossTime).TotalMinutes);
+                    BossEventLimit = BossEventLimit != 0 ? BossEventLimit * (long)(Config.BossEventTime / (Now - BossTime).TotalMinutes) : 1000L;
                     BossTime = Now;
                 }
             }
@@ -383,7 +383,7 @@ namespace Server.Envir
                 if (ExpEventCount >= ExpEventLimit)
                 {
                     ExpEventCount = 0;
-                    ExpEventLimit *= (long)(Config.ExpEventTime / (Now - ExpTime).TotalMinutes);
+                    ExpEventLimit = ExpEventLimit != 0 ? ExpEventLimit * (long)(Config.ExpEventTime / (Now - ExpTime).TotalMinutes) : 1000000L;
                     ExpTime = Now;
                     StartExpEvent(900);
                 }
