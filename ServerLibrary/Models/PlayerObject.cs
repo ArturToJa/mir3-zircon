@@ -6525,7 +6525,7 @@ namespace Server.Models
                     MagicInfo info = SEnvir.MagicInfoList.Binding.First(x => x.Index == item.Info.Shape);
                     MagicType type;
 
-                    if (!Magics.TryGetValue(info.Magic, out magic) && !(Globals.MagicEnhancement.TryGetValue(info.Magic, out type) && !Magics.TryGetValue(type, out magic)) && !(Globals.MagicAwakening.TryGetValue(info.Magic, out type) && !Magics.TryGetValue(type, out magic)))
+                    if (!Magics.TryGetValue(info.Magic, out magic) && !(Globals.MagicEnhancement.TryGetValue(info.Magic, out type) && !Magics.TryGetValue(type, out magic)) && !(Globals.MagicAwakening.TryGetValue(type, out type) && !Magics.TryGetValue(type, out magic)))
                     {
                         magic = SEnvir.UserMagicList.CreateNewObject();
                         magic.Character = Character;
