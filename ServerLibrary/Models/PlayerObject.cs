@@ -6512,16 +6512,6 @@ namespace Server.Models
 
                     if (SEnvir.Now < UseItemTime || Horse != HorseType.None) return;
 
-                    if (SEnvir.Random.Next(100) >= item.SetValue)
-                    {
-                        Connection.ReceiveChat(Connection.Language.LearnBookFailed, MessageType.System);
-
-                        foreach (SConnection con in Connection.Observers)
-                            con.ReceiveChat(con.Language.LearnBookFailed, MessageType.System);
-
-                        break;
-                    }
-
                     MagicInfo info = SEnvir.MagicInfoList.Binding.First(x => x.Index == item.Info.Shape);
                     MagicType type;
 
@@ -6541,6 +6531,15 @@ namespace Server.Models
                             con.ReceiveChat(string.Format(con.Language.LearnBookSuccess, magic.Info.Name), MessageType.System);
 
                         RefreshStats();
+                    }
+                    else
+                    {
+                        Connection.ReceiveChat(Connection.Language.LearnBookFailed, MessageType.System);
+
+                        foreach (SConnection con in Connection.Observers)
+                            con.ReceiveChat(con.Language.LearnBookFailed, MessageType.System);
+
+                        break;
                     }
 
                     break;

@@ -2068,6 +2068,7 @@ namespace Server.Envir
                 case ItemType.Bracelet:
                 case ItemType.Ring:
                 case ItemType.Shoes:
+                case ItemType.Book:
                     item.SetValue = item.SetValue;
                     break;
                 case ItemType.Meat:
@@ -2075,9 +2076,6 @@ namespace Server.Envir
                     break;
                 case ItemType.Ore:
                     item.SetValue = Random.Next(info.SetValue * 3) + 3000;
-                    break;
-                case ItemType.Book:
-                    item.SetValue = Random.Next(96) + 5; //0~95 + 5
                     break;
                 default:
                     item.SetValue = info.SetValue;
